@@ -1,0 +1,4 @@
+{
+  "error": "invalid Authorization header in request",
+  "error_code": "DPAY_UNAUTHORIZED_ACCESS"
+}
