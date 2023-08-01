@@ -22,7 +22,7 @@ type ValidateDisbursement struct {
 
 // ValidateDisbursementPayload is payload for request disbursement API
 type ValidateDisbursementPayload struct {
-	IdempotenKey  string
-	AccountNumber string
-	BankCode      string
+	IdempotenKey  string `json:"-"`
+	AccountNumber string `json:"account_number"`
+	BankCode      string `json:"bank_code"`
 }

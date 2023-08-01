@@ -30,5 +30,7 @@ func NewClient(opts Options) *Client {
 		Opts: opts,
 	}
 
+	client.Init()
+
 	return &client
 }

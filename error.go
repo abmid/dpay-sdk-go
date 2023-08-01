@@ -12,6 +12,7 @@ const (
 	ErrorCodeSDK                    = "SDK_ERROR"
 	ErrorCodeDPAYInternalError      = "DPAY_INTERNAL_ERROR"
 	ErrorCodeDPAYUnauthorizedAccess = "DPAY_UNAUTHORIZED_ACCESS"
+	ErrorCodeDPAYInvalidRequest     = "DPAY_INVALID_REQUEST"
 )
 
 // Error is commons response error DurianPay

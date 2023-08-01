@@ -12,7 +12,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
@@ -38,7 +38,7 @@ func (c *ApiImplement) Req(ctx context.Context, method string, url string, body 
 		return nil, durianpay.FromSDKError(err)
 	}
 
-	base64SecretKey := base64.RawStdEncoding.EncodeToString([]byte(c.ServerKey + ":"))
+	base64SecretKey := base64.StdEncoding.EncodeToString([]byte(c.ServerKey + ":"))
 	httpReq, err := http.NewRequestWithContext(ctx, method, url, bytes.NewReader(parseBody))
 	httpReq.Header.Add("Content-Type", "application/json")
 	httpReq.Header.Add("Authorization", fmt.Sprintf("Basic %s", base64SecretKey))
@@ -50,7 +50,7 @@ func (c *ApiImplement) Req(ctx context.Context, method string, url string, body 
 	}
 	defer httpRes.Body.Close()
 
-	resBody, err := ioutil.ReadAll(httpRes.Body)
+	resBody, err := io.ReadAll(httpRes.Body)
 	if err != nil {
 		return nil, durianpay.FromSDKError(err)
 	}
