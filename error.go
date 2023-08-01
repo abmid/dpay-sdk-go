@@ -9,20 +9,22 @@ package durianpay
 import "encoding/json"
 
 const (
-	SDKErrorCode = "SDK_ERROR"
+	ErrorCodeSDK                    = "SDK_ERROR"
+	ErrorCodeDPAYInternalError      = "DPAY_INTERNAL_ERROR"
+	ErrorCodeDPAYUnatuhorizedAccess = "DPAY_UNAUTHORIZED_ACCESS"
 )
 
 // Error is commons response error DurianPay
 type Error struct {
 	Error     string `json:"error"`
 	ErrorCode string `json:"error_code"`
-	Message   string `json:"Message"`
+	Message   string `json:"message"`
 }
 
 func FromSDKError(err error) *Error {
 	return &Error{
 		Error:     err.Error(),
-		ErrorCode: SDKErrorCode,
+		ErrorCode: ErrorCodeSDK,
 		Message:   err.Error(),
 	}
 }
