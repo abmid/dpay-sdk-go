@@ -11,7 +11,7 @@ import "encoding/json"
 const (
 	ErrorCodeSDK                    = "SDK_ERROR"
 	ErrorCodeDPAYInternalError      = "DPAY_INTERNAL_ERROR"
-	ErrorCodeDPAYUnatuhorizedAccess = "DPAY_UNAUTHORIZED_ACCESS"
+	ErrorCodeDPAYUnauthorizedAccess = "DPAY_UNAUTHORIZED_ACCESS"
 )
 
 // Error is commons response error DurianPay
