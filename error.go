@@ -16,9 +16,10 @@ const (
 
 // Error is commons response error DurianPay
 type Error struct {
-	Error     string `json:"error"`
-	ErrorCode string `json:"error_code"`
-	Message   string `json:"message"`
+	StatusCode int    // Response from http status code
+	Error      string `json:"error"`
+	ErrorCode  string `json:"error_code"`
+	Message    string `json:"message"`
 }
 
 func FromSDKError(err error) *Error {
@@ -30,7 +31,7 @@ func FromSDKError(err error) *Error {
 }
 
 func FromAPI(statusCode int, responseBody []byte) *Error {
-	tempErr := Error{}
+	tempErr := Error{StatusCode: statusCode}
 
 	err := json.Unmarshal(responseBody, &tempErr)
 	if err != nil {

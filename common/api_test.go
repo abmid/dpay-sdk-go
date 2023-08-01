@@ -82,8 +82,9 @@ func TestApiImplement_Req(t *testing.T) {
 			},
 			wantRes: nil,
 			wantDurianErr: &durianpay.Error{
-				Error:     "error reading request body",
-				ErrorCode: "DPAY_INTERNAL_ERROR",
+				StatusCode: 400,
+				Error:      "error reading request body",
+				ErrorCode:  "DPAY_INTERNAL_ERROR",
 			},
 		},
 	}
