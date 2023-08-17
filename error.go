@@ -17,10 +17,16 @@ const (
 
 // Error is commons response error DurianPay
 type Error struct {
-	StatusCode int    // Response from http status code
-	Error      string `json:"error"`
-	ErrorCode  string `json:"error_code"`
-	Message    string `json:"message"`
+	StatusCode int      // Response from http status code
+	Error      string   `json:"error"`
+	ErrorCode  string   `json:"error_code"`
+	Errors     []Errors `json:"errors"`
+	Message    string   `json:"message"`
+}
+
+type Errors struct {
+	Field   string `json:"field"`
+	Message string `json:"message"`
 }
 
 func FromSDKError(err error) *Error {
