@@ -8,6 +8,7 @@ package tests
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"testing"
@@ -21,7 +22,7 @@ type Feature struct {
 	ServerKey string
 }
 
-func HttpMockResJSON(statusCode int, filePath string) httpmock.Responder {
+func HttpMockResJSON(statusCode int, filePath string, headers map[string]string) httpmock.Responder {
 	return func(r *http.Request) (*http.Response, error) {
 		if r.Header.Get("Authorization") == "" {
 			return nil, errors.New("access_key not present!")
@@ -29,6 +30,14 @@ func HttpMockResJSON(statusCode int, filePath string) httpmock.Responder {
 
 		if r.Header.Get("Content-Type") != "application/json" {
 			return nil, errors.New("Invalid content-type != application/json")
+		}
+
+		if headers != nil {
+			for key, value := range headers {
+				if r.Header.Get(key) != value {
+					return nil, errors.New(fmt.Sprintf("Headers: Invalid %s != %s", key, value))
+				}
+			}
 		}
 
 		resp, _ := httpmock.NewJsonResponderOrPanic(statusCode, httpmock.File(filePath))(r)
@@ -53,4 +62,9 @@ func (f *Feature) ResJSONByte(jsonFile string) []byte {
 	}
 
 	return file
+}
+
+// BoolPtr return value pointer for boolean
+func BoolPtr[V bool](value V) *V {
+	return &value
 }

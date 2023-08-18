@@ -16,10 +16,11 @@ import (
 	"net/http"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
+	goquery "github.com/google/go-querystring/query"
 )
 
 type Api interface {
-	Req(ctx context.Context, method string, url string, body any, idempotenKey string) (res []byte, durianErr *durianpay.Error)
+	Req(ctx context.Context, method string, url string, param any, body any, headers map[string]string) (res []byte, durianErr *durianpay.Error)
 }
 
 type ApiImplement struct {
@@ -32,7 +33,7 @@ func NewAPI(serverKey string) *ApiImplement {
 	}
 }
 
-func (c *ApiImplement) Req(ctx context.Context, method string, url string, body any, idempotenKey string) (res []byte, durianErr *durianpay.Error) {
+func (c *ApiImplement) Req(ctx context.Context, method string, url string, param any, body any, headers map[string]string) (res []byte, durianErr *durianpay.Error) {
 	parseBody, err := json.Marshal(body)
 	if err != nil {
 		return nil, durianpay.FromSDKError(err)
@@ -42,7 +43,21 @@ func (c *ApiImplement) Req(ctx context.Context, method string, url string, body 
 	httpReq, err := http.NewRequestWithContext(ctx, method, url, bytes.NewReader(parseBody))
 	httpReq.Header.Add("Content-Type", "application/json")
 	httpReq.Header.Add("Authorization", fmt.Sprintf("Basic %s", base64SecretKey))
-	httpReq.Header.Add("X-Idempotency-Key", idempotenKey)
+
+	if headers != nil {
+		for key, value := range headers {
+			httpReq.Header.Add(key, value)
+		}
+	}
+
+	if param != nil {
+		parseParam, err := goquery.Values(param)
+		if err != nil {
+			return nil, durianpay.FromSDKError(err)
+		}
+
+		httpReq.URL.RawQuery = parseParam.Encode()
+	}
 
 	httpRes, err := http.DefaultClient.Do(httpReq)
 	if err != nil {
@@ -60,4 +75,21 @@ func (c *ApiImplement) Req(ctx context.Context, method string, url string, body 
 	}
 
 	return resBody, nil
+}
+
+// HeaderIdempotencyKey returns X-Idempotency-Key & idempotency-key values for DurianPay idempotency purposes.
+// Difference about X-Idempotency-Key and idempotency-key you can read on
+// [Docs Idempotent] https://durianpay.id/docs/integration/disbursements/idempotent/
+func HeaderIdempotencyKey(xIdempotencyKey, idempotencyKey string) map[string]string {
+	headers := map[string]string{}
+
+	if xIdempotencyKey != "" {
+		headers["X-Idempotency-Key"] = xIdempotencyKey
+	}
+
+	if idempotencyKey != "" {
+		headers["idempotency-key"] = idempotencyKey
+	}
+
+	return headers
 }
