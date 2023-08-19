@@ -12,6 +12,7 @@ import (
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/client"
+	"github.com/abmid/dpay-sdk-go/internal/tests"
 )
 
 func ExampleValidateDisbursement() {
@@ -57,7 +58,47 @@ func ExampleSubmitDisbursement() {
 		},
 	}
 
+	// Without params
 	res, err := c.Disbursement.SubmitDisbursement(context.TODO(), payload, nil)
+	if err != nil {
+		// Handle error
+	}
+
+	// With params
+	opt := durianpay.DisbursementOption{
+		ForceDisburse:  tests.BoolPtr(true),
+		SkipValidation: tests.BoolPtr(false),
+	}
+	res, err = c.Disbursement.SubmitDisbursement(context.TODO(), payload, &opt)
+	if err != nil {
+		// Handle error
+	}
+
+	// Will be return response from DurianPay
+	fmt.Println(res)
+}
+
+func ExampleApproveDisbursement() {
+	c := client.NewClient(client.Options{
+		ServerKey: "xxx-xxx",
+	})
+
+	payload := durianpay.ApproveDisbursementPayload{
+		XIdempotencyKey: "1",
+		ID:              "dis_xxx",
+	}
+
+	// Without params
+	res, err := c.Disbursement.ApproveDisbursement(context.TODO(), payload, nil)
+	if err != nil {
+		// Handle error
+	}
+
+	// With params
+	opt := durianpay.ApproveDisbursementOption{
+		IgnoreInvalid: tests.BoolPtr(false),
+	}
+	res, err = c.Disbursement.ApproveDisbursement(context.TODO(), payload, &opt)
 	if err != nil {
 		// Handle error
 	}
