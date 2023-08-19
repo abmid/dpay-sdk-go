@@ -1,0 +1,5 @@
+{
+  "error": "disbursement already exist with given idempotency key",
+  "error_code": "DISBURSEMENT_ALREADY_EXIST_WITH_GIVEN_IDEMPOTENCY_KEY",
+  "request_id": "dp_do7KAjuYGi5960"
+}

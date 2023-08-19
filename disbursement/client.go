@@ -21,11 +21,39 @@ type Client struct {
 }
 
 const (
-	PATH = "/v1/disbursements/validate"
+	PATH_DISBURSEMENT          = "/v1/disbursements"
+	PATH_DISBURSEMENT_VALIDATE = PATH_DISBURSEMENT + "/validate"
+	PATH_DISBURSEMENT_SUBMIT   = PATH_DISBURSEMENT + "/submit"
 )
 
+// ValidateDisbursement returns a response from validate disbursement API.
+// Validate disbursement can be used to fetch the bank account and account number validation
+//
+//	[Doc Validate Disbursement API]: https://durianpay.id/docs/api/disbursements/validate/
 func (c *Client) ValidateDisbursement(ctx context.Context, payload durianpay.ValidateDisbursementPayload) (res *durianpay.ValidateDisbursement, err *durianpay.Error) {
-	apiRes, err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH, payload, payload.IdempotenKey)
+	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
+
+	apiRes, err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_VALIDATE, nil, payload, headers)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonErr := json.Unmarshal(apiRes, &res)
+	if jsonErr != nil {
+		return nil, durianpay.FromSDKError(jsonErr)
+	}
+
+	return res, err
+}
+
+// SubmitDisbursement returns a response from submit disbursement API.
+// Options about skip_validation & force_disburse you can input in durianpay.DisbursementOption
+//
+//	[Doc Submit Disbursement API]: https://durianpay.id/docs/api/disbursements/submit/
+func (c *Client) SubmitDisbursement(ctx context.Context, payload durianpay.DisbursementPayload, opt *durianpay.DisbursementOption) (res *durianpay.Disbursement, err *durianpay.Error) {
+	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, payload.IdempotencyKey)
+
+	apiRes, err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_SUBMIT, opt, payload, headers)
 	if err != nil {
 		return nil, err
 	}

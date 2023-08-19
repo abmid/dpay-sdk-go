@@ -19,6 +19,7 @@ import (
 	goquery "github.com/google/go-querystring/query"
 )
 
+// Api interface build for dependecy injection and for testing purposes.
 type Api interface {
 	Req(ctx context.Context, method string, url string, param any, body any, headers map[string]string) (res []byte, durianErr *durianpay.Error)
 }
@@ -33,6 +34,8 @@ func NewAPI(serverKey string) *ApiImplement {
 	}
 }
 
+// Req is an http request made specifically to hit the durian pay endpoint.
+// If the HTTP status code returned is not 2xx then an error will be returned
 func (c *ApiImplement) Req(ctx context.Context, method string, url string, param any, body any, headers map[string]string) (res []byte, durianErr *durianpay.Error) {
 	parseBody, err := json.Marshal(body)
 	if err != nil {
@@ -70,7 +73,9 @@ func (c *ApiImplement) Req(ctx context.Context, method string, url string, param
 		return nil, durianpay.FromSDKError(err)
 	}
 
-	if httpRes.StatusCode != 200 {
+	isStatusCodeSuccess := (httpRes.StatusCode >= 200) && (httpRes.StatusCode < 300)
+
+	if !isStatusCodeSuccess {
 		return nil, durianpay.FromAPI(httpRes.StatusCode, resBody)
 	}
 
@@ -88,7 +93,7 @@ func HeaderIdempotencyKey(xIdempotencyKey, idempotencyKey string) map[string]str
 	}
 
 	if idempotencyKey != "" {
-		headers["idempotency-key"] = idempotencyKey
+		headers["idempotency_key"] = idempotencyKey
 	}
 
 	return headers

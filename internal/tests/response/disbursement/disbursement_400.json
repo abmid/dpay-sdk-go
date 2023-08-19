@@ -1,0 +1,9 @@
+{
+  "error": "required fields missing",
+  "errors": [
+      {
+          "field": "amount='amount invalid'",
+          "message": "Please provide valid disbursement data"
+      }
+  ]
+}

@@ -59,9 +59,9 @@ func TestApiImplement_Req(t *testing.T) {
 					AnotherParam:   "test-param",
 				},
 				body: durianpay.ValidateDisbursementPayload{
-					IdempotenKey:  "1",
-					AccountNumber: "123737383830",
-					BankCode:      "bca",
+					XIdempotencyKey: "1",
+					AccountNumber:   "123737383830",
+					BankCode:        "bca",
 				},
 				durianRes: durianpay.ValidateDisbursement{},
 				headers:   HeaderIdempotencyKey("x-123", ""),
@@ -72,7 +72,7 @@ func TestApiImplement_Req(t *testing.T) {
 				query["another_param"] = "test-param"
 
 				httpmock.RegisterMatcherResponderWithQuery(args.method, args.url, query, httpmock.Matcher{},
-					tests.HttpMockResJSON(200, "../internal/tests/response/validate_disbursement_200.json", args.headers))
+					tests.HttpMockResJSON(200, "../internal/tests/response/disbursement/validate_disbursement_200.json", args.headers))
 			},
 			wantRes: durianpay.ValidateDisbursement{
 				Data: durianpay.ValidateDisbursementData{
@@ -95,7 +95,7 @@ func TestApiImplement_Req(t *testing.T) {
 			},
 			prepare: func(args args) {
 				httpmock.RegisterResponder(args.method, args.url,
-					tests.HttpMockResJSON(400, "../internal/tests/response/validate_disbursement_400.json", args.headers))
+					tests.HttpMockResJSON(400, "../internal/tests/response/disbursement/validate_disbursement_400.json", args.headers))
 			},
 			wantRes: nil,
 			wantDurianErr: &durianpay.Error{
