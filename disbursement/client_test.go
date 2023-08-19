@@ -9,6 +9,7 @@ package disbursement
 import (
 	"context"
 	"reflect"
+	"strings"
 	"testing"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
@@ -257,6 +258,124 @@ func TestClient_SubmitDisbursement(t *testing.T) {
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.SubmitDisbursement() gotErr = %v, want %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_ApproveDisbursement(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type fields struct {
+		Api common.Api
+	}
+	type args struct {
+		ctx     context.Context
+		payload durianpay.ApproveDisbursementPayload
+		opt     *durianpay.ApproveDisbursementOption
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(mock mocks, args args)
+		wantRes *durianpay.Disbursement
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.ApproveDisbursementPayload{
+					XIdempotencyKey: "x-123",
+					ID:              "dis_XXXX",
+				},
+				opt: &durianpay.ApproveDisbursementOption{
+					IgnoreInvalid: tests.BoolPtr(true),
+				},
+			},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_APPROVE
+				headers := common.HeaderIdempotencyKey(args.payload.XIdempotencyKey, "")
+				url = strings.ReplaceAll(url, ":id", args.payload.ID)
+
+				mock.api.EXPECT().Req(args.ctx, "POST", url, args.opt, args.payload, headers).
+					Return(featureWrap.ResJSONByte(path_response_disbursement+"approve_disbursement_200.json"), nil)
+			},
+			wantRes: &durianpay.Disbursement{
+				Message: "request already submitted",
+				Data: durianpay.DisbursementData{
+					ID:                 "dis_XXXX",
+					Name:               "sample disbursement",
+					Type:               "batch",
+					Status:             "approved",
+					TotalAmount:        "10000.00",
+					TotalDisbursements: 1,
+					Description:        "this is a sample disbursement",
+				},
+			},
+			wantErr: nil,
+		},
+		{
+			name: "Invalid Request (Payload)",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.ApproveDisbursementPayload{
+					ID: "dis_xxx",
+				},
+			},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_APPROVE
+				headers := common.HeaderIdempotencyKey("", "")
+				url = strings.ReplaceAll(url, ":id", args.payload.ID)
+
+				mock.api.EXPECT().Req(args.ctx, "POST", url, args.opt, args.payload, headers).
+					Return(nil, durianpay.FromAPI(400, featureWrap.ResJSONByte(path_response_disbursement+"approve_disbursement_400.json")))
+			},
+			wantRes: nil,
+			wantErr: durianpay.FromAPI(400, featureWrap.ResJSONByte(path_response_disbursement+"approve_disbursement_400.json")),
+		},
+		{
+			name: "Invalid Request (Already Submit)",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.ApproveDisbursementPayload{
+					XIdempotencyKey: "x-123",
+					ID:              "dis_xxx",
+				},
+			},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_APPROVE
+				headers := common.HeaderIdempotencyKey(args.payload.XIdempotencyKey, "")
+				url = strings.ReplaceAll(url, ":id", args.payload.ID)
+
+				mock.api.EXPECT().Req(args.ctx, "POST", url, args.opt, args.payload, headers).
+					Return(nil, durianpay.FromAPI(409, featureWrap.ResJSONByte(path_response_disbursement+"approve_disbursement_409.json")))
+			},
+			wantRes: nil,
+			wantErr: durianpay.FromAPI(409, featureWrap.ResJSONByte(path_response_disbursement+"approve_disbursement_409.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.ApproveDisbursement(tt.args.ctx, tt.args.payload, tt.args.opt)
+
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.ApproveDisbursement() gotRes = %v, want %v", gotRes, tt.wantRes)
+			}
+
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.ApproveDisbursement() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}

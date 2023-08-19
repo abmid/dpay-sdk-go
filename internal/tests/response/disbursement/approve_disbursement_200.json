@@ -1,0 +1,12 @@
+{
+  "message":"request already submitted",
+  "data": {
+      "id": "dis_XXXX",
+      "name": "sample disbursement",
+      "type": "batch",
+      "status": "approved",
+      "total_amount": "10000.00",
+      "total_disbursements": 1,
+      "description": "this is a sample disbursement"
+  }
+}
