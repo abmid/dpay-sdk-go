@@ -1,0 +1,13 @@
+{
+  "data": {
+      "id": "dis_XXXXXXX",
+      "name": "sample disbursement",
+      "type": "batch",
+      "status": "approved",
+      "total_amount": "10000.00",
+      "total_disbursements": 1,
+      "description": "this is a sample description",
+      "fees": 4000,
+      "created_at": "2021-05-03T12:57:07.296575Z"
+  }
+}

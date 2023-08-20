@@ -1,0 +1,4 @@
+{
+  "error": "error getting disbursement batch",
+  "error_code": "DPAY_INTERNAL_ERROR"
+}

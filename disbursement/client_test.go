@@ -383,9 +383,6 @@ func TestClient_FetchDisbursementItemsByID(t *testing.T) {
 	featureWrap := tests.FeatureWrap(t)
 	defer featureWrap.Ctrl.Finish()
 
-	type fields struct {
-		Api common.Api
-	}
 	type args struct {
 		ctx context.Context
 		ID  string
@@ -483,6 +480,88 @@ func TestClient_FetchDisbursementItemsByID(t *testing.T) {
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.FetchDisbursementItemsByID() gotErr = %v, want %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_FetchDisbursementByID(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(mock mocks, args args)
+		wantRes *durianpay.DisbursementData
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.TODO(),
+				ID:  "dis_xxx",
+			},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BY_ID
+				url = strings.ReplaceAll(url, ":id", args.ID)
+
+				mock.api.EXPECT().Req(args.ctx, "GET", url, nil, nil, nil).
+					Return(featureWrap.ResJSONByte(path_response_disbursement+"fetch_disbursement_200.json"), nil)
+			},
+			wantRes: &durianpay.DisbursementData{
+				ID:                 "dis_XXXXXXX",
+				Name:               "sample disbursement",
+				Type:               "batch",
+				Status:             "approved",
+				TotalAmount:        "10000.00",
+				TotalDisbursements: 1,
+				Description:        "this is a sample description",
+				Fees:               4000,
+				CreatedAt:          tests.StringToTime("2021-05-03T12:57:07.296575Z"),
+			},
+			wantErr: nil,
+		},
+		{
+			name: "Server Internal Error",
+			args: args{
+				ctx: context.TODO(),
+				ID:  "dis_xxx",
+			},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BY_ID
+				url = strings.ReplaceAll(url, ":id", args.ID)
+
+				mock.api.EXPECT().Req(args.ctx, "GET", url, nil, nil, nil).
+					Return(nil, durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response_disbursement+"fetch_disbursement_500.json")))
+			},
+			wantRes: nil,
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response_disbursement+"fetch_disbursement_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.FetchDisbursementByID(parseArgs.ctx, parseArgs.ID)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.FetchDisbursementByID() gotRes = %v, want %v", gotRes, tt.wantRes)
+			}
+
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.FetchDisbursementByID() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}

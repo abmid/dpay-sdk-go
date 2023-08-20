@@ -27,6 +27,7 @@ const (
 	PATH_DISBURSEMENT_SUBMIT            = PATH_DISBURSEMENT + "/submit"
 	PATH_DISBURSEMENT_APPROVE           = PATH_DISBURSEMENT + "/:id/approve"
 	PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID = PATH_DISBURSEMENT + "/:id/items"
+	PATH_DISBURSEMENT_FETCH_BY_ID       = PATH_DISBURSEMENT + "/:id"
 )
 
 // ValidateDisbursement returns a response from validate disbursement API.
@@ -107,6 +108,32 @@ func (c *Client) FetchDisbursementItemsByID(ctx context.Context, ID string, opt 
 
 	tempRes := struct {
 		Data durianpay.DisbursementItem `json:"data"`
+	}{}
+
+	jsonErr := json.Unmarshal(apiRes, &tempRes)
+	if jsonErr != nil {
+		return nil, durianpay.FromSDKError(jsonErr)
+	}
+
+	res = &tempRes.Data
+
+	return res, err
+}
+
+// FetchDisbursementByID returns a response from Fetch Disbursement API.
+//
+//	[Docs Fetch Disbursement]: https://durianpay.id/docs/api/disbursements/fetch-one/
+func (c *Client) FetchDisbursementByID(ctx context.Context, ID string) (res *durianpay.DisbursementData, err *durianpay.Error) {
+	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BY_ID
+	url = strings.ReplaceAll(url, ":id", ID)
+
+	apiRes, err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	tempRes := struct {
+		Data durianpay.DisbursementData `json:"data"`
 	}{}
 
 	jsonErr := json.Unmarshal(apiRes, &tempRes)
