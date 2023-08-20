@@ -486,7 +486,7 @@ func TestClient_FetchItemsByID(t *testing.T) {
 	}
 }
 
-func TestClient_FetchDisbursementByID(t *testing.T) {
+func TestClient_FetchByID(t *testing.T) {
 	featureWrap := tests.FeatureWrap(t)
 	defer featureWrap.Ctrl.Finish()
 
@@ -556,13 +556,13 @@ func TestClient_FetchDisbursementByID(t *testing.T) {
 
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
-			gotRes, gotErr := c.FetchDisbursementByID(parseArgs.ctx, parseArgs.ID)
+			gotRes, gotErr := c.FetchByID(parseArgs.ctx, parseArgs.ID)
 			if !reflect.DeepEqual(gotRes, tt.wantRes) {
-				t.Errorf("Client.FetchDisbursementByID() gotRes = %v, want %v", gotRes, tt.wantRes)
+				t.Errorf("Client.FetchByID() gotRes = %v, want %v", gotRes, tt.wantRes)
 			}
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
-				t.Errorf("Client.FetchDisbursementByID() gotErr = %v, want %v", gotErr, tt.wantErr)
+				t.Errorf("Client.FetchByID() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}

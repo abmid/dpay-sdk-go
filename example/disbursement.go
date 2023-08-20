@@ -129,12 +129,12 @@ func ExampleFetchItemsByID() {
 	fmt.Println(res)
 }
 
-func ExampleFetchDisbursementByID() {
+func ExampleFetchByID() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxx",
 	})
 
-	res, err := c.Disbursement.FetchDisbursementByID(context.TODO(), "dis_xxx")
+	res, err := c.Disbursement.FetchByID(context.TODO(), "dis_xxx")
 	if err != nil {
 		// Handle error
 	}

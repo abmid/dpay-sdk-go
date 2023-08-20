@@ -121,10 +121,10 @@ func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.D
 	return res, err
 }
 
-// FetchDisbursementByID returns a response from Fetch Disbursement API.
+// FetchByID returns a response from Fetch Disbursement by ID API.
 //
 //	[Docs Fetch Disbursement]: https://durianpay.id/docs/api/disbursements/fetch-one/
-func (c *Client) FetchDisbursementByID(ctx context.Context, ID string) (res *durianpay.DisbursementData, err *durianpay.Error) {
+func (c *Client) FetchByID(ctx context.Context, ID string) (res *durianpay.DisbursementData, err *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BY_ID
 	url = strings.ReplaceAll(url, ":id", ID)
 
