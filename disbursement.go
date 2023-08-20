@@ -135,7 +135,7 @@ type DisbursementApproveOption struct {
 	IgnoreInvalid *bool `url:"ignore_invalid"`
 }
 
-type FetchDisbursementItemsOption struct {
+type DisbursementFetchItemsOption struct {
 	Skip  uint16 `json:"skip"`
 	Limit uint16 `json:"limit"`
 }

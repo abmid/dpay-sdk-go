@@ -380,14 +380,14 @@ func TestClient_Approve(t *testing.T) {
 	}
 }
 
-func TestClient_FetchDisbursementItemsByID(t *testing.T) {
+func TestClient_FetchItemsByID(t *testing.T) {
 	featureWrap := tests.FeatureWrap(t)
 	defer featureWrap.Ctrl.Finish()
 
 	type args struct {
 		ctx context.Context
 		ID  string
-		opt *durianpay.FetchDisbursementItemsOption
+		opt *durianpay.DisbursementFetchItemsOption
 	}
 	tests := []struct {
 		name    string
@@ -401,7 +401,7 @@ func TestClient_FetchDisbursementItemsByID(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				ID:  "dis_xxx",
-				opt: &durianpay.FetchDisbursementItemsOption{
+				opt: &durianpay.DisbursementFetchItemsOption{
 					Skip:  10,
 					Limit: 10,
 				},
@@ -474,13 +474,13 @@ func TestClient_FetchDisbursementItemsByID(t *testing.T) {
 
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
-			gotRes, gotErr := c.FetchDisbursementItemsByID(tt.args.ctx, tt.args.ID, tt.args.opt)
+			gotRes, gotErr := c.FetchItemsByID(tt.args.ctx, tt.args.ID, tt.args.opt)
 			if !reflect.DeepEqual(gotRes, tt.wantRes) {
-				t.Errorf("Client.FetchDisbursementItemsByID() gotRes = %v, want %v", gotRes, tt.wantRes)
+				t.Errorf("Client.FetchItemsByID() gotRes = %v, want %v", gotRes, tt.wantRes)
 			}
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
-				t.Errorf("Client.FetchDisbursementItemsByID() gotErr = %v, want %v", gotErr, tt.wantErr)
+				t.Errorf("Client.FetchItemsByID() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}

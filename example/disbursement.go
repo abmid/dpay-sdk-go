@@ -107,17 +107,17 @@ func ExampleApprove() {
 	fmt.Println(res)
 }
 
-func ExampleFetchDisbursementItemsByID() {
+func ExampleFetchItemsByID() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxx",
 	})
 
 	// With params
-	opt := durianpay.FetchDisbursementItemsOption{
+	opt := durianpay.DisbursementFetchItemsOption{
 		Skip:  10,
 		Limit: 10,
 	}
-	res, err := c.Disbursement.FetchDisbursementItemsByID(context.TODO(), "dis_xxx", &opt)
+	res, err := c.Disbursement.FetchItemsByID(context.TODO(), "dis_xxx", &opt)
 	if err != nil {
 		// Handle error
 	}

@@ -94,11 +94,11 @@ func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementAppr
 	return res, err
 }
 
-// FetchDisbursementItemsByID returns a response from Fetch Disbursement Items By ID API.
-// Options about skip & limit pagination can be fill in durianpay.FetchDisbursementItemsOption
+// FetchItemsByID returns a response from Fetch Disbursement Items By ID API.
+// Options about skip & limit pagination can be fill in durianpay.DisbursementFetchItemsOption
 //
 //	[Doc Fetch Disbursement Items by ID]: https://durianpay.id/docs/api/disbursements/fetch-items/
-func (c *Client) FetchDisbursementItemsByID(ctx context.Context, ID string, opt *durianpay.FetchDisbursementItemsOption) (res *durianpay.DisbursementItem, err *durianpay.Error) {
+func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.DisbursementFetchItemsOption) (res *durianpay.DisbursementItem, err *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID
 	url = strings.ReplaceAll(url, ":id", ID)
 
