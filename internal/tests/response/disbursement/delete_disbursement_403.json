@@ -1,0 +1,5 @@
+{
+  "error": "can only delete disbursements in draft status",
+  "error_code": "INVALID_DISBURSEMENT_STATUS",
+  "request_id": "dp_GjvDgG9H1S0322"
+}

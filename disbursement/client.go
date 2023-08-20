@@ -28,6 +28,7 @@ const (
 	PATH_DISBURSEMENT_APPROVE           = PATH_DISBURSEMENT + "/:id/approve"
 	PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID = PATH_DISBURSEMENT + "/:id/items"
 	PATH_DISBURSEMENT_FETCH_BY_ID       = PATH_DISBURSEMENT + "/:id"
+	PATH_DISBURSEMENT_DELETE            = PATH_DISBURSEMENT + "/:id"
 )
 
 // ValidateDisbursement returns a response from validate disbursement API.
@@ -144,4 +145,28 @@ func (c *Client) FetchDisbursementByID(ctx context.Context, ID string) (res *dur
 	res = &tempRes.Data
 
 	return res, err
+}
+
+// DeleteDisbursement returns a response from Delete Disbursement API
+//
+//	[Docs Delete Disbursement]: https://durianpay.id/docs/api/disbursements/delete/
+func (c *Client) DeleteDisbursement(ctx context.Context, ID string) (res string, err *durianpay.Error) {
+	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_DELETE
+	url = strings.ReplaceAll(url, ":id", ID)
+
+	apiRes, err := c.Api.Req(ctx, http.MethodDelete, url, nil, nil, nil)
+	if err != nil {
+		return "", err
+	}
+
+	parseRes := struct {
+		Data string `json:"data"`
+	}{}
+
+	jsonErr := json.Unmarshal(apiRes, &parseRes)
+	if jsonErr != nil {
+		return "", durianpay.FromSDKError(jsonErr)
+	}
+
+	return parseRes.Data, err
 }

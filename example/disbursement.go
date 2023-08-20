@@ -142,3 +142,17 @@ func ExampleFetchDisbursementByID() {
 	// Will be return response from DurianPay
 	fmt.Println(res)
 }
+
+func ExampleDeleteDisbursement() {
+	c := client.NewClient(client.Options{
+		ServerKey: "xxx-xxx",
+	})
+
+	res, err := c.Disbursement.DeleteDisbursement(context.TODO(), "dis_xxx")
+	if err != nil {
+		// Handle error
+	}
+
+	// Will be return response from DurianPay
+	fmt.Println(res)
+}
