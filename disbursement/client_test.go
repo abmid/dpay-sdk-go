@@ -104,7 +104,6 @@ func TestClient_ValidateDisbursement(t *testing.T) {
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
 			gotRes, gotErr := c.ValidateDisbursement(tt.args.ctx, tt.args.payload)
-
 			if !reflect.DeepEqual(gotRes, tt.wantRes) {
 				t.Errorf("Client.ValidateDisbursement() gotRes = %v, want %v", gotRes, tt.wantRes)
 			}
@@ -369,13 +368,121 @@ func TestClient_ApproveDisbursement(t *testing.T) {
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
 			gotRes, gotErr := c.ApproveDisbursement(tt.args.ctx, tt.args.payload, tt.args.opt)
-
 			if !reflect.DeepEqual(gotRes, tt.wantRes) {
 				t.Errorf("Client.ApproveDisbursement() gotRes = %v, want %v", gotRes, tt.wantRes)
 			}
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.ApproveDisbursement() gotErr = %v, want %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_FetchDisbursementItemsByID(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type fields struct {
+		Api common.Api
+	}
+	type args struct {
+		ctx context.Context
+		ID  string
+		opt *durianpay.FetchDisbursementItemsOption
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(mock mocks, args args)
+		wantRes *durianpay.DisbursementItem
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				ID:  "dis_xxx",
+				opt: &durianpay.FetchDisbursementItemsOption{
+					Skip:  10,
+					Limit: 10,
+				},
+			},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID
+				url = strings.ReplaceAll(url, ":id", args.ID)
+
+				mock.api.EXPECT().Req(args.ctx, "GET", url, args.opt, nil, nil).
+					Return(featureWrap.ResJSONByte(path_response_disbursement+"fetch_disbursement_items_200.json"), nil)
+			},
+			wantRes: &durianpay.DisbursementItem{
+				SubmissionStatus: "completed",
+				Count:            1,
+				DisbursementBatchItems: []durianpay.DisbursementBatchItem{
+					{
+						ID:                  "dis_item_XXXXX",
+						DisbursementBatchID: "dis_XXXXX",
+						AccountOwnerName:    "John Doe",
+						RealName:            "Dummy Name",
+						BankCode:            "bca",
+						Amount:              "10000",
+						AccountNumber:       "8422647",
+						EmailRecipient:      "john@nomail.com",
+						PhoneNumber:         "85609873209",
+						InvalidFields: []durianpay.DisbursementBatchItemInvalidField{
+							{
+								Key:     "bank_code",
+								Message: "Invalid BankCode/AccountNumber",
+							},
+						},
+						Status:    "invalid",
+						Notes:     "salary",
+						IsDeleted: false,
+						CreatedAt: tests.StringToTime("2021-05-03T13:54:28.842634Z"),
+						UpdatedAt: tests.StringToTime("2021-05-03T13:54:28.842635Z"),
+						SplitID:   "",
+						Receipt:   "",
+					},
+				},
+			},
+			wantErr: nil,
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+				ID:  "dis_xxx",
+			},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID
+				url = strings.ReplaceAll(url, ":id", args.ID)
+
+				mock.api.EXPECT().Req(args.ctx, "GET", url, args.opt, nil, nil).
+					Return(nil, durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response_disbursement+"fetch_disbursement_items_500.json")))
+			},
+			wantRes: nil,
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response_disbursement+"fetch_disbursement_items_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.FetchDisbursementItemsByID(tt.args.ctx, tt.args.ID, tt.args.opt)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.FetchDisbursementItemsByID() gotRes = %v, want %v", gotRes, tt.wantRes)
+			}
+
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.FetchDisbursementItemsByID() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}

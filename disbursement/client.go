@@ -22,10 +22,11 @@ type Client struct {
 }
 
 const (
-	PATH_DISBURSEMENT          = "/v1/disbursements"
-	PATH_DISBURSEMENT_VALIDATE = PATH_DISBURSEMENT + "/validate"
-	PATH_DISBURSEMENT_SUBMIT   = PATH_DISBURSEMENT + "/submit"
-	PATH_DISBURSEMENT_APPROVE  = PATH_DISBURSEMENT + "/:id/approve"
+	PATH_DISBURSEMENT                   = "/v1/disbursements"
+	PATH_DISBURSEMENT_VALIDATE          = PATH_DISBURSEMENT + "/validate"
+	PATH_DISBURSEMENT_SUBMIT            = PATH_DISBURSEMENT + "/submit"
+	PATH_DISBURSEMENT_APPROVE           = PATH_DISBURSEMENT + "/:id/approve"
+	PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID = PATH_DISBURSEMENT + "/:id/items"
 )
 
 // ValidateDisbursement returns a response from validate disbursement API.
@@ -87,6 +88,33 @@ func (c *Client) ApproveDisbursement(ctx context.Context, payload durianpay.Appr
 	if jsonErr != nil {
 		return nil, durianpay.FromSDKError(jsonErr)
 	}
+
+	return res, err
+}
+
+// FetchDisbursementItemsByID returns a response from Fetch Disbursement Items By ID API.
+// Options about skip & limit pagination can be fill in durianpay.FetchDisbursementItemsOption
+//
+//	[Doc Fetch Disbursement Items by ID]: https://durianpay.id/docs/api/disbursements/fetch-items/
+func (c *Client) FetchDisbursementItemsByID(ctx context.Context, ID string, opt *durianpay.FetchDisbursementItemsOption) (res *durianpay.DisbursementItem, err *durianpay.Error) {
+	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID
+	url = strings.ReplaceAll(url, ":id", ID)
+
+	apiRes, err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	tempRes := struct {
+		Data durianpay.DisbursementItem `json:"data"`
+	}{}
+
+	jsonErr := json.Unmarshal(apiRes, &tempRes)
+	if jsonErr != nil {
+		return nil, durianpay.FromSDKError(jsonErr)
+	}
+
+	res = &tempRes.Data
 
 	return res, err
 }

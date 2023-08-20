@@ -46,7 +46,7 @@ type DisbursementData struct {
 	CreatedAt          time.Time `json:"created_at"`
 }
 
-// DisbursementItem is response from disbursement items API
+// DisbursementItem is response from fetch disbursement items API
 type DisbursementItem struct {
 	SubmissionStatus       string                  `json:"submission_status"`
 	Count                  uint16                  `json:"count"`
@@ -61,7 +61,7 @@ type DisbursementBatchItem struct {
 	RealName                string                              `json:"real_name"`
 	BankCode                string                              `json:"bank_code"`
 	Amount                  string                              `json:"amount"`
-	AccountNumber           string                              `json:"account_numer"`
+	AccountNumber           string                              `json:"account_number"`
 	EmailRecipient          string                              `json:"email_recipient"`
 	PhoneNumber             string                              `json:"phone_number"`
 	InvalidFields           []DisbursementBatchItemInvalidField `json:"invalid_fields"`
@@ -133,4 +133,9 @@ type ApproveDisbursementPayload struct {
 // ApproveDisbursementOption is paramaeter for approve disbursement API
 type ApproveDisbursementOption struct {
 	IgnoreInvalid *bool `url:"ignore_invalid"`
+}
+
+type FetchDisbursementItemsOption struct {
+	Skip  uint16 `json:"skip"`
+	Limit uint16 `json:"limit"`
 }

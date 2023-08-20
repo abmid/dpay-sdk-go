@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/jarcoal/httpmock"
@@ -67,4 +68,15 @@ func (f *Feature) ResJSONByte(jsonFile string) []byte {
 // BoolPtr return value pointer for boolean
 func BoolPtr[V bool](value V) *V {
 	return &value
+}
+
+// StringToTime return string to time without return error.
+// If when parsing encounters an error, it will return the default value
+func StringToTime(timeString string) time.Time {
+	parse, err := time.Parse(time.RFC3339, timeString)
+	if err != nil {
+		return time.Time{}
+	}
+
+	return parse
 }

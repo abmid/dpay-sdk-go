@@ -1,0 +1,32 @@
+{
+  "data": {
+      "submission_status": "completed",
+      "disbursement_batch_items": [
+          {
+              "id": "dis_item_XXXXX",
+              "disbursement_batch_id": "dis_XXXXX",
+              "account_owner_name": "John Doe",
+              "real_name": "Dummy Name",
+              "bank_code": "bca",
+              "amount": "10000",
+              "account_number": "8422647",
+              "email_recipient": "john@nomail.com",
+              "phone_number": "85609873209",
+              "invalid_fields": [
+                  {
+                      "key": "bank_code",
+                      "message": "Invalid BankCode/AccountNumber"
+                  }
+              ],
+              "status": "invalid",
+              "notes": "salary",
+              "is_deleted": false,
+              "created_at": "2021-05-03T13:54:28.842634Z",
+              "updated_at": "2021-05-03T13:54:28.842635Z",
+              "split_id": "",
+              "receipt": ""
+          }
+      ],
+      "count": 1
+  }
+}
