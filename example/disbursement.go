@@ -78,27 +78,27 @@ func ExampleSubmit() {
 	fmt.Println(res)
 }
 
-func ExampleApproveDisbursement() {
+func ExampleApprove() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxx",
 	})
 
-	payload := durianpay.ApproveDisbursementPayload{
+	payload := durianpay.DisbursementApprovePayload{
 		XIdempotencyKey: "1",
 		ID:              "dis_xxx",
 	}
 
 	// Without params
-	res, err := c.Disbursement.ApproveDisbursement(context.TODO(), payload, nil)
+	res, err := c.Disbursement.Approve(context.TODO(), payload, nil)
 	if err != nil {
 		// Handle error
 	}
 
 	// With params
-	opt := durianpay.ApproveDisbursementOption{
+	opt := durianpay.DisbursementApproveOption{
 		IgnoreInvalid: tests.BoolPtr(false),
 	}
-	res, err = c.Disbursement.ApproveDisbursement(context.TODO(), payload, &opt)
+	res, err = c.Disbursement.Approve(context.TODO(), payload, &opt)
 	if err != nil {
 		// Handle error
 	}

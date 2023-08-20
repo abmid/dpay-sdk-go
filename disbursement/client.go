@@ -71,11 +71,11 @@ func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPaylo
 	return res, err
 }
 
-// ApproveDisbursement returns a response from approve disbursement API.
-// Options about ignore_invalid you can input in durianpay.ApproveDisbursementOption
+// Approve returns a response from Approve Disbursement API.
+// Options about ignore_invalid you can input in durianpay.DisbursementApproveOption
 //
 //	[Doc Approve Disbursement API]: https://durianpay.id/docs/api/disbursements/approve/
-func (c *Client) ApproveDisbursement(ctx context.Context, payload durianpay.ApproveDisbursementPayload, opt *durianpay.ApproveDisbursementOption) (res *durianpay.Disbursement, err *durianpay.Error) {
+func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementApprovePayload, opt *durianpay.DisbursementApproveOption) (res *durianpay.Disbursement, err *durianpay.Error) {
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_APPROVE

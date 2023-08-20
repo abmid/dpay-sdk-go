@@ -263,7 +263,7 @@ func TestClient_Submit(t *testing.T) {
 	}
 }
 
-func TestClient_ApproveDisbursement(t *testing.T) {
+func TestClient_Approve(t *testing.T) {
 	featureWrap := tests.FeatureWrap(t)
 	defer featureWrap.Ctrl.Finish()
 
@@ -272,8 +272,8 @@ func TestClient_ApproveDisbursement(t *testing.T) {
 	}
 	type args struct {
 		ctx     context.Context
-		payload durianpay.ApproveDisbursementPayload
-		opt     *durianpay.ApproveDisbursementOption
+		payload durianpay.DisbursementApprovePayload
+		opt     *durianpay.DisbursementApproveOption
 	}
 	tests := []struct {
 		name    string
@@ -286,11 +286,11 @@ func TestClient_ApproveDisbursement(t *testing.T) {
 			name: "Success",
 			args: args{
 				ctx: context.Background(),
-				payload: durianpay.ApproveDisbursementPayload{
+				payload: durianpay.DisbursementApprovePayload{
 					XIdempotencyKey: "x-123",
 					ID:              "dis_XXXX",
 				},
-				opt: &durianpay.ApproveDisbursementOption{
+				opt: &durianpay.DisbursementApproveOption{
 					IgnoreInvalid: tests.BoolPtr(true),
 				},
 			},
@@ -320,7 +320,7 @@ func TestClient_ApproveDisbursement(t *testing.T) {
 			name: "Invalid Request (Payload)",
 			args: args{
 				ctx: context.Background(),
-				payload: durianpay.ApproveDisbursementPayload{
+				payload: durianpay.DisbursementApprovePayload{
 					ID: "dis_xxx",
 				},
 			},
@@ -339,7 +339,7 @@ func TestClient_ApproveDisbursement(t *testing.T) {
 			name: "Invalid Request (Already Submit)",
 			args: args{
 				ctx: context.Background(),
-				payload: durianpay.ApproveDisbursementPayload{
+				payload: durianpay.DisbursementApprovePayload{
 					XIdempotencyKey: "x-123",
 					ID:              "dis_xxx",
 				},
@@ -368,13 +368,13 @@ func TestClient_ApproveDisbursement(t *testing.T) {
 
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
-			gotRes, gotErr := c.ApproveDisbursement(tt.args.ctx, tt.args.payload, tt.args.opt)
+			gotRes, gotErr := c.Approve(tt.args.ctx, tt.args.payload, tt.args.opt)
 			if !reflect.DeepEqual(gotRes, tt.wantRes) {
-				t.Errorf("Client.ApproveDisbursement() gotRes = %v, want %v", gotRes, tt.wantRes)
+				t.Errorf("Client.Approve() gotRes = %v, want %v", gotRes, tt.wantRes)
 			}
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
-				t.Errorf("Client.ApproveDisbursement() gotErr = %v, want %v", gotErr, tt.wantErr)
+				t.Errorf("Client.Approve() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}

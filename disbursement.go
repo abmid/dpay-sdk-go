@@ -124,14 +124,14 @@ type DisbursementOption struct {
 	SkipValidation *bool `url:"skip_validation"`
 }
 
-// ApproveDisbursementPayload is payload for request approve disbursement API
-type ApproveDisbursementPayload struct {
+// DisbursementApprovePayload is payload for request approve disbursement API
+type DisbursementApprovePayload struct {
 	XIdempotencyKey string `json:"-"`
 	ID              string `json:"id"` //Disbursement ID
 }
 
-// ApproveDisbursementOption is paramaeter for approve disbursement API
-type ApproveDisbursementOption struct {
+// DisbursementApproveOption is paramaeter for approve disbursement API
+type DisbursementApproveOption struct {
 	IgnoreInvalid *bool `url:"ignore_invalid"`
 }
 
