@@ -568,7 +568,7 @@ func TestClient_FetchByID(t *testing.T) {
 	}
 }
 
-func TestClient_DeleteDisbursement(t *testing.T) {
+func TestClient_Delete(t *testing.T) {
 	featureWrap := tests.FeatureWrap(t)
 	defer featureWrap.Ctrl.Finish()
 
@@ -628,13 +628,13 @@ func TestClient_DeleteDisbursement(t *testing.T) {
 
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
-			gotRes, gotErr := c.DeleteDisbursement(parseArgs.ctx, parseArgs.ID)
+			gotRes, gotErr := c.Delete(parseArgs.ctx, parseArgs.ID)
 			if gotRes != tt.wantRes {
-				t.Errorf("Client.DeleteDisbursement() gotRes = %v, want %v", gotRes, tt.wantRes)
+				t.Errorf("Client.Delete() gotRes = %v, want %v", gotRes, tt.wantRes)
 			}
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
-				t.Errorf("Client.DeleteDisbursement() gotErr = %v, want %v", gotErr, tt.wantErr)
+				t.Errorf("Client.Delete() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}

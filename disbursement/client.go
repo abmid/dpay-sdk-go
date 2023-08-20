@@ -147,10 +147,10 @@ func (c *Client) FetchByID(ctx context.Context, ID string) (res *durianpay.Disbu
 	return res, err
 }
 
-// DeleteDisbursement returns a response from Delete Disbursement API
+// Delete returns a response from Delete Disbursement by ID API
 //
 //	[Docs Delete Disbursement]: https://durianpay.id/docs/api/disbursements/delete/
-func (c *Client) DeleteDisbursement(ctx context.Context, ID string) (res string, err *durianpay.Error) {
+func (c *Client) Delete(ctx context.Context, ID string) (res string, err *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_DELETE
 	url = strings.ReplaceAll(url, ":id", ID)
 

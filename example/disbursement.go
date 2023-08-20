@@ -143,12 +143,12 @@ func ExampleFetchByID() {
 	fmt.Println(res)
 }
 
-func ExampleDeleteDisbursement() {
+func ExampleDelete() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxx",
 	})
 
-	res, err := c.Disbursement.DeleteDisbursement(context.TODO(), "dis_xxx")
+	res, err := c.Disbursement.Delete(context.TODO(), "dis_xxx")
 	if err != nil {
 		// Handle error
 	}
