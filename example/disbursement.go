@@ -35,7 +35,7 @@ func ExampleValidate() {
 	fmt.Println(res)
 }
 
-func ExampleSubmitDisbursement() {
+func ExampleSubmit() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxxx",
 	})
@@ -59,7 +59,7 @@ func ExampleSubmitDisbursement() {
 	}
 
 	// Without params
-	res, err := c.Disbursement.SubmitDisbursement(context.TODO(), payload, nil)
+	res, err := c.Disbursement.Submit(context.TODO(), payload, nil)
 	if err != nil {
 		// Handle error
 	}
@@ -69,7 +69,7 @@ func ExampleSubmitDisbursement() {
 		ForceDisburse:  tests.BoolPtr(true),
 		SkipValidation: tests.BoolPtr(false),
 	}
-	res, err = c.Disbursement.SubmitDisbursement(context.TODO(), payload, &opt)
+	res, err = c.Disbursement.Submit(context.TODO(), payload, &opt)
 	if err != nil {
 		// Handle error
 	}

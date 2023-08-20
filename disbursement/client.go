@@ -51,11 +51,11 @@ func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementVal
 	return res, err
 }
 
-// SubmitDisbursement returns a response from submit disbursement API.
+// Submit returns a response from Submit Disbursement API.
 // Options about skip_validation & force_disburse you can input in durianpay.DisbursementOption
 //
 //	[Doc Submit Disbursement API]: https://durianpay.id/docs/api/disbursements/submit/
-func (c *Client) SubmitDisbursement(ctx context.Context, payload durianpay.DisbursementPayload, opt *durianpay.DisbursementOption) (res *durianpay.Disbursement, err *durianpay.Error) {
+func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPayload, opt *durianpay.DisbursementOption) (res *durianpay.Disbursement, err *durianpay.Error) {
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, payload.IdempotencyKey)
 
 	apiRes, err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_SUBMIT, opt, payload, headers)

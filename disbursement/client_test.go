@@ -116,7 +116,7 @@ func TestClient_DisbursementValidate(t *testing.T) {
 	}
 }
 
-func TestClient_SubmitDisbursement(t *testing.T) {
+func TestClient_Submit(t *testing.T) {
 	featureWrap := tests.FeatureWrap(t)
 	defer featureWrap.Ctrl.Finish()
 
@@ -251,13 +251,13 @@ func TestClient_SubmitDisbursement(t *testing.T) {
 				Api:       apiMock,
 			}
 
-			gotRes, gotErr := c.SubmitDisbursement(tt.args.ctx, tt.args.payload, tt.args.opt)
+			gotRes, gotErr := c.Submit(tt.args.ctx, tt.args.payload, tt.args.opt)
 			if !reflect.DeepEqual(gotRes, tt.wantRes) {
-				t.Errorf("Client.SubmitDisbursement() gotRes = %v, want %v", gotRes, tt.wantRes)
+				t.Errorf("Client.Submit() gotRes = %v, want %v", gotRes, tt.wantRes)
 			}
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
-				t.Errorf("Client.SubmitDisbursement() gotErr = %v, want %v", gotErr, tt.wantErr)
+				t.Errorf("Client.Submit() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}
