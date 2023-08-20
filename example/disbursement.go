@@ -15,18 +15,18 @@ import (
 	"github.com/abmid/dpay-sdk-go/internal/tests"
 )
 
-func ExampleValidateDisbursement() {
+func ExampleValidate() {
 	c := client.NewClient(client.Options{
 		ServerKey: "XXX-XXX",
 	})
 
-	payload := durianpay.ValidateDisbursementPayload{
+	payload := durianpay.DisbursementValidatePayload{
 		XIdempotencyKey: "1",
 		AccountNumber:   "12345678",
 		BankCode:        "bca",
 	}
 
-	res, err := c.Disbursement.ValidateDisbursement(context.TODO(), payload)
+	res, err := c.Disbursement.Validate(context.TODO(), payload)
 	if err != nil {
 		// Handle error
 	}

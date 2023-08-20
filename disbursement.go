@@ -12,14 +12,14 @@ import "time"
 Structs for Response API
 */
 
-// ValidateDisbursement is struct for response validate disbursement API
-type ValidateDisbursement struct {
+// DisbursementValidate is struct for response validate disbursement API
+type DisbursementValidate struct {
 	Message string                   `json:"message"`
-	Data    ValidateDisbursementData `json:"data"`
+	Data    DisbursementValidateData `json:"data"`
 }
 
-// ValidateDisbursementData is data object part of ValidateDisbursement
-type ValidateDisbursementData struct {
+// DisbursementValidateData is data object part of DisbursementValidate
+type DisbursementValidateData struct {
 	AccountNumber string `json:"account_number"`
 	BankCode      string `json:"bank_code"`
 	AccountHolder string `json:"account_holder"`
@@ -91,8 +91,8 @@ type DisbursementBatchItemInvalidField struct {
 Structs for Payload
 */
 
-// ValidateDisbursementPayload is payload for request validate disbursement API
-type ValidateDisbursementPayload struct {
+// DisbursementValidatePayload is payload for request validate disbursement API
+type DisbursementValidatePayload struct {
 	XIdempotencyKey string `json:"-"`
 	AccountNumber   string `json:"account_number"`
 	BankCode        string `json:"bank_code"`

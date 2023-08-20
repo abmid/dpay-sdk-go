@@ -58,12 +58,12 @@ func TestApiImplement_Req(t *testing.T) {
 					SkipValidation: tests.BoolPtr(true),
 					AnotherParam:   "test-param",
 				},
-				body: durianpay.ValidateDisbursementPayload{
+				body: durianpay.DisbursementValidatePayload{
 					XIdempotencyKey: "1",
 					AccountNumber:   "123737383830",
 					BankCode:        "bca",
 				},
-				durianRes: durianpay.ValidateDisbursement{},
+				durianRes: durianpay.DisbursementValidate{},
 				headers:   HeaderIdempotencyKey("x-123", ""),
 			},
 			prepare: func(args args) {
@@ -74,8 +74,8 @@ func TestApiImplement_Req(t *testing.T) {
 				httpmock.RegisterMatcherResponderWithQuery(args.method, args.url, query, httpmock.Matcher{},
 					tests.HttpMockResJSON(200, "../internal/tests/response/disbursement/validate_disbursement_200.json", args.headers))
 			},
-			wantRes: durianpay.ValidateDisbursement{
-				Data: durianpay.ValidateDisbursementData{
+			wantRes: durianpay.DisbursementValidate{
+				Data: durianpay.DisbursementValidateData{
 					AccountNumber: "123737383830",
 					BankCode:      "bca",
 					Status:        "processing",
@@ -116,7 +116,7 @@ func TestApiImplement_Req(t *testing.T) {
 
 			tt.prepare(tt.args)
 
-			res := durianpay.ValidateDisbursement{}
+			res := durianpay.DisbursementValidate{}
 			gotRes, gotDurianErr := c.Req(tt.args.ctx, tt.args.method, tt.args.url, tt.args.param, tt.args.body, tt.args.headers)
 
 			if tt.wantRes != nil {

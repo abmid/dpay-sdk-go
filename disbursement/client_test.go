@@ -28,27 +28,27 @@ type mocks struct {
 	api *mock_common.MockApi
 }
 
-func TestClient_ValidateDisbursement(t *testing.T) {
+func TestClient_DisbursementValidate(t *testing.T) {
 	featureWrap := tests.FeatureWrap(t)
 	defer featureWrap.Ctrl.Finish()
 
 	type args struct {
 		ctx     context.Context
-		payload durianpay.ValidateDisbursementPayload
+		payload durianpay.DisbursementValidatePayload
 	}
 
 	tests := []struct {
 		name    string
 		args    args
 		prepare func(m mocks, args args)
-		wantRes *durianpay.ValidateDisbursement
+		wantRes *durianpay.DisbursementValidate
 		wantErr *durianpay.Error
 	}{
 		{
 			name: "Success",
 			args: args{
 				ctx: context.Background(),
-				payload: durianpay.ValidateDisbursementPayload{
+				payload: durianpay.DisbursementValidatePayload{
 					XIdempotencyKey: "1",
 					AccountNumber:   "123",
 					BankCode:        "bca",
@@ -59,8 +59,8 @@ func TestClient_ValidateDisbursement(t *testing.T) {
 				m.api.EXPECT().Req(gomock.Any(), "POST", durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_VALIDATE, nil, args.payload, headers).
 					Return(featureWrap.ResJSONByte(path_response_disbursement+"validate_disbursement_200.json"), nil)
 			},
-			wantRes: &durianpay.ValidateDisbursement{
-				Data: durianpay.ValidateDisbursementData{
+			wantRes: &durianpay.DisbursementValidate{
+				Data: durianpay.DisbursementValidateData{
 					AccountNumber: "123737383830",
 					BankCode:      "bca",
 					Status:        "processing",
@@ -71,7 +71,7 @@ func TestClient_ValidateDisbursement(t *testing.T) {
 			name: "Invalid requests",
 			args: args{
 				ctx: context.Background(),
-				payload: durianpay.ValidateDisbursementPayload{
+				payload: durianpay.DisbursementValidatePayload{
 					XIdempotencyKey: "1",
 					AccountNumber:   "123",
 					BankCode:        "bca",
@@ -104,13 +104,13 @@ func TestClient_ValidateDisbursement(t *testing.T) {
 
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
-			gotRes, gotErr := c.ValidateDisbursement(tt.args.ctx, tt.args.payload)
+			gotRes, gotErr := c.Validate(tt.args.ctx, tt.args.payload)
 			if !reflect.DeepEqual(gotRes, tt.wantRes) {
-				t.Errorf("Client.ValidateDisbursement() gotRes = %v, want %v", gotRes, tt.wantRes)
+				t.Errorf("Client.Validate() gotRes = %v, want %v", gotRes, tt.wantRes)
 			}
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
-				t.Errorf("Client.ValidateDisbursement() gotErr = %v, want %v", gotErr, tt.wantErr)
+				t.Errorf("Client.Validate() gotErr = %v, want %v", gotErr, tt.wantErr)
 			}
 		})
 	}

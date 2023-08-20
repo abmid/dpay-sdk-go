@@ -31,11 +31,11 @@ const (
 	PATH_DISBURSEMENT_DELETE            = PATH_DISBURSEMENT + "/:id"
 )
 
-// ValidateDisbursement returns a response from validate disbursement API.
+// Validate returns a response from Validate Disbursement API.
 // Validate disbursement can be used to fetch the bank account and account number validation
 //
 //	[Doc Validate Disbursement API]: https://durianpay.id/docs/api/disbursements/validate/
-func (c *Client) ValidateDisbursement(ctx context.Context, payload durianpay.ValidateDisbursementPayload) (res *durianpay.ValidateDisbursement, err *durianpay.Error) {
+func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementValidatePayload) (res *durianpay.DisbursementValidate, err *durianpay.Error) {
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
 	apiRes, err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_VALIDATE, nil, payload, headers)
