@@ -87,6 +87,15 @@ type DisbursementBatchItemInvalidField struct {
 	Message string `json:"message"`
 }
 
+type DisbursementBank struct {
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	Code      string    `json:"code"`
+	Type      string    `json:"type"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
 /*
 Structs for Payload
 */

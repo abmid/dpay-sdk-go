@@ -28,6 +28,7 @@ const (
 	PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID = PATH_DISBURSEMENT + "/:id/items"
 	PATH_DISBURSEMENT_FETCH_BY_ID       = PATH_DISBURSEMENT + "/:id"
 	PATH_DISBURSEMENT_DELETE            = PATH_DISBURSEMENT + "/:id"
+	PATH_DISBURSEMENT_FETCH_BANKS       = PATH_DISBURSEMENT + "/banks"
 )
 
 // Validate returns a response from Validate Disbursement API.
@@ -43,7 +44,7 @@ func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementVal
 		return nil, err
 	}
 
-	return res, err
+	return res, nil
 }
 
 // Submit returns a response from Submit Disbursement API.
@@ -59,7 +60,7 @@ func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPaylo
 		return nil, err
 	}
 
-	return res, err
+	return res, nil
 }
 
 // Approve returns a response from Approve Disbursement API.
@@ -78,7 +79,7 @@ func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementAppr
 		return nil, err
 	}
 
-	return res, err
+	return res, nil
 }
 
 // FetchItemsByID returns a response from Fetch Disbursement Items By ID API.
@@ -98,7 +99,7 @@ func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.D
 		return nil, err
 	}
 
-	return &tempRes.Data, err
+	return &tempRes.Data, nil
 }
 
 // FetchByID returns a response from Fetch Disbursement by ID API.
@@ -117,7 +118,7 @@ func (c *Client) FetchByID(ctx context.Context, ID string) (*durianpay.Disbursem
 		return nil, err
 	}
 
-	return &tempRes.Data, err
+	return &tempRes.Data, nil
 }
 
 // Delete returns a response from Delete Disbursement by ID API
@@ -136,5 +137,21 @@ func (c *Client) Delete(ctx context.Context, ID string) (string, *durianpay.Erro
 		return "", err
 	}
 
-	return tempRes.Data, err
+	return tempRes.Data, nil
+}
+
+// Delete returns a response from Fetch Bank List API
+//
+//	[Docs Delete Disbursement]: https://durianpay.id/docs/api/disbursements/fetch-banks/
+func (c *Client) FetchBanks(ctx context.Context) ([]durianpay.DisbursementBank, *durianpay.Error) {
+	tempRes := struct {
+		Data []durianpay.DisbursementBank `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_FETCH_BANKS, nil, nil, nil, &tempRes)
+	if err != nil {
+		return tempRes.Data, err
+	}
+
+	return tempRes.Data, nil
 }

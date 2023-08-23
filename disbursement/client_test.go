@@ -23,6 +23,7 @@ import (
 
 const (
 	path_response_disbursement = "../internal/tests/response/disbursement/"
+	path_response              = "../internal/tests/response/"
 )
 
 type mocks struct {
@@ -686,6 +687,91 @@ func TestClient_Delete(t *testing.T) {
 
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.Delete() gotErr = %v, want %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_FetchBanks(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(mock mocks, args args)
+		wantRes []durianpay.DisbursementBank
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{ctx: context.Background()},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BANKS
+
+				mock.api.EXPECT().
+					Req(args.ctx, http.MethodGet, url, nil, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_disbursement+"fetch_bank_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: []durianpay.DisbursementBank{
+				{
+					ID:        1,
+					Name:      "BCA",
+					Code:      "BCA",
+					Type:      "disbursement",
+					CreatedAt: tests.StringToTime("2021-03-18T09:51:13.13246Z"),
+					UpdatedAt: tests.StringToTime("2021-03-18T09:51:13.13246Z"),
+				},
+				{
+					ID:        2,
+					Name:      "MANDIRI",
+					Code:      "MANDIRI",
+					Type:      "disbursement",
+					CreatedAt: tests.StringToTime("2021-03-18T09:51:13.13246Z"),
+					UpdatedAt: tests.StringToTime("2021-03-18T09:51:13.13246Z"),
+				},
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{ctx: context.Background()},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BANKS
+
+				mock.api.EXPECT().Req(args.ctx, http.MethodGet, url, nil, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotError := c.FetchBanks(tt.args.ctx)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.FetchBanks() gotRes = %v, want %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotError, tt.wantErr) {
+				t.Errorf("Client.FetchBanks() gotError = %v, want %v", gotError, tt.wantErr)
 			}
 		})
 	}

@@ -1,0 +1,22 @@
+{
+  "data": [
+      {
+          "id": 1,
+          "name": "BCA",
+          "code": "BCA",
+          "instruction": {},
+          "type": "disbursement",
+          "created_at": "2021-03-18T09:51:13.13246Z",
+          "updated_at": "2021-03-18T09:51:13.13246Z"
+      },
+      {
+          "id": 2,
+          "name": "MANDIRI",
+          "code": "MANDIRI",
+          "instruction": {},
+          "type": "disbursement",
+          "created_at": "2021-03-18T09:51:13.13246Z",
+          "updated_at": "2021-03-18T09:51:13.13246Z"
+      }
+  ]
+}
