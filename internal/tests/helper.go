@@ -66,7 +66,7 @@ func (f *Feature) ResJSONByte(jsonFile string) []byte {
 }
 
 // BoolPtr return value pointer for boolean
-func BoolPtr[V bool](value V) *V {
+func BoolPtr[V any](value V) *V {
 	return &value
 }
 

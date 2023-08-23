@@ -860,3 +860,60 @@ func TestClient_TopupAmount(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_FetchBalance(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(mock mocks, args args)
+		wantRes *int
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{ctx: context.Background()},
+			prepare: func(mock mocks, args args) {
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BALANCE
+
+				mock.api.EXPECT().
+					Req(args.ctx, http.MethodGet, url, nil, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_disbursement+"fetch_balance_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: tests.BoolPtr(949859471313),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.FetchBalance(tt.args.ctx)
+			if *gotRes != *tt.wantRes {
+				t.Errorf("Client.FetchBalance() gotRes = %v, want %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.FetchBalance() gotErr = %v, want %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}

@@ -30,6 +30,7 @@ const (
 	PATH_DISBURSEMENT_DELETE            = PATH_DISBURSEMENT + "/:id"
 	PATH_DISBURSEMENT_FETCH_BANKS       = PATH_DISBURSEMENT + "/banks"
 	PATH_DISBURSEMENT_TOPUP_AMOUNT      = PATH_DISBURSEMENT + "/topup"
+	PATH_DISBURSEMENT_FETCH_BALANCE     = PATH_DISBURSEMENT + "/topup/balance"
 )
 
 // Validate returns a response from Validate Disbursement API.
@@ -173,4 +174,22 @@ func (c *Client) TopupAmount(ctx context.Context, payload durianpay.Disbursement
 	}
 
 	return &tempRes.Data, nil
+}
+
+// FetchBalance returns a response from Fetch Durianpay Balance API
+//
+//	[Docs Fetch Durianpay Balance]: https://durianpay.id/docs/api/disbursements/balance/
+func (c *Client) FetchBalance(ctx context.Context) (*int, *durianpay.Error) {
+	tempRes := struct {
+		Data struct {
+			Balance int `json:"balance"`
+		} `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_FETCH_BALANCE, nil, nil, nil, &tempRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &tempRes.Data.Balance, nil
 }
