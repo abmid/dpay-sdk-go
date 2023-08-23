@@ -19,9 +19,9 @@ import (
 	goquery "github.com/google/go-querystring/query"
 )
 
-// Api interface build for dependecy injection and for testing purposes.
+// Api interface build for dependecy injection and testing.
 type Api interface {
-	Req(ctx context.Context, method string, url string, param any, body any, headers map[string]string) (res []byte, durianErr *durianpay.Error)
+	Req(ctx context.Context, method string, url string, param any, body any, headers map[string]string, response any) *durianpay.Error
 }
 
 type ApiImplement struct {
@@ -34,12 +34,12 @@ func NewAPI(serverKey string) *ApiImplement {
 	}
 }
 
-// Req is an http request made specifically to hit the durian pay endpoint.
+// Req is an http request made specifically to hit the DurianPay endpoint.
 // If the HTTP status code returned is not 2xx then an error will be returned
-func (c *ApiImplement) Req(ctx context.Context, method string, url string, param any, body any, headers map[string]string) (res []byte, durianErr *durianpay.Error) {
+func (c *ApiImplement) Req(ctx context.Context, method string, url string, param any, body any, headers map[string]string, response any) *durianpay.Error {
 	parseBody, err := json.Marshal(body)
 	if err != nil {
-		return nil, durianpay.FromSDKError(err)
+		return durianpay.FromSDKError(err)
 	}
 
 	base64SecretKey := base64.StdEncoding.EncodeToString([]byte(c.ServerKey + ":"))
@@ -56,7 +56,7 @@ func (c *ApiImplement) Req(ctx context.Context, method string, url string, param
 	if param != nil {
 		parseParam, err := goquery.Values(param)
 		if err != nil {
-			return nil, durianpay.FromSDKError(err)
+			return durianpay.FromSDKError(err)
 		}
 
 		httpReq.URL.RawQuery = parseParam.Encode()
@@ -64,22 +64,27 @@ func (c *ApiImplement) Req(ctx context.Context, method string, url string, param
 
 	httpRes, err := http.DefaultClient.Do(httpReq)
 	if err != nil {
-		return nil, durianpay.FromSDKError(err)
+		return durianpay.FromSDKError(err)
 	}
 	defer httpRes.Body.Close()
 
 	resBody, err := io.ReadAll(httpRes.Body)
 	if err != nil {
-		return nil, durianpay.FromSDKError(err)
+		return durianpay.FromSDKError(err)
 	}
 
 	isStatusCodeSuccess := (httpRes.StatusCode >= 200) && (httpRes.StatusCode < 300)
 
 	if !isStatusCodeSuccess {
-		return nil, durianpay.FromAPI(httpRes.StatusCode, resBody)
+		return durianpay.FromAPI(httpRes.StatusCode, resBody)
 	}
 
-	return resBody, nil
+	jsonErr := json.Unmarshal(resBody, response)
+	if jsonErr != nil {
+		return durianpay.FromSDKError(jsonErr)
+	}
+
+	return nil
 }
 
 // HeaderIdempotencyKey returns X-Idempotency-Key & idempotency-key values for DurianPay idempotency purposes.

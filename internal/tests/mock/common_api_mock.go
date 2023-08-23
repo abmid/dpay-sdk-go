@@ -35,16 +35,15 @@ func (m *MockApi) EXPECT() *MockApiMockRecorder {
 }
 
 // Req mocks base method
-func (m *MockApi) Req(ctx context.Context, method, url string, param, body any, headers map[string]string) ([]byte, *durianpay.Error) {
+func (m *MockApi) Req(ctx context.Context, method, url string, param, body any, headers map[string]string, response any) *durianpay.Error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Req", ctx, method, url, param, body, headers)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(*durianpay.Error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "Req", ctx, method, url, param, body, headers, response)
+	ret0, _ := ret[0].(*durianpay.Error)
+	return ret0
 }
 
 // Req indicates an expected call of Req
-func (mr *MockApiMockRecorder) Req(ctx, method, url, param, body, headers interface{}) *gomock.Call {
+func (mr *MockApiMockRecorder) Req(ctx, method, url, param, body, headers, response interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Req", reflect.TypeOf((*MockApi)(nil).Req), ctx, method, url, param, body, headers)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Req", reflect.TypeOf((*MockApi)(nil).Req), ctx, method, url, param, body, headers, response)
 }

@@ -8,7 +8,6 @@ package disbursement
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"strings"
 
@@ -35,17 +34,13 @@ const (
 // Validate disbursement can be used to fetch the bank account and account number validation
 //
 //	[Doc Validate Disbursement API]: https://durianpay.id/docs/api/disbursements/validate/
-func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementValidatePayload) (res *durianpay.DisbursementValidate, err *durianpay.Error) {
+func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementValidatePayload) (*durianpay.DisbursementValidate, *durianpay.Error) {
+	res := &durianpay.DisbursementValidate{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
-	apiRes, err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_VALIDATE, nil, payload, headers)
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_VALIDATE, nil, payload, headers, res)
 	if err != nil {
 		return nil, err
-	}
-
-	jsonErr := json.Unmarshal(apiRes, &res)
-	if jsonErr != nil {
-		return nil, durianpay.FromSDKError(jsonErr)
 	}
 
 	return res, err
@@ -55,17 +50,13 @@ func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementVal
 // Options about skip_validation & force_disburse you can input in durianpay.DisbursementOption
 //
 //	[Doc Submit Disbursement API]: https://durianpay.id/docs/api/disbursements/submit/
-func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPayload, opt *durianpay.DisbursementOption) (res *durianpay.Disbursement, err *durianpay.Error) {
+func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPayload, opt *durianpay.DisbursementOption) (*durianpay.Disbursement, *durianpay.Error) {
+	res := &durianpay.Disbursement{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, payload.IdempotencyKey)
 
-	apiRes, err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_SUBMIT, opt, payload, headers)
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_SUBMIT, opt, payload, headers, res)
 	if err != nil {
 		return nil, err
-	}
-
-	jsonErr := json.Unmarshal(apiRes, &res)
-	if jsonErr != nil {
-		return nil, durianpay.FromSDKError(jsonErr)
 	}
 
 	return res, err
@@ -75,20 +66,16 @@ func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPaylo
 // Options about ignore_invalid you can input in durianpay.DisbursementApproveOption
 //
 //	[Doc Approve Disbursement API]: https://durianpay.id/docs/api/disbursements/approve/
-func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementApprovePayload, opt *durianpay.DisbursementApproveOption) (res *durianpay.Disbursement, err *durianpay.Error) {
+func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementApprovePayload, opt *durianpay.DisbursementApproveOption) (*durianpay.Disbursement, *durianpay.Error) {
+	res := &durianpay.Disbursement{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_APPROVE
 	url = strings.ReplaceAll(url, ":id", payload.ID)
 
-	apiRes, err := c.Api.Req(ctx, http.MethodPost, url, opt, payload, headers)
+	err := c.Api.Req(ctx, http.MethodPost, url, opt, payload, headers, res)
 	if err != nil {
 		return nil, err
-	}
-
-	jsonErr := json.Unmarshal(apiRes, &res)
-	if jsonErr != nil {
-		return nil, durianpay.FromSDKError(jsonErr)
 	}
 
 	return res, err
@@ -98,75 +85,56 @@ func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementAppr
 // Options about skip & limit pagination can be fill in durianpay.DisbursementFetchItemsOption
 //
 //	[Doc Fetch Disbursement Items by ID]: https://durianpay.id/docs/api/disbursements/fetch-items/
-func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.DisbursementFetchItemsOption) (res *durianpay.DisbursementItem, err *durianpay.Error) {
+func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.DisbursementFetchItemsOption) (*durianpay.DisbursementItem, *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID
 	url = strings.ReplaceAll(url, ":id", ID)
-
-	apiRes, err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil)
-	if err != nil {
-		return nil, err
-	}
 
 	tempRes := struct {
 		Data durianpay.DisbursementItem `json:"data"`
 	}{}
 
-	jsonErr := json.Unmarshal(apiRes, &tempRes)
-	if jsonErr != nil {
-		return nil, durianpay.FromSDKError(jsonErr)
+	err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil, &tempRes)
+	if err != nil {
+		return nil, err
 	}
 
-	res = &tempRes.Data
-
-	return res, err
+	return &tempRes.Data, err
 }
 
 // FetchByID returns a response from Fetch Disbursement by ID API.
 //
 //	[Docs Fetch Disbursement]: https://durianpay.id/docs/api/disbursements/fetch-one/
-func (c *Client) FetchByID(ctx context.Context, ID string) (res *durianpay.DisbursementData, err *durianpay.Error) {
+func (c *Client) FetchByID(ctx context.Context, ID string) (*durianpay.DisbursementData, *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BY_ID
 	url = strings.ReplaceAll(url, ":id", ID)
-
-	apiRes, err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil)
-	if err != nil {
-		return nil, err
-	}
 
 	tempRes := struct {
 		Data durianpay.DisbursementData `json:"data"`
 	}{}
 
-	jsonErr := json.Unmarshal(apiRes, &tempRes)
-	if jsonErr != nil {
-		return nil, durianpay.FromSDKError(jsonErr)
+	err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil, &tempRes)
+	if err != nil {
+		return nil, err
 	}
 
-	res = &tempRes.Data
-
-	return res, err
+	return &tempRes.Data, err
 }
 
 // Delete returns a response from Delete Disbursement by ID API
 //
 //	[Docs Delete Disbursement]: https://durianpay.id/docs/api/disbursements/delete/
-func (c *Client) Delete(ctx context.Context, ID string) (res string, err *durianpay.Error) {
+func (c *Client) Delete(ctx context.Context, ID string) (string, *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_DELETE
 	url = strings.ReplaceAll(url, ":id", ID)
 
-	apiRes, err := c.Api.Req(ctx, http.MethodDelete, url, nil, nil, nil)
+	tempRes := struct {
+		Data string `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodDelete, url, nil, nil, nil, &tempRes)
 	if err != nil {
 		return "", err
 	}
 
-	parseRes := struct {
-		Data string `json:"data"`
-	}{}
-
-	jsonErr := json.Unmarshal(apiRes, &parseRes)
-	if jsonErr != nil {
-		return "", durianpay.FromSDKError(jsonErr)
-	}
-
-	return parseRes.Data, err
+	return tempRes.Data, err
 }

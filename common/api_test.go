@@ -8,7 +8,6 @@ package common
 
 import (
 	"context"
-	"encoding/json"
 	"reflect"
 	"testing"
 
@@ -117,14 +116,9 @@ func TestApiImplement_Req(t *testing.T) {
 			tt.prepare(tt.args)
 
 			res := durianpay.DisbursementValidate{}
-			gotRes, gotDurianErr := c.Req(tt.args.ctx, tt.args.method, tt.args.url, tt.args.param, tt.args.body, tt.args.headers)
+			gotDurianErr := c.Req(tt.args.ctx, tt.args.method, tt.args.url, tt.args.param, tt.args.body, tt.args.headers, &res)
 
 			if tt.wantRes != nil {
-				err := json.Unmarshal(gotRes, &res)
-				if err != nil {
-					t.Fatal(err)
-				}
-
 				if !reflect.DeepEqual(res, tt.wantRes) {
 					t.Errorf("ApiImplement.Req() gotRes = %v, want %v", res, tt.wantRes)
 				}
