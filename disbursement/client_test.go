@@ -43,7 +43,7 @@ func TestClient_DisbursementValidate(t *testing.T) {
 		name    string
 		args    args
 		prepare func(m mocks, args args)
-		wantRes *durianpay.DisbursementValidate
+		wantRes *DisbursementValidate
 		wantErr *durianpay.Error
 	}{
 		{
@@ -70,8 +70,8 @@ func TestClient_DisbursementValidate(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &durianpay.DisbursementValidate{
-				Data: durianpay.DisbursementValidateData{
+			wantRes: &DisbursementValidate{
+				Data: DisbursementValidateData{
 					AccountNumber: "123737383830",
 					BankCode:      "bca",
 					Status:        "processing",
@@ -142,7 +142,7 @@ func TestClient_Submit(t *testing.T) {
 		name    string
 		args    args
 		prepare func(mock mocks, args args)
-		wantRes *durianpay.Disbursement
+		wantRes *Disbursement
 		wantErr *durianpay.Error
 	}{
 		{
@@ -185,9 +185,9 @@ func TestClient_Submit(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &durianpay.Disbursement{
+			wantRes: &Disbursement{
 				Message: "request already processed",
-				Data: durianpay.DisbursementData{
+				Data: DisbursementData{
 					ID:                 "dis_LjxhDKq8Am3427",
 					IdempotencyKey:     "0d5cb9a6-2488-4c86-1000-1502",
 					Name:               "test disb",
@@ -303,7 +303,7 @@ func TestClient_Approve(t *testing.T) {
 		name    string
 		args    args
 		prepare func(mock mocks, args args)
-		wantRes *durianpay.Disbursement
+		wantRes *Disbursement
 		wantErr *durianpay.Error
 	}{
 		{
@@ -334,9 +334,9 @@ func TestClient_Approve(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &durianpay.Disbursement{
+			wantRes: &Disbursement{
 				Message: "request already submitted",
-				Data: durianpay.DisbursementData{
+				Data: DisbursementData{
 					ID:                 "dis_XXXX",
 					Name:               "sample disbursement",
 					Type:               "batch",
@@ -423,7 +423,7 @@ func TestClient_FetchItemsByID(t *testing.T) {
 		name    string
 		args    args
 		prepare func(mock mocks, args args)
-		wantRes *durianpay.DisbursementItem
+		wantRes *DisbursementItem
 		wantErr *durianpay.Error
 	}{
 		{
@@ -451,10 +451,10 @@ func TestClient_FetchItemsByID(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &durianpay.DisbursementItem{
+			wantRes: &DisbursementItem{
 				SubmissionStatus: "completed",
 				Count:            1,
-				DisbursementBatchItems: []durianpay.DisbursementBatchItem{
+				DisbursementBatchItems: []DisbursementBatchItem{
 					{
 						ID:                  "dis_item_XXXXX",
 						DisbursementBatchID: "dis_XXXXX",
@@ -465,7 +465,7 @@ func TestClient_FetchItemsByID(t *testing.T) {
 						AccountNumber:       "8422647",
 						EmailRecipient:      "john@nomail.com",
 						PhoneNumber:         "85609873209",
-						InvalidFields: []durianpay.DisbursementBatchItemInvalidField{
+						InvalidFields: []DisbursementBatchItemInvalidField{
 							{
 								Key:     "bank_code",
 								Message: "Invalid BankCode/AccountNumber",
@@ -535,7 +535,7 @@ func TestClient_FetchByID(t *testing.T) {
 		name    string
 		args    args
 		prepare func(mock mocks, args args)
-		wantRes *durianpay.DisbursementData
+		wantRes *DisbursementData
 		wantErr *durianpay.Error
 	}{
 		{
@@ -559,7 +559,7 @@ func TestClient_FetchByID(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &durianpay.DisbursementData{
+			wantRes: &DisbursementData{
 				ID:                 "dis_XXXXXXX",
 				Name:               "sample disbursement",
 				Type:               "batch",
@@ -703,7 +703,7 @@ func TestClient_FetchBanks(t *testing.T) {
 		name    string
 		args    args
 		prepare func(mock mocks, args args)
-		wantRes []durianpay.DisbursementBank
+		wantRes []DisbursementBank
 		wantErr *durianpay.Error
 	}{
 		{
@@ -723,7 +723,7 @@ func TestClient_FetchBanks(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: []durianpay.DisbursementBank{
+			wantRes: []DisbursementBank{
 				{
 					ID:        1,
 					Name:      "BCA",
@@ -789,7 +789,7 @@ func TestClient_TopupAmount(t *testing.T) {
 		name    string
 		args    args
 		prepare func(mock mocks, args args)
-		wantRes *durianpay.DisbursementTopup
+		wantRes *DisbursementTopup
 		wantErr *durianpay.Error
 	}{
 		{
@@ -810,12 +810,12 @@ func TestClient_TopupAmount(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &durianpay.DisbursementTopup{
+			wantRes: &DisbursementTopup{
 				SenderBank:  "bni",
 				TotalAmount: "10000",
 				Status:      "processing",
 				ExpiryDate:  tests.StringToTime("2021-03-21T09:58:53Z"),
-				TransferTo: durianpay.DisbursementTopupTransferTo{
+				TransferTo: DisbursementTopupTransferTo{
 					BankCode:          "bni",
 					BankName:          "BNI / BNI Syariah",
 					AtmBersamaCode:    "009",

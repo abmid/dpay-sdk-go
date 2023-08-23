@@ -22,6 +22,18 @@ func TestApiImplement_Req(t *testing.T) {
 		AnotherParam   string `url:"another_param"`
 	}
 
+	type responseData struct {
+		AccountNumber string `json:"account_number"`
+		BankCode      string `json:"bank_code"`
+		AccountHolder string `json:"account_holder"`
+		Status        string `json:"status"`
+	}
+
+	type response struct {
+		Message string       `json:"message"`
+		Data    responseData `json:"data"`
+	}
+
 	type fields struct {
 		ServerKey string
 	}
@@ -62,7 +74,7 @@ func TestApiImplement_Req(t *testing.T) {
 					AccountNumber:   "123737383830",
 					BankCode:        "bca",
 				},
-				durianRes: durianpay.DisbursementValidate{},
+				durianRes: response{},
 				headers:   HeaderIdempotencyKey("x-123", ""),
 			},
 			prepare: func(args args) {
@@ -73,8 +85,8 @@ func TestApiImplement_Req(t *testing.T) {
 				httpmock.RegisterMatcherResponderWithQuery(args.method, args.url, query, httpmock.Matcher{},
 					tests.HttpMockResJSON(200, "../internal/tests/response/disbursement/validate_disbursement_200.json", args.headers))
 			},
-			wantRes: durianpay.DisbursementValidate{
-				Data: durianpay.DisbursementValidateData{
+			wantRes: response{
+				Data: responseData{
 					AccountNumber: "123737383830",
 					BankCode:      "bca",
 					Status:        "processing",
@@ -115,7 +127,7 @@ func TestApiImplement_Req(t *testing.T) {
 
 			tt.prepare(tt.args)
 
-			res := durianpay.DisbursementValidate{}
+			res := response{}
 			gotDurianErr := c.Req(tt.args.ctx, tt.args.method, tt.args.url, tt.args.param, tt.args.body, tt.args.headers, &res)
 
 			if tt.wantRes != nil {

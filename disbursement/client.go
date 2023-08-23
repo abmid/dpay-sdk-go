@@ -37,8 +37,8 @@ const (
 // Validate disbursement can be used to fetch the bank account and account number validation
 //
 //	[Doc Validate Disbursement API]: https://durianpay.id/docs/api/disbursements/validate/
-func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementValidatePayload) (*durianpay.DisbursementValidate, *durianpay.Error) {
-	res := &durianpay.DisbursementValidate{}
+func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementValidatePayload) (*DisbursementValidate, *durianpay.Error) {
+	res := &DisbursementValidate{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
 	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_VALIDATE, nil, payload, headers, res)
@@ -53,8 +53,8 @@ func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementVal
 // Options about skip_validation & force_disburse you can input in durianpay.DisbursementOption
 //
 //	[Doc Submit Disbursement API]: https://durianpay.id/docs/api/disbursements/submit/
-func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPayload, opt *durianpay.DisbursementOption) (*durianpay.Disbursement, *durianpay.Error) {
-	res := &durianpay.Disbursement{}
+func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPayload, opt *durianpay.DisbursementOption) (*Disbursement, *durianpay.Error) {
+	res := &Disbursement{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, payload.IdempotencyKey)
 
 	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_SUBMIT, opt, payload, headers, res)
@@ -69,8 +69,8 @@ func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPaylo
 // Options about ignore_invalid you can input in durianpay.DisbursementApproveOption
 //
 //	[Doc Approve Disbursement API]: https://durianpay.id/docs/api/disbursements/approve/
-func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementApprovePayload, opt *durianpay.DisbursementApproveOption) (*durianpay.Disbursement, *durianpay.Error) {
-	res := &durianpay.Disbursement{}
+func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementApprovePayload, opt *durianpay.DisbursementApproveOption) (*Disbursement, *durianpay.Error) {
+	res := &Disbursement{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_APPROVE
@@ -88,12 +88,12 @@ func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementAppr
 // Options about skip & limit pagination can be fill in durianpay.DisbursementFetchItemsOption
 //
 //	[Doc Fetch Disbursement Items by ID]: https://durianpay.id/docs/api/disbursements/fetch-items/
-func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.DisbursementFetchItemsOption) (*durianpay.DisbursementItem, *durianpay.Error) {
+func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.DisbursementFetchItemsOption) (*DisbursementItem, *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID
 	url = strings.ReplaceAll(url, ":id", ID)
 
 	tempRes := struct {
-		Data durianpay.DisbursementItem `json:"data"`
+		Data DisbursementItem `json:"data"`
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil, &tempRes)
@@ -107,12 +107,12 @@ func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.D
 // FetchByID returns a response from Fetch Disbursement by ID API.
 //
 //	[Docs Fetch Disbursement]: https://durianpay.id/docs/api/disbursements/fetch-one/
-func (c *Client) FetchByID(ctx context.Context, ID string) (*durianpay.DisbursementData, *durianpay.Error) {
+func (c *Client) FetchByID(ctx context.Context, ID string) (*DisbursementData, *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BY_ID
 	url = strings.ReplaceAll(url, ":id", ID)
 
 	tempRes := struct {
-		Data durianpay.DisbursementData `json:"data"`
+		Data DisbursementData `json:"data"`
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil, &tempRes)
@@ -145,9 +145,9 @@ func (c *Client) Delete(ctx context.Context, ID string) (string, *durianpay.Erro
 // Delete returns a response from Fetch Bank List API
 //
 //	[Docs Fetch Banks]: https://durianpay.id/docs/api/disbursements/fetch-banks/
-func (c *Client) FetchBanks(ctx context.Context) ([]durianpay.DisbursementBank, *durianpay.Error) {
+func (c *Client) FetchBanks(ctx context.Context) ([]DisbursementBank, *durianpay.Error) {
 	tempRes := struct {
-		Data []durianpay.DisbursementBank `json:"data"`
+		Data []DisbursementBank `json:"data"`
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_FETCH_BANKS, nil, nil, nil, &tempRes)
@@ -161,11 +161,11 @@ func (c *Client) FetchBanks(ctx context.Context) ([]durianpay.DisbursementBank, 
 // TopupAmount returns a response from Topup Amount API
 //
 //	[Docs Topup Amount]: https://durianpay.id/docs/api/disbursements/topup/
-func (c *Client) TopupAmount(ctx context.Context, payload durianpay.DisbursementTopupPayload) (*durianpay.DisbursementTopup, *durianpay.Error) {
+func (c *Client) TopupAmount(ctx context.Context, payload durianpay.DisbursementTopupPayload) (*DisbursementTopup, *durianpay.Error) {
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
 	tempRes := struct {
-		Data durianpay.DisbursementTopup `json:"data"`
+		Data DisbursementTopup `json:"data"`
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_TOPUP_AMOUNT, nil, payload, headers, &tempRes)
