@@ -57,10 +57,10 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
   - [x] Submit Disbursement
   - [x] Approve Disbursment
   - [x] Validate Disbursement
-  - [ ] Fetch Bank List
-  - [ ] Topup Amount
-  - [ ] Fetch Topup Detail By ID
-  - [ ] Fetch Balance
+  - [x] Fetch Bank List
+  - [x] Topup Amount
+  - [x] Fetch Topup Detail By ID
+  - [x] Fetch Balance
   - [x] Fetch Disbursement Items By ID
   - [x] Fetch Disbursement By ID
   - [x] Delete Disbusement By ID
