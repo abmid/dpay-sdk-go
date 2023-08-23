@@ -29,6 +29,7 @@ const (
 	PATH_DISBURSEMENT_FETCH_BY_ID       = PATH_DISBURSEMENT + "/:id"
 	PATH_DISBURSEMENT_DELETE            = PATH_DISBURSEMENT + "/:id"
 	PATH_DISBURSEMENT_FETCH_BANKS       = PATH_DISBURSEMENT + "/banks"
+	PATH_DISBURSEMENT_TOPUP_AMOUNT      = PATH_DISBURSEMENT + "/topup"
 )
 
 // Validate returns a response from Validate Disbursement API.
@@ -142,7 +143,7 @@ func (c *Client) Delete(ctx context.Context, ID string) (string, *durianpay.Erro
 
 // Delete returns a response from Fetch Bank List API
 //
-//	[Docs Delete Disbursement]: https://durianpay.id/docs/api/disbursements/fetch-banks/
+//	[Docs Fetch Banks]: https://durianpay.id/docs/api/disbursements/fetch-banks/
 func (c *Client) FetchBanks(ctx context.Context) ([]durianpay.DisbursementBank, *durianpay.Error) {
 	tempRes := struct {
 		Data []durianpay.DisbursementBank `json:"data"`
@@ -154,4 +155,22 @@ func (c *Client) FetchBanks(ctx context.Context) ([]durianpay.DisbursementBank, 
 	}
 
 	return tempRes.Data, nil
+}
+
+// TopupAmount returns a response from Topup Amount API
+//
+//	[Docs Topup Amount]: https://durianpay.id/docs/api/disbursements/topup/
+func (c *Client) TopupAmount(ctx context.Context, payload durianpay.DisbursementTopupPayload) (*durianpay.DisbursementTopup, *durianpay.Error) {
+	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
+
+	tempRes := struct {
+		Data durianpay.DisbursementTopup `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_TOPUP_AMOUNT, nil, payload, headers, &tempRes)
+	if err != nil {
+		return nil, err
+	}
+
+	return &tempRes.Data, nil
 }

@@ -776,3 +776,87 @@ func TestClient_FetchBanks(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_TopupAmount(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx     context.Context
+		payload durianpay.DisbursementTopupPayload
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(mock mocks, args args)
+		wantRes *durianpay.DisbursementTopup
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{ctx: context.Background()},
+			prepare: func(mock mocks, args args) {
+				headers := common.HeaderIdempotencyKey(args.payload.XIdempotencyKey, "")
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_TOPUP_AMOUNT
+
+				mock.api.EXPECT().
+					Req(args.ctx, http.MethodPost, url, nil, args.payload, headers, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_disbursement+"topup_amount_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &durianpay.DisbursementTopup{
+				SenderBank:  "bni",
+				TotalAmount: "10000",
+				Status:      "processing",
+				ExpiryDate:  tests.StringToTime("2021-03-21T09:58:53Z"),
+				TransferTo: durianpay.DisbursementTopupTransferTo{
+					BankCode:          "bni",
+					BankName:          "BNI / BNI Syariah",
+					AtmBersamaCode:    "009",
+					BankAccountNumber: "0437051936",
+					AccountHolderName: "PT Fliptech Lentera Inspirasi Pertiwi",
+					UniqueCode:        10,
+				},
+			},
+		},
+		{
+			name: "Invalid Request",
+			args: args{ctx: context.Background()},
+			prepare: func(mock mocks, args args) {
+				headers := common.HeaderIdempotencyKey(args.payload.XIdempotencyKey, "")
+				url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_TOPUP_AMOUNT
+
+				mock.api.EXPECT().Req(args.ctx, http.MethodPost, url, nil, args.payload, headers, gomock.Any()).
+					Return(durianpay.FromAPI(400, featureWrap.ResJSONByte(path_response_disbursement+"topup_amount_400.json")))
+			},
+			wantErr: durianpay.FromAPI(400, featureWrap.ResJSONByte(path_response_disbursement+"topup_amount_400.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.TopupAmount(parseArgs.ctx, parseArgs.payload)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.TopupAmount() got = %v, want %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.TopupAmount() gotErr = %v, want %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}

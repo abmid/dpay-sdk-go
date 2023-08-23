@@ -87,6 +87,7 @@ type DisbursementBatchItemInvalidField struct {
 	Message string `json:"message"`
 }
 
+// DisbursementBank is response from fetch banks API
 type DisbursementBank struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
@@ -94,6 +95,25 @@ type DisbursementBank struct {
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// DisbursementTopup is response from Topup Amount API
+type DisbursementTopup struct {
+	SenderBank  string                      `json:"sender_bank"`
+	TotalAmount string                      `json:"total_amount"`
+	Status      string                      `json:"status"`
+	ExpiryDate  time.Time                   `json:"expiry_date"`
+	TransferTo  DisbursementTopupTransferTo `json:"transfer_to"`
+}
+
+// DisbursementTopupTransferTo is part of DisbursementTopup
+type DisbursementTopupTransferTo struct {
+	BankCode          string `json:"bank_code"`
+	BankName          string `json:"bank_name"`
+	AtmBersamaCode    string `json:"atm_bersama_code"`
+	BankAccountNumber string `json:"bank_account_number"`
+	AccountHolderName string `json:"account_holder_name"`
+	UniqueCode        int    `json:"unique_code"`
 }
 
 /*
@@ -144,7 +164,15 @@ type DisbursementApproveOption struct {
 	IgnoreInvalid *bool `url:"ignore_invalid"`
 }
 
+// DisbursementFetchItemsOption is parameter for Fetch Disbursement Items API
 type DisbursementFetchItemsOption struct {
 	Skip  uint16 `json:"skip"`
 	Limit uint16 `json:"limit"`
+}
+
+// DisbursementTopupPayload is payload for request Topup Amount API
+type DisbursementTopupPayload struct {
+	XIdempotencyKey string `json:"-"`
+	BankID          uint16 `json:"bank_id"`
+	Amount          string `json:"amount"`
 }
