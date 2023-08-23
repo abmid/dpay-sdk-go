@@ -54,7 +54,7 @@ func TestApiImplement_Req(t *testing.T) {
 				method: "POST",
 				url:    durianpay.DURIANPAY_URL,
 				param: param{
-					SkipValidation: tests.BoolPtr(true),
+					SkipValidation: tests.ToPtr(true),
 					AnotherParam:   "test-param",
 				},
 				body: durianpay.DisbursementValidatePayload{

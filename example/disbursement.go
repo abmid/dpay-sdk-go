@@ -66,8 +66,8 @@ func ExampleSubmit() {
 
 	// With params
 	opt := durianpay.DisbursementOption{
-		ForceDisburse:  tests.BoolPtr(true),
-		SkipValidation: tests.BoolPtr(false),
+		ForceDisburse:  tests.ToPtr(true),
+		SkipValidation: tests.ToPtr(false),
 	}
 	res, err = c.Disbursement.Submit(context.TODO(), payload, &opt)
 	if err != nil {
@@ -96,7 +96,7 @@ func ExampleApprove() {
 
 	// With params
 	opt := durianpay.DisbursementApproveOption{
-		IgnoreInvalid: tests.BoolPtr(false),
+		IgnoreInvalid: tests.ToPtr(false),
 	}
 	res, err = c.Disbursement.Approve(context.TODO(), payload, &opt)
 	if err != nil {

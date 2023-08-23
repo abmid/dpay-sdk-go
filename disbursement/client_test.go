@@ -167,8 +167,8 @@ func TestClient_Submit(t *testing.T) {
 					},
 				},
 				opt: &durianpay.DisbursementOption{
-					ForceDisburse:  tests.BoolPtr(true),
-					SkipValidation: tests.BoolPtr(false),
+					ForceDisburse:  tests.ToPtr(true),
+					SkipValidation: tests.ToPtr(false),
 				},
 			},
 			prepare: func(mock mocks, args args) {
@@ -315,7 +315,7 @@ func TestClient_Approve(t *testing.T) {
 					ID:              "dis_XXXX",
 				},
 				opt: &durianpay.DisbursementApproveOption{
-					IgnoreInvalid: tests.BoolPtr(true),
+					IgnoreInvalid: tests.ToPtr(true),
 				},
 			},
 			prepare: func(mock mocks, args args) {
@@ -892,7 +892,7 @@ func TestClient_FetchBalance(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: tests.BoolPtr(949859471313),
+			wantRes: tests.ToPtr(949859471313),
 		},
 	}
 	for _, tt := range tests {
