@@ -58,6 +58,9 @@ func (c *Client) FetchOrders(ctx context.Context, opt durianpay.OrderFetchOption
 	return &res.Data, nil
 }
 
+// FetchOrderByID returns a response from Order Fetch By ID API.
+//
+//	[Doc Order Fetch By ID API]: https://durianpay.id/docs/api/orders/fetch-one/
 func (c *Client) FetchOrderByID(ctx context.Context, ID string, opt durianpay.OrderFetchByIDOption) (*FetchOrder, *durianpay.Error) {
 	url := durianpay.DURIANPAY_URL + PATCH_FETCH_ORDER_BY_ID
 	url = strings.ReplaceAll(url, ":id", ID)
@@ -67,6 +70,22 @@ func (c *Client) FetchOrderByID(ctx context.Context, ID string, opt durianpay.Or
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// CreatePaymentLink returns a response from Create Payment Link API.
+//
+//	[Doc Create Payment Link API]: https://durianpay.id/docs/api/orders/create-link/
+func (c *Client) CreatePaymentLink(ctx context.Context, payload durianpay.OrderPaymentLinkPayload) (*OrderCreate, *durianpay.Error) {
+	res := struct {
+		Data OrderCreate `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_ORDER, nil, payload, nil, &res)
 	if err != nil {
 		return nil, err
 	}

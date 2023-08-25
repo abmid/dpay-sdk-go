@@ -1,0 +1,9 @@
+{
+  "amount": "20000",
+  "currency": "IDR",
+  "order_ref_id": "order2314",
+  "is_payment_link": true,
+  "customer": {
+    "email": "jude.casper@durianpay.id"
+  }
+}

@@ -366,3 +366,110 @@ func TestClient_FetchOrderByID(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_CreatePaymentLink(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx     context.Context
+		payload durianpay.OrderPaymentLinkPayload
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *OrderCreate
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.OrderPaymentLinkPayload{
+					Amount:        "20000",
+					Currency:      "IDR",
+					OrderRefID:    "order2314",
+					IsPaymentLink: true,
+					Customer: durianpay.OrderPaymentLinkCustomer{
+						Email: "jude.casper@durianpay.id",
+					},
+				},
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", durianpay.DURIANPAY_URL+PATH_ORDER, nil, args.payload, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_order+"create_payment_link_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &OrderCreate{
+				ID:             "ord_n7WUecCLkz5074",
+				CustomerID:     "cus_0l6ZMxd9cW6365",
+				OrderRefID:     "order_ref_001",
+				Amount:         "10001.00",
+				Currency:       "IDR",
+				Status:         "started",
+				IsLive:         false,
+				CreatedAt:      tests.StringToTime("2023-08-25T16:48:31.956761Z"),
+				UpdatedAt:      tests.StringToTime("2023-08-25T16:48:31.956761Z"),
+				ExpireTime:     tests.StringToTime("2023-09-24T16:48:33.010938526Z"),
+				ExpiryDate:     tests.StringToTime("2023-09-24T16:48:31.953648Z"),
+				AccessToken:    "5f79c29d9ba7715490d31566e1a30417da96499f5088fc090ef777ebfab53ac1",
+				PaymentLinkUrl: "yUyERa",
+				AdminFeeMethod: "included",
+				PaymentOption:  "full_payment",
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", durianpay.DURIANPAY_URL+PATH_ORDER, nil, args.payload, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			if tt.wantRes != nil {
+				payload := durianpay.OrderPaymentLinkPayload{}
+
+				if !featureWrap.DeepEqualPayload(path_payload_order+"create_payment_link.json", &payload, &tt.args.payload) {
+					t.Errorf("Client.CreatePaymentLink() gotPayload = %v, wantPayload %v", tt.args.payload, payload)
+				}
+			}
+
+			gotRes, gotErr := c.CreatePaymentLink(tt.args.ctx, tt.args.payload)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.CreatePaymentLink() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.CreatePaymentLink() gotErr = %v, want %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+// gotRes =
+// &{ord_n7WUecCLkz5074 cus_0l6ZMxd9cW6365 order_ref_001  10001.00 full_payment  IDR started false 2023-08-25 16:48:31.956761 +0000 UTC 2023-08-25 16:48:31.956761 +0000 UTC { } [] 5f79c29d9ba7715490d31566e1a30417da96499f5088fc090ef777ebfab53ac1 2023-09-24 16:48:33.010938526 +0000 UTC 2023-09-24 16:48:31.953648 +0000 UTC yUyERa 0   included}, wantRes
+// &{ord_n7WUecCLkz5074 cus_0l6ZMxd9cW6365 order_ref_001  10001.00 full_payment  IDR started false 2023-08-25 16:48:31.956761 +0000 UTC 2023-08-25 16:48:31.956761 +0000 UTC { } [] 5f79c29d9ba7715490d31566e1a30417da96499f5088fc090ef777ebfab53ac1 2023-09-24 16:48:33.010938526 +0000 UTC 0001-01-01 00:00:00 +0000 UTC yUyERa 0   included}

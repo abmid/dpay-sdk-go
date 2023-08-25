@@ -64,7 +64,7 @@ type OrderMetadata struct {
 // OrderPaymentLinkPayload is payload for requests Create Payment Link API
 type OrderPaymentLinkPayload struct {
 	Amount        string                   `json:"amount"`
-	Currency      string                   `json:"id"`
+	Currency      string                   `json:"currency"`
 	OrderRefID    string                   `json:"order_ref_id"`
 	IsPaymentLink bool                     `json:"is_payment_link"`
 	Customer      OrderPaymentLinkCustomer `json:"customer"`

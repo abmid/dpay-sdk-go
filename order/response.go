@@ -12,7 +12,8 @@ import (
 	durianpay "github.com/abmid/dpay-sdk-go"
 )
 
-// OrderCreate is struct for response Create Order API
+// OrderCreate is struct for response Create Order or Create Payment Link API.
+// For case Create Payment Link API, attribute PaymentLinkUrl will be filled
 type OrderCreate struct {
 	ID             string                  `json:"id"`
 	CustomerID     string                  `json:"customer_id"`
@@ -20,15 +21,18 @@ type OrderCreate struct {
 	OrderDsRefID   string                  `json:"order_ds_ref_id"`
 	Amount         string                  `json:"amount"`
 	PaymentOption  string                  `json:"payment_option"`
+	PendingAmount  string                  `json:"pending_amount"`
 	Currency       string                  `json:"currency"`
 	Status         string                  `json:"status"`
+	IsLive         bool                    `json:"is_live"`
 	CreatedAt      time.Time               `json:"created_at"`
 	UpdatedAt      time.Time               `json:"updated_at"`
-	ExpiryDate     time.Time               `json:"expiry_date"`
 	MetaData       durianpay.OrderMetadata `json:"metadata"`
 	Items          []durianpay.OrderItem   `json:"items"`
 	AccessToken    string                  `json:"access_token"`
 	ExpireTime     time.Time               `json:"expire_time"`
+	ExpiryDate     time.Time               `json:"expiry_date"`
+	PaymentLinkUrl string                  `json:"payment_link_url"`
 	AddressID      uint32                  `json:"address_id"`
 	Fees           string                  `json:"fees"`
 	ShippingFee    string                  `json:"shipping_fee"`
