@@ -35,7 +35,13 @@ type OrderCreate struct {
 	AdminFeeMethod string                  `json:"admin_fee_method"`
 }
 
-// Orders is struct for response Fetch Orders API
+// FetchOrders is struct for response Fetch Orders API
+type FetchOrders struct {
+	Orders []Orders `json:"orders"`
+	Count  uint     `json:"count"`
+}
+
+// Orders is part of FetchOrders for attribute Orders
 type Orders struct {
 	ID                    string    `json:"id"`
 	CustomerID            string    `json:"customer_id"`
@@ -65,8 +71,8 @@ type Orders struct {
 	PaymentMethodID       string    `json:"payment_method_id"`
 }
 
-// Order is struct for response Fetch Order API
-type Order struct {
+// FetchOrder is struct for response Fetch Order API
+type FetchOrder struct {
 	ID                    string                  `json:"id"`
 	CustomerID            string                  `json:"customer_id"`
 	OrderRefID            string                  `json:"order_ref_id"`
@@ -90,11 +96,11 @@ type Order struct {
 	ShippingFee           string                  `json:"shipping_fee"`
 	AdminFeeMethod        string                  `json:"admin_fee_method"`
 	Customer              durianpay.OrderCustomer `json:"customer"` // Will be filled if use query expand=customer
-	Payments              []OrderPayment          `json:"payments"` // Will be filled if use query expand=payments
+	Payments              []Payment               `json:"payments"` // Will be filled if use query expand=payments
 }
 
-// OrderPayment is part of Order for attribute Payments
-type OrderPayment struct {
+// Payment is part of FetchOrder for attribute Payments
+type Payment struct {
 	ID                 string                  `json:"id"`
 	OrderID            string                  `json:"order_id"`
 	PaymentRefID       string                  `json:"payment_ref_id"`

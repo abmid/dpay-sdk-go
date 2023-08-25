@@ -169,3 +169,98 @@ func TestClient_Create(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_FetchOrders(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		opt durianpay.OrderFetchOption
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *FetchOrders
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{ctx: context.Background(), opt: durianpay.OrderFetchOption{Skip: 1}},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", durianpay.DURIANPAY_URL+PATH_ORDER, args.opt, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_order+"fetch_orders_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &FetchOrders{
+				Orders: []Orders{
+					{
+						ID:                    "ord_jcI3YWlYbD5367",
+						CustomerID:            "cus_IwDIb0MDY20938",
+						Amount:                "10000.00",
+						Currency:              "IDR",
+						Status:                "completed",
+						IsLive:                false,
+						CreatedAt:             tests.StringToTime("2023-07-27T04:16:33.380918Z"),
+						UpdatedAt:             tests.StringToTime("2023-07-27T04:24:29.382684Z"),
+						ExpiryDate:            tests.StringToTime("2023-07-28T11:16:17.37Z"),
+						GivenName:             "Abdul",
+						Email:                 "abdul.surel@gmail.com",
+						Mobile:                "811111111",
+						PaymentOption:         "full_payment",
+						PaymentID:             "pay_y2yKEEWBYe1299",
+						PaymentDetailsType:    "va_details",
+						PaymentStatus:         "completed",
+						PaymentDate:           tests.StringToTime("2023-07-27T04:17:42.997975Z"),
+						Description:           "Test Description",
+						PaymentLinkUrl:        "VGXbuJ",
+						IsNotificationEnabled: false,
+						PaymentMethodID:       "BCA",
+					},
+				},
+				Count: 1,
+			},
+		},
+		{
+			name: "Invalid Options",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", durianpay.DURIANPAY_URL+PATH_ORDER, args.opt, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response_order+"fetch_orders_400.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response_order+"fetch_orders_400.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.FetchOrders(tt.args.ctx, tt.args.opt)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.FetchOrders() got = %v, want %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.FetchOrders() got1 = %v, want %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}

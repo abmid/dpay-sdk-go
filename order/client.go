@@ -38,3 +38,20 @@ func (c *Client) Create(ctx context.Context, payload durianpay.OrderPayload) (*O
 
 	return &res.Data, nil
 }
+
+// FetchOrders returns a response from Orders Fetch API.
+//
+//	[Doc Orders Fetch API]: https://durianpay.id/docs/api/orders/fetch/
+func (c *Client) FetchOrders(ctx context.Context, opt durianpay.OrderFetchOption) (*FetchOrders, *durianpay.Error) {
+
+	res := struct {
+		Data FetchOrders `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_ORDER, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
