@@ -41,7 +41,7 @@ func TestClient_Create(t *testing.T) {
 		name    string
 		args    args
 		prepare func(m mocks, args args)
-		wantRes *OrderCreate
+		wantRes *Create
 		wantErr *durianpay.Error
 	}{
 		{
@@ -98,7 +98,7 @@ func TestClient_Create(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &OrderCreate{
+			wantRes: &Create{
 				ID:            "ord_0dIWbuDJQ84078",
 				CustomerID:    "cus_ViPeX4iBYp2233",
 				OrderRefID:    "order_ref_001",
@@ -379,7 +379,7 @@ func TestClient_CreatePaymentLink(t *testing.T) {
 		name    string
 		args    args
 		prepare func(m mocks, args args)
-		wantRes *OrderCreate
+		wantRes *Create
 		wantErr *durianpay.Error
 	}{
 		{
@@ -408,7 +408,7 @@ func TestClient_CreatePaymentLink(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &OrderCreate{
+			wantRes: &Create{
 				ID:             "ord_n7WUecCLkz5074",
 				CustomerID:     "cus_0l6ZMxd9cW6365",
 				OrderRefID:     "order_ref_001",

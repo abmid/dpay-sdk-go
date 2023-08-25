@@ -28,9 +28,9 @@ const (
 // Create returns a response from Create Order API.
 //
 //	[Doc Create Order API]: https://durianpay.id/docs/api/orders/create/
-func (c *Client) Create(ctx context.Context, payload durianpay.OrderPayload) (*OrderCreate, *durianpay.Error) {
+func (c *Client) Create(ctx context.Context, payload durianpay.OrderPayload) (*Create, *durianpay.Error) {
 	res := struct {
-		Data OrderCreate `json:"data"`
+		Data Create `json:"data"`
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_ORDER, nil, payload, nil, &res)
@@ -80,9 +80,9 @@ func (c *Client) FetchOrderByID(ctx context.Context, ID string, opt durianpay.Or
 // CreatePaymentLink returns a response from Create Payment Link API.
 //
 //	[Doc Create Payment Link API]: https://durianpay.id/docs/api/orders/create-link/
-func (c *Client) CreatePaymentLink(ctx context.Context, payload durianpay.OrderPaymentLinkPayload) (*OrderCreate, *durianpay.Error) {
+func (c *Client) CreatePaymentLink(ctx context.Context, payload durianpay.OrderPaymentLinkPayload) (*Create, *durianpay.Error) {
 	res := struct {
-		Data OrderCreate `json:"data"`
+		Data Create `json:"data"`
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_ORDER, nil, payload, nil, &res)

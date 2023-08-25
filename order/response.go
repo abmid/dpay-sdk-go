@@ -12,9 +12,9 @@ import (
 	durianpay "github.com/abmid/dpay-sdk-go"
 )
 
-// OrderCreate is struct for response Create Order or Create Payment Link API.
+// Create is struct for response Create Order or Create Payment Link API.
 // For case Create Payment Link API, attribute PaymentLinkUrl will be filled
-type OrderCreate struct {
+type Create struct {
 	ID             string                  `json:"id"`
 	CustomerID     string                  `json:"customer_id"`
 	OrderRefID     string                  `json:"order_ref_id"`
