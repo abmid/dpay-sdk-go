@@ -1,6 +1,6 @@
 # DurianPay SDK for Go #
 
-[![Test Status](https://github.com/abmid/dpay-sdk-go/actions/workflows/test.yml/badge.svg)]
+![Test Status](https://github.com/abmid/dpay-sdk-go/actions/workflows/test.yml/badge.svg)
 
 ## Table of Contents
 
@@ -35,10 +35,10 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
 ## API Supports
 
 - ORDERS
-  - [ ] Create Order
-  - [ ] Fetch Orders
-  - [ ] Fetch By ID
-  - [ ] Create Payment Link
+  - [x] Create Order
+  - [x] Fetch Orders
+  - [x] Fetch By ID
+  - [x] Create Payment Link
 - PAYMENTS
   - [ ] Charge Payment
   - [ ] Fetch Payments
