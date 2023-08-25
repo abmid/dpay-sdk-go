@@ -1,0 +1,53 @@
+{
+  "data": {
+      "id": "ord_wNSShKTAsL1204",
+      "customer_id": "cus_dkRHbkDXrn2354",
+      "order_ref_id": "order_ref_8",
+      "order_ds_ref_id": "",
+      "amount": "80000.00",
+      "payment_option": "",
+      "pending_amount": null,
+      "currency": "IDR",
+      "status": "completed",
+      "is_live": false,
+      "created_at": "2023-07-27T04:12:14.084026Z",
+      "updated_at": "2023-07-27T04:12:14.112331Z",
+      "metadata": {},
+      "items": null,
+      "expiry_date": "2023-08-26T04:12:14.079634Z",
+      "is_notification_enabled": false,
+      "email_subject": "",
+      "email_content": "",
+      "fees": null,
+      "shipping_fee": "",
+      "admin_fee_method": "",
+      "payments": [
+          {
+              "id": "pay_sample_5b2tSNVDXn5148",
+              "order_id": "",
+              "payment_ref_id": "",
+              "settlement_id": "",
+              "payment_ds_ref_id": "",
+              "amount": "80000.00",
+              "status": "completed",
+              "is_live": false,
+              "expiration_date": "2023-07-27T04:12:30.887217Z",
+              "payment_details_type": "card_details",
+              "method_id": "",
+              "created_at": "2023-07-27T04:12:30.887927Z",
+              "updated_at": "2023-07-27T04:12:30.887927Z",
+              "metadata": null,
+              "retry_count": 0,
+              "discount": "",
+              "paid_amount": "",
+              "provider_id": "",
+              "total_fee": "",
+              "promo_id": "",
+              "shipping_fee": "",
+              "ds_error_metadata": null,
+              "failure_reason": {},
+              "settlement_status": ""
+          }
+      ]
+  }
+}

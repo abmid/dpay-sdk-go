@@ -9,6 +9,7 @@ package order
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/common"
@@ -20,7 +21,8 @@ type Client struct {
 }
 
 const (
-	PATH_ORDER = "/v1/orders"
+	PATH_ORDER              = "/v1/orders"
+	PATCH_FETCH_ORDER_BY_ID = PATH_ORDER + "/:id"
 )
 
 // Create returns a response from Create Order API.
@@ -49,6 +51,22 @@ func (c *Client) FetchOrders(ctx context.Context, opt durianpay.OrderFetchOption
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_ORDER, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+func (c *Client) FetchOrderByID(ctx context.Context, ID string, opt durianpay.OrderFetchByIDOption) (*FetchOrder, *durianpay.Error) {
+	url := durianpay.DURIANPAY_URL + PATCH_FETCH_ORDER_BY_ID
+	url = strings.ReplaceAll(url, ":id", ID)
+
+	res := struct {
+		Data FetchOrder `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}

@@ -87,7 +87,7 @@ type OrderFetchOption struct {
 	Limit uint16 `url:"limit"`
 }
 
-// OrderFetchIDOption is parameter for requests Order Fetch By ID API
-type OrderFetchIDOption struct {
+// OrderFetchByIDOption is parameter for requests Order Fetch By ID API
+type OrderFetchByIDOption struct {
 	Expand string `url:"expand"`
 }

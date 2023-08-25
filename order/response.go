@@ -81,6 +81,7 @@ type FetchOrder struct {
 	PaymentOption         string                  `json:"payment_option"`
 	PendingAmount         string                  `json:"pending_amount"`
 	Currency              string                  `json:"currency"`
+	Status                string                  `json:"status"`
 	IsLive                bool                    `json:"is_live"`
 	CreatedAt             time.Time               `json:"created_at"`
 	UpdatedAt             time.Time               `json:"updated_at"`
