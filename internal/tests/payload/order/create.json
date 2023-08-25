@@ -1,0 +1,37 @@
+{
+  "amount": "10000.67",
+  "payment_option": "full_payment",
+  "currency": "IDR",
+  "order_ref_id": "order_ref_001",
+  "customer": {
+      "customer_ref_id": "cust_001",
+      "given_name": "Jane Doe",
+      "email": "jane_doe@nomail.com",
+      "mobile": "85722173217",
+      "address": {
+          "receiver_name": "Jude Casper",
+          "receiver_phone": "8987654321",
+          "label": "Home Address",
+          "address_line_1": "Jl. HR. Rasuna Said",
+          "address_line_2": "Apartment #786",
+          "city": "Jakarta Selatan",
+          "region": "Jakarta",
+          "country": "Indonesia",
+          "postal_code": "560008",
+          "landmark": "Kota Jakarta Selatan"
+      }
+  },
+  "items": [
+      {
+          "name": "LED Television",
+          "qty": 1,
+          "price": "10001.00",
+          "logo": "https://merchant.com/tv_image.jpg"
+      }
+  ],
+  "metadata": {
+      "my-meta-key": "my-meta-value",
+      "SettlementGroup": "BranchName"
+  },
+  "expiry_date": "2022-03-29T10:00:00.000Z"
+}

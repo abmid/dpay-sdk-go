@@ -1,0 +1,121 @@
+/*
+ * File Created: Thursday, 24th August 2023 6:36:34 pm
+ * Author: Abdul Hamid (abdul.surel@gmail.com)
+ *
+ * Copyright (c) 2023 Author
+ */
+package order
+
+import (
+	"time"
+
+	durianpay "github.com/abmid/dpay-sdk-go"
+)
+
+// OrderCreate is struct for response Create Order API
+type OrderCreate struct {
+	ID             string                  `json:"id"`
+	CustomerID     string                  `json:"customer_id"`
+	OrderRefID     string                  `json:"order_ref_id"`
+	OrderDsRefID   string                  `json:"order_ds_ref_id"`
+	Amount         string                  `json:"amount"`
+	PaymentOption  string                  `json:"payment_option"`
+	Currency       string                  `json:"currency"`
+	Status         string                  `json:"status"`
+	CreatedAt      time.Time               `json:"created_at"`
+	UpdatedAt      time.Time               `json:"updated_at"`
+	ExpiryDate     time.Time               `json:"expiry_date"`
+	MetaData       durianpay.OrderMetadata `json:"metadata"`
+	Items          []durianpay.OrderItem   `json:"items"`
+	AccessToken    string                  `json:"access_token"`
+	ExpireTime     time.Time               `json:"expire_time"`
+	AddressID      uint32                  `json:"address_id"`
+	Fees           string                  `json:"fees"`
+	ShippingFee    string                  `json:"shipping_fee"`
+	AdminFeeMethod string                  `json:"admin_fee_method"`
+}
+
+// Orders is struct for response Fetch Orders API
+type Orders struct {
+	ID                    string    `json:"id"`
+	CustomerID            string    `json:"customer_id"`
+	OrderRefID            string    `json:"order_ref_id"`
+	OrderDsRefID          string    `json:"order_ds_ref_id"`
+	Amount                string    `json:"amount"`
+	Currency              string    `json:"currency"`
+	Status                string    `json:"status"`
+	IsLive                bool      `json:"is_live"`
+	CreatedAt             time.Time `json:"created_at"`
+	UpdatedAt             time.Time `json:"updated_at"`
+	ExpiryDate            time.Time `json:"expiry_date"`
+	GivenName             string    `json:"given_name"`
+	SurName               string    `json:"sur_name"`
+	Email                 string    `json:"email"`
+	Mobile                string    `json:"mobile"`
+	PaymentOption         string    `json:"payment_option"`
+	PaymentID             string    `json:"payment_id"`
+	PaymentDetailsType    string    `json:"payment_details_type"`
+	PaymentStatus         string    `json:"payment_status"`
+	PaymentDate           time.Time `json:"payment_date"`
+	Description           string    `json:"description"`
+	PaymentLinkUrl        string    `json:"payment_link_url"`
+	IsNotificationEnabled bool      `json:"is_notification_enabled"`
+	EmailSubject          string    `json:"email_subject"`
+	EmailContent          string    `json:"email_content"`
+	PaymentMethodID       string    `json:"payment_method_id"`
+}
+
+// Order is struct for response Fetch Order API
+type Order struct {
+	ID                    string                  `json:"id"`
+	CustomerID            string                  `json:"customer_id"`
+	OrderRefID            string                  `json:"order_ref_id"`
+	OrderDsRefID          string                  `json:"order_ds_ref_id"`
+	Amount                string                  `json:"amount"`
+	PaymentOption         string                  `json:"payment_option"`
+	PendingAmount         string                  `json:"pending_amount"`
+	Currency              string                  `json:"currency"`
+	IsLive                bool                    `json:"is_live"`
+	CreatedAt             time.Time               `json:"created_at"`
+	UpdatedAt             time.Time               `json:"updated_at"`
+	Metadata              durianpay.OrderMetadata `json:"metadata"`
+	Items                 []durianpay.OrderItem   `json:"items"`
+	ExpiryDate            time.Time               `json:"expiry_date"`
+	Description           string                  `json:"description"`
+	PaymentLinkUrl        string                  `json:"payment_link_url"`
+	IsNotificationEnabled bool                    `json:"is_notification_enabled"`
+	EmailSubject          string                  `json:"email_subject"`
+	EmailContent          string                  `json:"email_content"`
+	Fees                  string                  `json:"fees"`
+	ShippingFee           string                  `json:"shipping_fee"`
+	AdminFeeMethod        string                  `json:"admin_fee_method"`
+	Customer              durianpay.OrderCustomer `json:"customer"` // Will be filled if use query expand=customer
+	Payments              []OrderPayment          `json:"payments"` // Will be filled if use query expand=payments
+}
+
+// OrderPayment is part of Order for attribute Payments
+type OrderPayment struct {
+	ID                 string                  `json:"id"`
+	OrderID            string                  `json:"order_id"`
+	PaymentRefID       string                  `json:"payment_ref_id"`
+	SettlementID       string                  `json:"settlement_id"`
+	PaymentDsRefID     string                  `json:"payment_ds_ref_id"`
+	Amount             string                  `json:"amount"`
+	Status             string                  `json:"status"`
+	IsLive             bool                    `json:"is_live"`
+	ExpirationDate     time.Time               `json:"expiration_date"`
+	PaymentDetailsType string                  `json:"payment_details_type"`
+	MethodID           string                  `json:"method_id"`
+	CreatedAt          time.Time               `json:"created_at"`
+	UpdatedAt          time.Time               `json:"updated_at"`
+	Metadata           durianpay.OrderMetadata `json:"metadata"`
+	RetryCount         uint16                  `json:"retry_count"`
+	Discount           string                  `json:"discount"`
+	PaidAmount         string                  `json:"paid_amount"`
+	ProvideID          string                  `json:"provider_id"`
+	TotalFee           string                  `json:"total_fee"`
+	PromoID            string                  `json:"promo_id"`
+	ShippingFee        string                  `json:"shipping_fee"`
+	SettlementStatus   string                  `json:"settlement_status"`
+	// TODO: ds_error_metadata, failure_reson
+}

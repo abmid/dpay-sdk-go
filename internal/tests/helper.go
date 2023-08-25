@@ -7,10 +7,12 @@
 package tests
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -63,6 +65,14 @@ func (f *Feature) ResJSONByte(jsonFile string) []byte {
 	}
 
 	return file
+}
+
+// DeepEqualPayload checks whether the payload for the request matches the example json or not.
+// Value payload and argPayload must be assign as pointer
+func (f *Feature) DeepEqualPayload(fileJson string, payload any, argPayload any) bool {
+	json.Unmarshal(f.ResJSONByte(fileJson), payload)
+
+	return reflect.DeepEqual(payload, argPayload)
 }
 
 // ToPtr return value pointer for anything data types.

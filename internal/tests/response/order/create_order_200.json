@@ -1,0 +1,33 @@
+{
+  "data": {
+      "id": "ord_0dIWbuDJQ84078",
+      "customer_id": "cus_ViPeX4iBYp2233",
+      "order_ref_id": "order_ref_001",
+      "order_ds_ref_id": "",
+      "amount": "10001.00",
+      "payment_option": "full_payment",
+      "currency": "IDR",
+      "status": "started",
+      "created_at": "2021-04-01T14:39:37.860426Z",
+      "updated_at": "2021-04-01T14:39:37.860426Z",
+      "expiry_date": "2022-03-29T10:00:00Z",
+      "metadata": {
+          "my-meta-key": "my-meta-value",
+          "SettlementGroup": "BranchName"
+      },
+      "items": [
+          {
+              "name": "LED Television",
+              "qty": 1,
+              "price": "10001.00",
+              "logo": "https://merchant.com/tv_image.jpg"
+          }
+      ],
+      "access_token": "adsyoi12sdASd123ASX@qqsda231",
+      "expire_time": "2022-09-15T13:40:17.064478772Z",
+      "address_id": 7526,
+      "fees": null,
+      "shipping_fee": "",
+      "admin_fee_method": "included"
+  }
+}
