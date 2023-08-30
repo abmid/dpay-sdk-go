@@ -1,0 +1,18 @@
+{
+  "bank_code": "PERMATA",
+  "name": "Abdul Hamid",
+  "is_closed": true,
+  "amount": "12333",
+  "customer": {
+      "given_name": "Abdul Hamid",
+      "mobile": "+6288888888",
+      "email": "abdul.surel@gmail.com"
+  },
+  "expiry_minutes": 14400,
+  "account_suffix": "123456",
+  "is_reusable": true,
+  "va_ref_id": "1234",
+  "min_amount": 10000,
+  "max_amount": 15000,
+  "auto_disable_after_payment": true
+}

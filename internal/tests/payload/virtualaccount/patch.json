@@ -1,0 +1,8 @@
+{
+  "expiry_minutes": 1440,
+  "min_amount": 11000,
+  "max_amount": 13000,
+  "amount": 123456,
+  "is_disabled": true,
+  "va_ref_id": "1234412"
+}

@@ -1,0 +1,26 @@
+{
+  "data": {
+      "customer_id": "cus_iODsnGTdCh3706",
+      "virtual_account": {
+          "id": "va_sample_Cre3I9gg962549",
+          "bank_code": "BCA",
+          "account_number": "190061002123456",
+          "name": "Abdul Hamid",
+          "is_closed": true,
+          "amount": 12333,
+          "currency": "IDR",
+          "customer_id": "cus_iODsnGTdCh3706",
+          "is_sandbox": true,
+          "created_at": "2023-08-29T16:02:41.002599Z",
+          "expiry_at": "2023-09-08T16:02:41.009911Z",
+          "metadata": {},
+          "is_disabled": false,
+          "is_paid": false,
+          "is_reusable": true,
+          "min_amount": null,
+          "max_amount": null,
+          "va_ref_id": "1234",
+          "auto_disable_after_payment": true
+      }
+  }
+}
