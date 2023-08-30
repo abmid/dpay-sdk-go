@@ -438,6 +438,14 @@ func TestClient_PatchByID(t *testing.T) {
 
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
+			if tt.wantRes != nil {
+				payload := durianpay.VirtualAccountPatchPayload{}
+
+				if !featureWrap.DeepEqualPayload(path_payload_va+"patch.json", &payload, &parseArgs.payload) {
+					t.Errorf("Client.PatchByID() gotPayload = %v, wantPayload %v", tt.args.payload, payload)
+				}
+			}
+
 			gotRes, gotErr := c.PatchByID(parseArgs.ctx, parseArgs.ID, parseArgs.payload)
 			if !reflect.DeepEqual(gotRes, tt.wantRes) {
 				t.Errorf("Client.PatchByID() gotRes = %v, want %v", gotRes, tt.wantRes)
