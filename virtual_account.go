@@ -42,3 +42,15 @@ type VirtualAccountPatchPayload struct {
 	IsDisabled    bool   `json:"is_disabled"`
 	VaRefID       string `json:"va_ref_id"`
 }
+
+/*
+ Options
+*/
+
+// VirtualAccountFetchOption is parameter for Virtual Account Fetch API
+type VirtualAccountFetchOption struct {
+	From  uint32 `url:"from"`
+	To    uint32 `url:"to"`
+	Skip  uint16 `url:"skip"`
+	Limit uint16 `url:"limit"`
+}

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// VirtualAccount is struct for response Fetch VAs API
+// VirtualAccount is general response from Virtual Accounts API
 type VirtualAccount struct {
 	ID                      string    `json:"id"`
 	BankCode                string    `json:"bank_code"`
@@ -32,20 +32,26 @@ type VirtualAccount struct {
 	AutoDisableAfterPayment bool      `json:"auto_disable_after_payment"`
 }
 
+// FetchVirtualAccounts is struct for response Fetch Virtual Accounts API
+type FetchVirtualAccounts struct {
+	VirtualAccounts []VirtualAccount `json:"virtual_accounts"`
+	Total           uint32           `json:"total"`
+}
+
 // Create is struct for response Virtual Account Create API
 type Create struct {
 	CustomerID     string         `json:"customer_id"`
 	VirtualAccount VirtualAccount `json:"virtual_account"`
 }
 
-// Detail is struct for response Fetch By ID & Patch By ID API
-type Detail struct {
+// FetchVirtualAccount is struct for response Fetch By ID & Patch By ID API
+type FetchVirtualAccount struct {
 	VirtualAccount       VirtualAccount         `json:"virtual_account"`
 	VirtualAccountStatus string                 `json:"virtual_account_status"`
 	Customer             VirtualAccountCustomer `json:"customer"`
 }
 
-// VirtualAccountCustomer is part of Detail
+// VirtualAccountCustomer is part of FetchVirtualAccount
 type VirtualAccountCustomer struct {
 	ID            string `json:"id"`
 	CustomerRefID string `json:"customer_ref_id"`

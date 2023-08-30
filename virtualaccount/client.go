@@ -38,3 +38,19 @@ func (c *Client) Create(ctx context.Context, payload durianpay.VirtualAccountPay
 
 	return &res.Data, nil
 }
+
+// FetchVirtualAccounts returns a response from Virtual Accounts Fetch API
+//
+//	[Doc Virtual Accounts Fetch API]: https://durianpay.id/docs/api/virtual-accounts/fetch/
+func (c *Client) FetchVirtualAccounts(ctx context.Context, opt durianpay.VirtualAccountFetchOption) (*FetchVirtualAccounts, *durianpay.Error) {
+	res := struct {
+		Data FetchVirtualAccounts `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_VA, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
