@@ -23,6 +23,7 @@ type Client struct {
 const (
 	PATH_VA          = "/v1/virtual-accounts"
 	PATH_FETCH_BY_ID = PATH_VA + "/:id"
+	PATH_PATCH_BY_ID = PATH_VA + "/:id"
 )
 
 // Create returns a response from Virtual Account Create API.
@@ -68,6 +69,24 @@ func (c *Client) FetchVirtualAccountByID(ctx context.Context, ID string) (*Fetch
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// PatchByID returns a response from Virtual Accounts Patch By ID API.
+//
+//	[Doc Virtual Accounts Patch By ID API]: https://durianpay.id/docs/api/virtual-accounts/patch-one/
+func (c *Client) PatchByID(ctx context.Context, ID string, payload durianpay.VirtualAccountPatchPayload) (*FetchVirtualAccount, *durianpay.Error) {
+	url := durianpay.DURIANPAY_URL + PATH_PATCH_BY_ID
+	url = strings.ReplaceAll(url, ":id", ID)
+	res := struct {
+		Data FetchVirtualAccount `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPatch, url, nil, payload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
