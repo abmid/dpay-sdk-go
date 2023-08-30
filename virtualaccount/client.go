@@ -21,9 +21,10 @@ type Client struct {
 }
 
 const (
-	PATH_VA          = "/v1/virtual-accounts"
-	PATH_FETCH_BY_ID = PATH_VA + "/:id"
-	PATH_PATCH_BY_ID = PATH_VA + "/:id"
+	PATH_VA               = "/v1/va"
+	PATH_FETCH_BY_ID      = PATH_VA + "/:id"
+	PATH_PATCH_BY_ID      = PATH_VA + "/:id"
+	PATH_PAYMENT_SIMULATE = PATH_VA + "/simulate"
 )
 
 // Create returns a response from Virtual Account Create API.
@@ -92,4 +93,22 @@ func (c *Client) PatchByID(ctx context.Context, ID string, payload durianpay.Vir
 	}
 
 	return &res.Data, nil
+}
+
+// PaymentSimulate returns a response from Virtual Accounts Payment Simulate API
+//
+//	[Doc Virtual Accounts Payment Simulate API]: https://durianpay.id/docs/api/virtual-accounts/simulate/
+func (c *Client) PaymentSimulate(ctx context.Context, payload durianpay.VirtualAccountPaymentSimulatePayload) (string, *durianpay.Error) {
+	res := struct {
+		Data struct {
+			Status string `json:"status"`
+		} `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_PAYMENT_SIMULATE, nil, payload, nil, &res)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Data.Status, nil
 }

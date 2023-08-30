@@ -43,6 +43,13 @@ type VirtualAccountPatchPayload struct {
 	VaRefID       string `json:"va_ref_id"`
 }
 
+// VirtualAccountPaymentSimulatePayload is payload for Virtual Account Payment Simulate API
+type VirtualAccountPaymentSimulatePayload struct {
+	Amount        string `json:"amount"`
+	AccountNumber string `json:"account_number""`
+	ForceFail     bool   `json:"force_fail"`
+}
+
 /*
  Options
 */
