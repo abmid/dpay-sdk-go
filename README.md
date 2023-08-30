@@ -78,11 +78,11 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
   - [ ] Unlink E-Wallet Account
   - [ ] Detail E-Wallet Account
 - VIRTUAL ACCOUNTS
-  - [ ] Create VA
-  - [ ] Fetch VAs
-  - [ ] Fetch VA By ID
-  - [ ] Patch VA By ID
-  - [ ] Simulate VA Payment
+  - [x] Create VA
+  - [x] Fetch VAs
+  - [x] Fetch VA By ID
+  - [x] Patch VA By ID
+  - [x] Simulate VA Payment
 - INVOINCES
   - [ ] Create Invoince
   - [ ] Generate Checkout URL
