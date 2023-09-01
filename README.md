@@ -70,9 +70,9 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
   - [ ] Status Settlement By ID
   - [ ] Fetch Settlement By ID
 - REFUNDS
-  - [ ] Create Refund
-  - [ ] Fetch Refunds
-  - [ ] Fetch Refund By ID
+  - [x] Create Refund
+  - [x] Fetch Refunds
+  - [x] Fetch Refund By ID
 - E-WALLET Account
   - [ ] Link E-Wallet Account
   - [ ] Unlink E-Wallet Account
