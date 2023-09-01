@@ -38,3 +38,19 @@ func (c *Client) Create(ctx context.Context, payload durianpay.RefundPayload) (*
 
 	return &res.Data, nil
 }
+
+// FetchRefunds return a response from Refund Fetch API.
+//
+//	[Doc Refund Fetch API]: https://durianpay.id/docs/api/refunds/fetch/
+func (c *Client) FetchRefunds(ctx context.Context, opt durianpay.RefundFetchOption) (*FetchRefunds, *durianpay.Error) {
+	res := struct {
+		Data FetchRefunds `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, PATH_REFUND, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
