@@ -1,0 +1,16 @@
+{
+  "total_count": 1,
+  "settlement_detail": [
+    {
+      "id": "set_WDizQUoyWy1234",
+      "settlement_amount": "20000.00",
+      "status": "settled",
+      "fee": "200.00",
+      "promo_amount": "",
+      "total_transaction_amount": "20200.00",
+      "created_at": "2021-05-17T08:30:56.73529Z",
+      "settled_at": "2021-05-17T08:32:00.628182Z",
+      "currency": "IDR"
+    }
+  ]
+}

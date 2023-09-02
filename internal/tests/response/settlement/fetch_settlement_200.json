@@ -1,0 +1,11 @@
+{
+  "data": {
+    "id": "set_WDizQUoyWy8680",
+    "settlement_amount": "50000",
+    "status": "settled",
+    "fee": "10000",
+    "created_at": "2021-05-17T08:32:00.628182Z",
+    "settled_at": "2021-05-27T08:32:00.628182Z",
+    "promo_amount": "10000"
+  }
+}
