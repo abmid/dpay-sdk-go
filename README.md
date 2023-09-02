@@ -74,9 +74,9 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
   - [x] Fetch Refunds
   - [x] Fetch Refund By ID
 - E-WALLET Account
-  - [ ] Link E-Wallet Account
-  - [ ] Unlink E-Wallet Account
-  - [ ] Detail E-Wallet Account
+  - [x] Link E-Wallet Account
+  - [x] Unlink E-Wallet Account
+  - [x] Detail E-Wallet Account
 - VIRTUAL ACCOUNTS
   - [x] Create VA
   - [x] Fetch VAs
