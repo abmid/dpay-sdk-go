@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"reflect"
+	"strings"
 	"testing"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
@@ -115,6 +116,87 @@ func TestClient_Link(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.Link() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_Unlink(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *Unlink
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				ID:  "ewa_123",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_UNBIND, ":id", args.ID)
+				headers := map[string]string{
+					"Is-live": "true",
+				}
+				m.api.EXPECT().Req(gomock.Any(), "PUT", url, nil, nil, headers, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, headers map[string]string, response any) *durianpay.Error {
+
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_ewalletaccount+"unlink_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+						return nil
+					})
+			},
+			wantRes: &Unlink{
+				WalletType: "GOPAY",
+				Mobile:     "8888888888",
+				RefID:      "83f1c265-a345-4aed-8b42-08b0908a6ce7",
+				Status:     "disabled",
+				Message:    "account unbinded successfully",
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_UNBIND, ":id", args.ID)
+				m.api.EXPECT().
+					Req(gomock.Any(), "PUT", url, nil, nil, gomock.Any(), gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.Unlink(tt.args.ctx, tt.args.ID)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.Unlink() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.Unlink() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
 			}
 		})
 	}
