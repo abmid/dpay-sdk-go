@@ -38,3 +38,17 @@ func (c *Client) FetchSettlements(ctx context.Context, opt durianpay.SettlementO
 
 	return &res, nil
 }
+
+// FetchDetails return a response from Settlements Details Fetch API.
+//
+//	[Doc Settlements Details Fetch API]: https://durianpay.id/docs/api/settlements/settlements-fetch-details/
+func (c *Client) FetchDetails(ctx context.Context, opt durianpay.SettlementOption) (*FetchDetails, *durianpay.Error) {
+	res := FetchDetails{}
+
+	err := c.Api.Req(ctx, http.MethodGet, PATH_SETTLEMENT_DETAIL, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}

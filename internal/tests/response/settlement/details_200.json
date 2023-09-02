@@ -1,0 +1,25 @@
+{
+  "settlement_detail": [
+    {
+      "settlement_id": "set_WDizQUoyWy1234",
+      "payment_id": "pay_O7laHvW2BI1234",
+      "payment_reference": "",
+      "order_id": "ord_KlQRqodMqq0540",
+      "order_reference": "order_ref_001",
+      "status": "settled",
+      "currency": "IDR",
+      "settlement_amount": "19635.00",
+      "total_settlement_fee": "365.00",
+      "payment_discount": "",
+      "settled_at": "2021-05-17T08:32:00.628182Z",
+      "group": "",
+      "payment_amount": "20000.00",
+      "payment_date": "2021-05-17T08:26:43.990125Z",
+      "transaction_amount": "20000.00",
+      "payment_details_type": "ewallet_details",
+      "payment_method_id": "SHOPEEPAY"
+    }
+  ],
+  "settlement_count": 1,
+  "transaction_count": 1
+}
