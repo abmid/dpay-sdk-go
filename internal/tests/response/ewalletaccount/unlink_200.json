@@ -1,0 +1,9 @@
+{
+  "data": {
+      "wallet_type": "GOPAY",
+      "mobile": "8888888888",
+      "ref_id": "83f1c265-a345-4aed-8b42-08b0908a6ce7",
+      "status": "disabled",
+      "message": "account unbinded successfully"
+  }
+}

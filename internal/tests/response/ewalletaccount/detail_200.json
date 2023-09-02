@@ -1,0 +1,11 @@
+{
+  "data": {
+      "wallet_type": "GOPAY",
+      "ref_id": "7f125e70-095e-481d-8db8-241df9d5b86d",
+      "status": "enabled",
+      "mobile": "8888888888",
+      "balance": "8000000.00",
+      "currency": "IDR",
+      "token": "53c385d4-e279-495f-835a-d5ed089fe2cb"
+  }
+}
