@@ -9,6 +9,7 @@ package settlement
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/common"
@@ -66,6 +67,23 @@ func (c *Client) StatusByPaymentID(ctx context.Context, paymentID string) (*Sett
 	}{PaymentID: paymentID}
 
 	err := c.Api.Req(ctx, http.MethodGet, PATH_SETTLEMENT_DETAIL, params, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// FetchSettlementByID return a response from Settlements By ID API.
+//
+//	[Doc Settlements By ID API]: https://durianpay.id/docs/api/settlements/settlements-fetch-by-id/
+func (c *Client) FetchSettlementByID(ctx context.Context, ID string) (*Settlement, *durianpay.Error) {
+	url := strings.ReplaceAll(PATH_SETTLEMENT_FETCH_BY_ID, ":id", ID)
+	res := struct {
+		Data Settlement `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}

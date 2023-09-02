@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -298,6 +299,90 @@ func TestClient_StatusByPaymentID(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.StatusByPaymentID() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_FetchSettlementByID(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *Settlement
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				ID:  "set_WDizQUoyWy8680",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_SETTLEMENT_FETCH_BY_ID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, nil, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_settlement+"fetch_settlement_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &Settlement{
+				ID:               "set_WDizQUoyWy8680",
+				SettlementAmount: "50000",
+				Status:           "settled",
+				Fee:              "10000",
+				CreatedAt:        tests.StringToTime("2021-05-17T08:32:00.628182Z"),
+				SettledAt:        tests.StringToTime("2021-05-27T08:32:00.628182Z"),
+				PromoAmount:      "10000",
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+				ID:  "set_WDizQUoyWy8680",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_SETTLEMENT_FETCH_BY_ID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, gomock.Any(), nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.FetchSettlementByID(tt.args.ctx, tt.args.ID)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.FetchSettlementByID() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.FetchSettlementByID() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
 			}
 		})
 	}
