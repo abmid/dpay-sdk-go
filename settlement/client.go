@@ -52,3 +52,23 @@ func (c *Client) FetchDetails(ctx context.Context, opt durianpay.SettlementOptio
 
 	return &res, nil
 }
+
+// StatusByPaymentID return a response from Settlements Status By Payment ID API.
+//
+//	[Doc Settlements Status By Payment ID API]: https://durianpay.id/docs/api/settlements/settlements-fetch-by-payment-id/
+func (c *Client) StatusByPaymentID(ctx context.Context, paymentID string) (*SettlementDetail, *durianpay.Error) {
+	res := struct {
+		Data SettlementDetail `json:"data"`
+	}{}
+
+	params := struct {
+		PaymentID string `url:"payment_id"`
+	}{PaymentID: paymentID}
+
+	err := c.Api.Req(ctx, http.MethodGet, PATH_SETTLEMENT_DETAIL, params, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}

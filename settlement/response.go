@@ -56,6 +56,3 @@ type FetchDetails struct {
 	TransactionCount uint32             `json:"transaction_count"`
 	SettlementDetail []SettlementDetail `json:"settlement_detail"`
 }
-
-// Status response for Settlements Status By Payment ID API
-type Status = SettlementDetail
