@@ -65,10 +65,10 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
   - [x] Fetch Disbursement By ID
   - [x] Delete Disbusement By ID
 - SETTLEMENTS
-  - [ ] Fetch Settlements
-  - [ ] Detail Settlement By ID
-  - [ ] Status Settlement By ID
-  - [ ] Fetch Settlement By ID
+  - [x] Fetch Settlements
+  - [x] Detail Settlement By ID
+  - [x] Status Settlement By ID
+  - [x] Fetch Settlement By ID
 - REFUNDS
   - [x] Create Refund
   - [x] Fetch Refunds
