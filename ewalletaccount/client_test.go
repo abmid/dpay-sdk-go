@@ -201,3 +201,86 @@ func TestClient_Unlink(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_Detail(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *Detail
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				ID:  "ewa_123",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_DETAIL, ":id", args.ID)
+				headers := map[string]string{
+					"Is-live": "true",
+				}
+				m.api.EXPECT().Req(gomock.Any(), "GET", url, nil, nil, headers, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, headers map[string]string, response any) *durianpay.Error {
+
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_ewalletaccount+"detail_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+						return nil
+					})
+			},
+			wantRes: &Detail{
+				WalletType: "GOPAY",
+				RefID:      "7f125e70-095e-481d-8db8-241df9d5b86d",
+				Status:     "enabled",
+				Mobile:     "8888888888",
+				Balance:    "8000000.00",
+				Currency:   "IDR",
+				Token:      "53c385d4-e279-495f-835a-d5ed089fe2cb",
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_DETAIL, ":id", args.ID)
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, nil, nil, gomock.Any(), gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.Detail(parseArgs.ctx, parseArgs.ID)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.Detail() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.Detail() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}

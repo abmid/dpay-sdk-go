@@ -22,6 +22,7 @@ type Client struct {
 
 const (
 	PATH_EWALLET_ACCOUNT        = durianpay.DURIANPAY_URL + "/v1/ewallet/account"
+	PATH_EWALLET_ACCOUNT_DETAIL = PATH_EWALLET_ACCOUNT + "/:id"
 	PATH_EWALLET_ACCOUNT_BIND   = PATH_EWALLET_ACCOUNT + "/bind"
 	PATH_EWALLET_ACCOUNT_UNBIND = PATH_EWALLET_ACCOUNT + "/:id/unbind"
 )
@@ -54,6 +55,24 @@ func (c *Client) Unlink(ctx context.Context, ID string) (*Unlink, *durianpay.Err
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodPut, url, nil, nil, headers, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// Detail return a response from E-Wallet Account Details API
+//
+//	[Doc E-Wallet Account Details API]: https://durianpay.id/docs/api/ewallet/details/
+func (c *Client) Detail(ctx context.Context, ID string) (*Detail, *durianpay.Error) {
+	url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_DETAIL, ":id", ID)
+	headers := map[string]string{"Is-live": "true"}
+	res := struct {
+		Data Detail `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, headers, &res)
 	if err != nil {
 		return nil, err
 	}
