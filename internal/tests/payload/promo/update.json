@@ -1,0 +1,22 @@
+{
+  "type": "card_promos",
+  "label": "SALE302022",
+  "currency": "IDR",
+  "promo_details": {
+    "bin_list": [424242],
+    "bank_codes": ["BCA"]
+  },
+  "discount_type": "percentage",
+  "discount": "10",
+  "min_order_amount": "",
+  "max_discount_amount": "",
+  "starts_at": "2022-02-24T18:30:00.000Z",
+  "ends_at": "2022-02-27T18:30:00.000Z",
+  "promo_type": "",
+  "description": "",
+  "sub_type": "direct_discount",
+  "limit_type": "quota",
+  "limit_value": "100",
+  "price_deduction_type": "total_price",
+  "code": "SALE2022"
+}

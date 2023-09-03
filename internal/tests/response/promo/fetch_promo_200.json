@@ -1,0 +1,31 @@
+{
+  "data": {
+      "currency": "IDR",
+      "label": "SALE502022",
+      "description": "",
+      "min_order_amount": "",
+      "max_discount_amount": "",
+      "starts_at": "2022-02-24T18:30:00Z",
+      "ends_at": "2022-02-27T18:30:00Z",
+      "discount": "10",
+      "discount_type": "percentage",
+      "type": "card_promos",
+      "promo_details": {
+          "promo_id": "prm_3eTlttAEF84045",
+          "bin_list": [
+              424242
+          ],
+          "bank_codes": []
+      },
+      "sub_type": "direct_discount",
+      "limit_type": "quota",
+      "limit_value": "100",
+      "price_deduction_type": "total_price",
+      "status": "expired",
+      "created_at": "2023-09-03T03:27:06.882206Z",
+      "updated_at": "2023-09-03T03:27:06.882206Z",
+      "is_live": false,
+      "promo_usage": "0",
+      "id": "prm_3eTlttAEF84045"
+  }
+}
