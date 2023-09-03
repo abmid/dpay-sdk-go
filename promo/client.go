@@ -9,6 +9,7 @@ package promo
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/common"
@@ -20,7 +21,8 @@ type Client struct {
 }
 
 const (
-	PATH_PROMO = durianpay.DURIANPAY_URL + "/v1/merchants/promos"
+	PATH_PROMO             = durianpay.DURIANPAY_URL + "/v1/merchants/promos"
+	PATH_PROMO_FETCH_BY_UD = PATH_PROMO + "/:id"
 )
 
 // Create return a response from Create Promos API.
@@ -53,4 +55,21 @@ func (c *Client) FetchPromos(ctx context.Context) ([]Promo, *durianpay.Error) {
 	}
 
 	return res.Data, nil
+}
+
+// FetchPromoByID return a response from Promos Fetch By ID API.
+//
+//	[Doc Promos Fetch By ID API]: https://durianpay.id/docs/api/promos/fetch-one/
+func (c *Client) FetchPromoByID(ctx context.Context, ID string) (*Promo, *durianpay.Error) {
+	url := strings.ReplaceAll(PATH_PROMO_FETCH_BY_UD, ":id", ID)
+	res := struct {
+		Data Promo `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
 }
