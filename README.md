@@ -48,11 +48,11 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
   - [ ] Cancel Payment
   - [ ] MDR Fees Calculation
 - PROMOS
-  - [ ] Create Promo
-  - [ ] Fetch Promos
-  - [ ] Fetch Promo By ID
-  - [ ] Delete Promo
-  - [ ] Update Promo
+  - [x] Create Promo
+  - [x] Fetch Promos
+  - [x] Fetch Promo By ID
+  - [x] Delete Promo
+  - [x] Update Promo
 - DISBURSEMENTS
   - [x] Submit Disbursement
   - [x] Approve Disbursment
