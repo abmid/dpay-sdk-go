@@ -337,3 +337,79 @@ func TestClient_FetchPromoByID(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_Delete(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes string
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				ID:  "prm_3eTlttAEF84045",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PROMO_DELETE_BY_ID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "DELETE", url, nil, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_promo+"delete_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: "Promo deleted successfully",
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+				ID:  "prm_3eTlttAEF84045",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PROMO_DELETE_BY_ID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "DELETE", url, nil, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.Delete(parseArgs.ctx, parseArgs.ID)
+			if gotRes != tt.wantRes {
+				t.Errorf("Client.Delete() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.Delete() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
