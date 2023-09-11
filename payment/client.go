@@ -67,3 +67,24 @@ func (c *Client) ChargeBNPL(ctx context.Context, payload durianpay.PaymentCharge
 
 	return &res.Data, nil
 }
+
+// ChargeEwallet returns a response from Payment Charge API for type E-Wallet
+//
+//	[Doc Payment Charge API VA]: https://durianpay.id/docs/api/payments/charge/
+func (c *Client) ChargeEwallet(ctx context.Context, payload durianpay.PaymentChargeEwalletPayload) (*ChargeEwallet, *durianpay.Error) {
+	reqPayload := chargePayload{
+		Type:    "EWALLET",
+		Request: payload,
+	}
+
+	res := struct {
+		Data ChargeEwallet `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
