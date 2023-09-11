@@ -320,3 +320,119 @@ func TestClient_ChargeVA(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_ChargeBNPL(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type bnplPayload struct {
+		Type          string                             `json:"type"`
+		Request       durianpay.PaymentChargeBNPLPayload `json:"request"`
+		SandboxOption *durianpay.PaymentSandboxOption    `json:"sandbox_options"`
+	}
+
+	type args struct {
+		ctx     context.Context
+		payload durianpay.PaymentChargeBNPLPayload
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *ChargeBNPL
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.PaymentChargeBNPLPayload{
+					OrderID:               "ord_1EcWGI2xSs7216",
+					Amount:                "10000.00",
+					PaymentRefID:          "pay_ref_123",
+					PaymentMethodUniqueID: "AKULAKU",
+					CustomerInfo: durianpay.PaymentCustomerInfo{
+						ID:        "cus_aGn5UD0m7F0994",
+						Email:     "jude_kasper@koss.in",
+						GivenName: "Jude Kasper",
+					},
+				},
+			},
+			prepare: func(m mocks, args args) {
+				payload := chargePayload{
+					Type:          "BNPL",
+					Request:       args.payload,
+					SandboxOption: args.payload.SandboxOption,
+				}
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", PATH_PAYMENT_CHARGE, nil, payload, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"charge_bnpl_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &ChargeBNPL{
+				Type: "BNPL",
+				Response: chargeResponseBNPL{
+					PaymentID:    "pay_80pgxEcUbO8054",
+					OrderID:      "ord_NDmLvwTTh95152",
+					PaymentRefID: "pay_ref_123",
+					RedirectURL:  "https://redirect-url.com/",
+					PaidAmount:   "80001.00",
+					Metadata:     Metadata{},
+				},
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", PATH_PAYMENT_CHARGE, nil, gomock.Any(), nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			if tt.wantRes != nil {
+				validPayload := bnplPayload{}
+				argsPayload := bnplPayload{
+					Type:          "BNPL",
+					Request:       parseArgs.payload,
+					SandboxOption: parseArgs.payload.SandboxOption,
+				}
+
+				if !featureWrap.DeepEqualPayload(path_payload_payment+"charge_bnpl.json", &validPayload, &argsPayload) {
+					t.Errorf("Client.ChargeBNPL() validPayload = %v, argsPayload %v", validPayload, argsPayload)
+				}
+			}
+
+			gotRes, gotErr := c.ChargeBNPL(tt.args.ctx, tt.args.payload)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.ChargeBNPL() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.ChargeBNPL() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}

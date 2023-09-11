@@ -45,3 +45,25 @@ func (c *Client) ChargeVA(ctx context.Context, payload durianpay.PaymentChargeVA
 
 	return &res.Data, nil
 }
+
+// ChargeBNPL returns a response from Payment Charge API for type Buy Now PayLater
+//
+//	[Doc Payment Charge API VA]: https://durianpay.id/docs/api/payments/charge/
+func (c *Client) ChargeBNPL(ctx context.Context, payload durianpay.PaymentChargeBNPLPayload) (*ChargeBNPL, *durianpay.Error) {
+	reqPayload := chargePayload{
+		Type:          "BNPL",
+		Request:       payload,
+		SandboxOption: payload.SandboxOption,
+	}
+
+	res := struct {
+		Data ChargeBNPL `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
