@@ -1,0 +1,16 @@
+{
+  "data": {
+      "type": "EWALLET",
+      "response": {
+          "payment_id": "pay_PoVnlDmGts4956",
+          "order_id": "ord_VN5nVJpSW27112",
+          "mobile": "08123456789",
+          "status": "processing",
+          "expiration_time": "0001-01-01T00:00:00Z",
+          "checkout_url": "https://checkout.durianpay.id/callback",
+          "web_url": "",
+          "unique_id": "",
+          "paid_amount": "10001.00"
+      }
+  }
+}

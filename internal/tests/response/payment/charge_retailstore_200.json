@@ -1,0 +1,13 @@
+{
+  "data": {
+      "type": "RETAILSTORE",
+      "response": {
+          "payment_id": "pay_Ln1PZECuqf3748",
+          "order_id": "ord_VN5nVJpSW27112",
+          "account_number": "1111111111",
+          "payment_ref_id": "pay_ref_123",
+          "expiration_time": "2023-09-05T10:31:39.672938538Z",
+          "paid_amount": ""
+      }
+  }
+}

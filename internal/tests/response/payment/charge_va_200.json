@@ -1,0 +1,47 @@
+{
+  "data": {
+      "type": "VA",
+      "response": {
+          "payment_id": "pay_pYQ319c4qo5956",
+          "order_id": "ord_VN5nVJpSW27112",
+          "account_number": "7893572945724867",
+          "payment_ref_id": "pay_ref_123",
+          "expiration_time": "2023-09-05T10:00:00Z",
+          "paid_amount": "",
+          "payment_instruction": {
+              "en": {
+                  "atm": {
+                      "heading": "ATM Mandiri",
+                      "instruction_text": "<ol><li>Insert your ATM card and select \"ENGLISH\"</li></ol>"
+                  },
+                  "mobile_app": {
+                      "heading": "Mandiri Online",
+                      "appstore_url": "<<http://onelink.to/dvs8pn",
+                      "playstore_url": "http://onelink.to/dvs8pn",
+                      "instruction_text": "<ol><li>Insert your ATM card and select \"ENGLISH\"</li></ol>"
+                  },
+                  "internet_banking": {
+                      "heading": "Internet Banking",
+                      "instruction_text": "<ol><li>Insert your ATM card and select \"ENGLISH\"</li></ol>"
+                  }
+              },
+              "id": {
+                  "atm": {
+                      "heading": "ATM Mandiri",
+                      "instruction_text": "<ol><li>Masukkan kartu ATM dan pilih \"Bahasa Indonesia\"</li></ol>"
+                  },
+                  "mobile_app": {
+                      "heading": "Mandiri Online",
+                      "appstore_url": "<<http://onelink.to/dvs8pn",
+                      "playstore_url": "http://onelink.to/dvs8pn",
+                      "instruction_text": "<ol><li>Masukkan kartu ATM dan pilih \"Bahasa Indonesia\"</li></ol>"
+                  },
+                  "internet_banking": {
+                      "heading": "Internet Banking",
+                      "instruction_text": "<ol><li>Masukkan kartu ATM dan pilih \"Bahasa Indonesia\"</li></ol>"
+                  }
+              }
+          }
+      }
+  }
+}

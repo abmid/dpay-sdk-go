@@ -1,0 +1,15 @@
+{
+  "data": {
+      "type": "ONLINE_BANKING",
+      "response": {
+          "payment_id": "pay_RGEkDpZZWR9662",
+          "order_id": "ord_VN5nVJpSW27112",
+          "mobile": "+6285722173217",
+          "status": "processing",
+          "expiration_time": "2023-09-05T10:32:27.273180959Z",
+          "web_url": "",
+          "unique_id": "",
+          "paid_amount": "10001.00"
+      }
+  }
+}

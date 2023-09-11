@@ -1,0 +1,15 @@
+{
+  "type": "ONLINE_BANKING",
+  "request": {
+    "order_id": "ord_mJH2hKOSYb3514",
+    "type": "JENIUSPAY",
+    "name": "Name Appear in ATM",
+    "amount": "20000.00",
+    "customer_info": {
+      "email": "jude_kasper@koss.in",
+      "given_name": "Jude Kasper",
+      "id": "cus_aGn5UD0m7F0994"
+    },
+    "mobile": "+6285722173217"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "QRIS",
+  "request": {
+    "amount": "80001.00",
+    "order_id": "ord_ZSHipeBgUd4740",
+    "name": "Name Appear in ATM",
+    "type": "DANA"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "VA",
+  "request": {
+    "order_id": "ord_WkJWY1ysZ57194",
+    "bank_code": "MANDIRI",
+    "name": "Name Appear in ATM",
+    "amount": "20000",
+    "payment_ref_id": "pay_ref_123"
+  },
+  "sandbox_options": {
+    "force_fail": true,
+    "delay_ms": 10000
+  }
+}

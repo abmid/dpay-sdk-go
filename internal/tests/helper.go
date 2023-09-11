@@ -72,7 +72,37 @@ func (f *Feature) ResJSONByte(jsonFile string) []byte {
 func (f *Feature) DeepEqualPayload(fileJson string, payload any, argPayload any) bool {
 	json.Unmarshal(f.ResJSONByte(fileJson), payload)
 
-	return reflect.DeepEqual(payload, argPayload)
+	if reflect.DeepEqual(payload, argPayload) {
+		return true
+	}
+
+	var castPayload, castArgsPayload any
+
+	bytesCastPayload, err := json.Marshal(payload)
+	if err != nil {
+		panic(fmt.Sprintf("DeepEqualPayload: %v", err))
+	}
+
+	bytesCastArgsPayload, err := json.Marshal(argPayload)
+	if err != nil {
+		panic(fmt.Sprintf("DeepEqualPayload: %v", err))
+	}
+
+	err = json.Unmarshal(bytesCastPayload, &castPayload)
+	if err != nil {
+		panic(fmt.Sprintf("DeepEqualPayload: %v", err))
+	}
+
+	err = json.Unmarshal(bytesCastArgsPayload, &castArgsPayload)
+	if err != nil {
+		panic(fmt.Sprintf("DeepEqualPayload: %v", err))
+	}
+
+	if reflect.DeepEqual(castPayload, castArgsPayload) {
+		return true
+	}
+
+	return false
 }
 
 // ToPtr return value pointer for anything data types.

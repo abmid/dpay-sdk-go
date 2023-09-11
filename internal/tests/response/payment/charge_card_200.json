@@ -1,0 +1,15 @@
+{
+  "data": {
+      "type": "CARD",
+      "response": {
+          "payment_id": "pay_TMlTVT3wvr3598",
+          "order_id": "ord_Gf7LimyjMk7270",
+          "payment_ref_id": "pay_ref_123",
+          "token_id": "",
+          "status": "completed",
+          "paid_amount": "10001.00",
+          "metadata": {},
+          "checkout_url": "https://link.to/card-checkout-url"
+      }
+  }
+}

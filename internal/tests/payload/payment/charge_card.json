@@ -1,0 +1,13 @@
+{
+  "type": "CARD",
+  "request": {
+    "order_id": "ord_1EcWGI2xSs7216",
+    "amount": "10000.00",
+    "payment_ref_id": "pay_ref_123",
+    "customer_info": {
+      "id": "cus_aGn5UD0m7F0994",
+      "email": "jude_kasper@koss.in",
+      "given_name": "Jude Kasper"
+    }
+  }
+}

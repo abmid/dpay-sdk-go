@@ -1,0 +1,20 @@
+{
+  "data": {
+      "type": "QRIS",
+      "response": {
+          "payment_id": "pay_s2sSBlDSWv4167",
+          "order_id": "ord_QETgbs2UGL3100",
+          "status": "processing",
+          "expiration_time": "2021-09-15T15:44:37Z",
+          "creation_time": "2021-09-12T15:44:37ZZ",
+          "qr_string": "data:image/png;base64, long_qr_string",
+          "unique_id": "QRIS",
+          "metadata": {
+              "merchant_name": "Durianpay",
+              "merchant_id": "sample_national_merchant_id"
+          },
+          "amount": "80001.00",
+          "qr_code": "00020101021226590013ID.CO.BNI.WWW011893600009150002286002092107061320303UME51470015ID.OR.GPNQR.WWW0217ID2107271315771960303UME520454995303360540880001.005802ID5905Ajesh6013JAKARTA PUSAT6105101406214011038291492856304E1F"
+      }
+  }
+}

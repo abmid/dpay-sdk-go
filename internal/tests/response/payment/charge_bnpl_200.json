@@ -1,0 +1,13 @@
+{
+  "data": {
+      "type": "BNPL",
+      "response": {
+          "payment_id": "pay_80pgxEcUbO8054",
+          "order_id": "ord_NDmLvwTTh95152",
+          "payment_ref_id": "pay_ref_123",
+          "redirect_url": "https://redirect-url.com/",
+          "paid_amount": "80001.00",
+          "metadata": {}
+      }
+  }
+}

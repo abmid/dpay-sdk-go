@@ -1,0 +1,9 @@
+{
+  "type": "EWALLET",
+  "request": {
+    "order_id": "ord_mJH2hKOSYb3514",
+    "amount": "20000.00",
+    "mobile": "08123456789",
+    "wallet_type": "DANA"
+  }
+}
