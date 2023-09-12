@@ -123,6 +123,7 @@ type chargeResponseQRIS struct {
 	OrderID        string    `json:"order_id"`
 	Status         string    `json:"status"`
 	ExpirationTime time.Time `json:"expiration_time"`
+	CreationTime   time.Time `json:"creation_time"`
 	QRString       string    `json:"qr_string"`
 	UniqueID       string    `json:"unique_id"`
 	Metadata       Metadata  `json:"metadata"`

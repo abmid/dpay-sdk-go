@@ -6,7 +6,7 @@
           "order_id": "ord_QETgbs2UGL3100",
           "status": "processing",
           "expiration_time": "2021-09-15T15:44:37Z",
-          "creation_time": "2021-09-12T15:44:37ZZ",
+          "creation_time": "2021-09-12T15:44:37Z",
           "qr_string": "data:image/png;base64, long_qr_string",
           "unique_id": "QRIS",
           "metadata": {

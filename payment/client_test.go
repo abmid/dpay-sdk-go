@@ -773,3 +773,120 @@ func TestClient_ChargeOnlineBank(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_ChargeQRIS(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type qrisPayload struct {
+		Type    string                             `json:"type"`
+		Request durianpay.PaymentChargeQRISPayload `json:"request"`
+	}
+
+	type args struct {
+		ctx     context.Context
+		payload durianpay.PaymentChargeQRISPayload
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *ChargeQRIS
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.PaymentChargeQRISPayload{
+					OrderID: "ord_ZSHipeBgUd4740",
+					Type:    "DANA",
+					Amount:  "80001.00",
+					Name:    "Name Appear in ATM",
+				},
+			},
+			prepare: func(m mocks, args args) {
+				payload := chargePayload{
+					Type:    "QRIS",
+					Request: args.payload,
+				}
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", PATH_PAYMENT_CHARGE, nil, payload, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"charge_qris_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &ChargeQRIS{
+				Type: "QRIS",
+				Response: chargeResponseQRIS{
+					PaymentID:      "pay_s2sSBlDSWv4167",
+					OrderID:        "ord_QETgbs2UGL3100",
+					Status:         "processing",
+					ExpirationTime: tests.StringToTime("2021-09-15T15:44:37Z"),
+					CreationTime:   tests.StringToTime("2021-09-12T15:44:37Z"),
+					QRString:       "data:image/png;base64, long_qr_string",
+					UniqueID:       "QRIS",
+					Metadata: Metadata{
+						MerchantName: "Durianpay",
+						MerchantID:   "sample_national_merchant_id",
+					},
+					Amount: "80001.00",
+					QRCode: "00020101021226590013ID.CO.BNI.WWW011893600009150002286002092107061320303UME51470015ID.OR.GPNQR.WWW0217ID2107271315771960303UME520454995303360540880001.005802ID5905Ajesh6013JAKARTA PUSAT6105101406214011038291492856304E1F",
+				},
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", PATH_PAYMENT_CHARGE, nil, gomock.Any(), nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			if tt.wantRes != nil {
+				validPayload := qrisPayload{}
+				argsPayload := qrisPayload{
+					Type:    "QRIS",
+					Request: parseArgs.payload,
+				}
+
+				if !featureWrap.DeepEqualPayload(path_payload_payment+"charge_qris.json", &validPayload, &argsPayload) {
+					t.Errorf("Client.ChargeQRIS() validPayload = %v, argsPayload %v", validPayload, argsPayload)
+				}
+			}
+
+			gotRes, gotErr := c.ChargeQRIS(tt.args.ctx, tt.args.payload)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.ChargeQRIS() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.ChargeQRIS() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}

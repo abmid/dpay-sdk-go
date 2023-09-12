@@ -130,3 +130,24 @@ func (c *Client) ChargeOnlineBank(ctx context.Context, payload durianpay.Payment
 
 	return &res.Data, nil
 }
+
+// ChargeQRIS returns a response from Payment Charge API for QRIS type
+//
+//	[Doc Payment Charge API Online Bank]: https://durianpay.id/docs/api/payments/charge/
+func (c *Client) ChargeQRIS(ctx context.Context, payload durianpay.PaymentChargeQRISPayload) (*ChargeQRIS, *durianpay.Error) {
+	reqPayload := chargePayload{
+		Type:    "QRIS",
+		Request: payload,
+	}
+
+	res := struct {
+		Data ChargeQRIS `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
