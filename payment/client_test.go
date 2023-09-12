@@ -658,3 +658,118 @@ func TestClient_ChargeRetailStore(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_ChargeOnlineBank(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type onlineBankingPayload struct {
+		Type    string                                      `json:"type"`
+		Request durianpay.PaymentChargeOnlineBankingPayload `json:"request"`
+	}
+
+	type args struct {
+		ctx     context.Context
+		payload durianpay.PaymentChargeOnlineBankingPayload
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *ChargeOnlineBank
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.PaymentChargeOnlineBankingPayload{
+					OrderID: "ord_mJH2hKOSYb3514",
+					Type:    "JENIUSPAY",
+					Name:    "Name Appear in ATM",
+					Amount:  "20000.00",
+					CustomerInfo: durianpay.PaymentCustomerInfo{
+						Email:     "jude_kasper@koss.in",
+						GivenName: "Jude Kasper",
+						ID:        "cus_aGn5UD0m7F0994",
+					},
+					Mobile: "+6285722173217",
+				},
+			},
+			prepare: func(m mocks, args args) {
+				payload := chargePayload{
+					Type:    "ONLINE_BANKING",
+					Request: args.payload,
+				}
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", PATH_PAYMENT_CHARGE, nil, payload, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"charge_onlinebanking_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &ChargeOnlineBank{
+				Type: "ONLINE_BANKING",
+				Response: chargeResponseOnlineBank{
+					PaymentID:      "pay_RGEkDpZZWR9662",
+					OrderID:        "ord_VN5nVJpSW27112",
+					Mobile:         "+6285722173217",
+					Status:         "processing",
+					ExpirationTime: tests.StringToTime("2023-09-05T10:32:27.273180959Z"),
+					PaidAmount:     "10001.00",
+				},
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", PATH_PAYMENT_CHARGE, nil, gomock.Any(), nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			if tt.wantRes != nil {
+				validPayload := onlineBankingPayload{}
+				argsPayload := onlineBankingPayload{
+					Type:    "ONLINE_BANKING",
+					Request: parseArgs.payload,
+				}
+
+				if !featureWrap.DeepEqualPayload(path_payload_payment+"charge_onlinebanking.json", &validPayload, &argsPayload) {
+					t.Errorf("Client.ChargeOnlineBank() validPayload = %v, argsPayload %v", validPayload, argsPayload)
+				}
+			}
+
+			gotRes, gotErr := c.ChargeOnlineBank(parseArgs.ctx, parseArgs.payload)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.ChargeOnlineBank() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.ChargeOnlineBank() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}

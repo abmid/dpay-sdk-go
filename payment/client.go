@@ -24,7 +24,7 @@ const (
 	PATH_PAYMENT_CHARGE = PATH_PAYMENT + "/charge"
 )
 
-// ChargeVA returns a response from Payment Charge API.
+// ChargeVA returns a response from Payment Charge API for Virtual Account type.
 //
 //	[Doc Payment Charge API VA]: https://durianpay.id/docs/api/payments/charge/
 func (c *Client) ChargeVA(ctx context.Context, payload durianpay.PaymentChargeVAPayload) (*ChargeVA, *durianpay.Error) {
@@ -46,9 +46,9 @@ func (c *Client) ChargeVA(ctx context.Context, payload durianpay.PaymentChargeVA
 	return &res.Data, nil
 }
 
-// ChargeBNPL returns a response from Payment Charge API for type Buy Now PayLater
+// ChargeBNPL returns a response from Payment Charge API for Buy Now PayLater type
 //
-//	[Doc Payment Charge API VA]: https://durianpay.id/docs/api/payments/charge/
+//	[Doc Payment Charge API BNPL]: https://durianpay.id/docs/api/payments/charge/
 func (c *Client) ChargeBNPL(ctx context.Context, payload durianpay.PaymentChargeBNPLPayload) (*ChargeBNPL, *durianpay.Error) {
 	reqPayload := chargePayload{
 		Type:          "BNPL",
@@ -68,9 +68,9 @@ func (c *Client) ChargeBNPL(ctx context.Context, payload durianpay.PaymentCharge
 	return &res.Data, nil
 }
 
-// ChargeEwallet returns a response from Payment Charge API for type E-Wallet
+// ChargeEwallet returns a response from Payment Charge API for E-Wallet type
 //
-//	[Doc Payment Charge API VA]: https://durianpay.id/docs/api/payments/charge/
+//	[Doc Payment Charge API E-Wallet]: https://durianpay.id/docs/api/payments/charge/
 func (c *Client) ChargeEwallet(ctx context.Context, payload durianpay.PaymentChargeEwalletPayload) (*ChargeEwallet, *durianpay.Error) {
 	reqPayload := chargePayload{
 		Type:    "EWALLET",
@@ -89,9 +89,9 @@ func (c *Client) ChargeEwallet(ctx context.Context, payload durianpay.PaymentCha
 	return &res.Data, nil
 }
 
-// ChargeEwallet returns a response from Payment Charge API for type Retail Store (ex: Indomaret / Alfamaret)
+// ChargeRetailStore returns a response from Payment Charge API for Retail Store type (ex: Indomaret / Alfamaret)
 //
-//	[Doc Payment Charge API VA]: https://durianpay.id/docs/api/payments/charge/
+//	[Doc Payment Charge API Retail Store]: https://durianpay.id/docs/api/payments/charge/
 func (c *Client) ChargeRetailStore(ctx context.Context, payload durianpay.PaymentChargeRetailStorePayload) (*ChargeRetailStore, *durianpay.Error) {
 	reqPayload := chargePayload{
 		Type:    "RETAILSTORE",
@@ -100,6 +100,27 @@ func (c *Client) ChargeRetailStore(ctx context.Context, payload durianpay.Paymen
 
 	res := struct {
 		Data ChargeRetailStore `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// ChargeOnlineBank returns a response from Payment Charge API for Online Banking type (ex: JeniusPay)
+//
+//	[Doc Payment Charge API Online Bank]: https://durianpay.id/docs/api/payments/charge/
+func (c *Client) ChargeOnlineBank(ctx context.Context, payload durianpay.PaymentChargeOnlineBankingPayload) (*ChargeOnlineBank, *durianpay.Error) {
+	reqPayload := chargePayload{
+		Type:    "ONLINE_BANKING",
+		Request: payload,
+	}
+
+	res := struct {
+		Data ChargeOnlineBank `json:"data"`
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
