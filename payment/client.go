@@ -88,3 +88,24 @@ func (c *Client) ChargeEwallet(ctx context.Context, payload durianpay.PaymentCha
 
 	return &res.Data, nil
 }
+
+// ChargeEwallet returns a response from Payment Charge API for type Retail Store (ex: Indomaret / Alfamaret)
+//
+//	[Doc Payment Charge API VA]: https://durianpay.id/docs/api/payments/charge/
+func (c *Client) ChargeRetailStore(ctx context.Context, payload durianpay.PaymentChargeRetailStorePayload) (*ChargeRetailStore, *durianpay.Error) {
+	reqPayload := chargePayload{
+		Type:    "RETAILSTORE",
+		Request: payload,
+	}
+
+	res := struct {
+		Data ChargeRetailStore `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
