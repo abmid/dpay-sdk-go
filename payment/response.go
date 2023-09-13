@@ -119,42 +119,36 @@ type chargeResponseOnlineBank struct {
 
 // chargeResponseQRIS represents response for payment char use QRIS
 type chargeResponseQRIS struct {
-	PaymentID      string    `json:"payment_id"`
-	OrderID        string    `json:"order_id"`
-	Status         string    `json:"status"`
-	ExpirationTime time.Time `json:"expiration_time"`
-	CreationTime   time.Time `json:"creation_time"`
-	QRString       string    `json:"qr_string"`
-	UniqueID       string    `json:"unique_id"`
-	Metadata       Metadata  `json:"metadata"`
-	Amount         string    `json:"amount"`
-	QRCode         string    `json:"qr_code"`
-}
-
-// Metadata is part of ChargeResponseQRIS & ChargeResponseCard
-type Metadata struct {
-	MerchantName string `json:"merchant_name"`
-	MerchantID   string `json:"merchant_id"`
+	PaymentID      string            `json:"payment_id"`
+	OrderID        string            `json:"order_id"`
+	Status         string            `json:"status"`
+	ExpirationTime time.Time         `json:"expiration_time"`
+	CreationTime   time.Time         `json:"creation_time"`
+	QRString       string            `json:"qr_string"`
+	UniqueID       string            `json:"unique_id"`
+	Metadata       map[string]string `json:"metadata"`
+	Amount         string            `json:"amount"`
+	QRCode         string            `json:"qr_code"`
 }
 
 // chargeResponseCard represents response for payment charge use card
 type chargeResponseCard struct {
-	PaymentID    string   `json:"payment_id"`
-	OrderID      string   `json:"order_id"`
-	PaymentRefID string   `json:"payment_ref_id"`
-	TokenID      string   `json:"token_id"`
-	Status       string   `json:"status"`
-	PaidAmount   string   `json:"paid_amount"`
-	Metadata     Metadata `json:"metadata"`
-	CheckoutURL  string   `json:"checkout_url"`
+	PaymentID    string            `json:"payment_id"`
+	OrderID      string            `json:"order_id"`
+	PaymentRefID string            `json:"payment_ref_id"`
+	TokenID      string            `json:"token_id"`
+	Status       string            `json:"status"`
+	PaidAmount   string            `json:"paid_amount"`
+	Metadata     map[string]string `json:"metadata"`
+	CheckoutURL  string            `json:"checkout_url"`
 }
 
 // chargeResponseBNPL represents response for payment charge use Buy Now PayLater
 type chargeResponseBNPL struct {
-	PaymentID    string   `json:"payment_id"`
-	OrderID      string   `json:"order_id"`
-	PaymentRefID string   `json:"payment_ref_id"`
-	RedirectURL  string   `json:"redirect_url"`
-	PaidAmount   string   `json:"paid_amount"`
-	Metadata     Metadata `json:"metadata"`
+	PaymentID    string            `json:"payment_id"`
+	OrderID      string            `json:"order_id"`
+	PaymentRefID string            `json:"payment_ref_id"`
+	RedirectURL  string            `json:"redirect_url"`
+	PaidAmount   string            `json:"paid_amount"`
+	Metadata     map[string]string `json:"metadata"`
 }

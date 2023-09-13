@@ -384,7 +384,7 @@ func TestClient_ChargeBNPL(t *testing.T) {
 					PaymentRefID: "pay_ref_123",
 					RedirectURL:  "https://redirect-url.com/",
 					PaidAmount:   "80001.00",
-					Metadata:     Metadata{},
+					Metadata:     map[string]string{},
 				},
 			},
 		},
@@ -833,9 +833,9 @@ func TestClient_ChargeQRIS(t *testing.T) {
 					CreationTime:   tests.StringToTime("2021-09-12T15:44:37Z"),
 					QRString:       "data:image/png;base64, long_qr_string",
 					UniqueID:       "QRIS",
-					Metadata: Metadata{
-						MerchantName: "Durianpay",
-						MerchantID:   "sample_national_merchant_id",
+					Metadata: map[string]string{
+						"merchant_name": "Durianpay",
+						"merchant_id":   "sample_national_merchant_id",
 					},
 					Amount: "80001.00",
 					QRCode: "00020101021226590013ID.CO.BNI.WWW011893600009150002286002092107061320303UME51470015ID.OR.GPNQR.WWW0217ID2107271315771960303UME520454995303360540880001.005802ID5905Ajesh6013JAKARTA PUSAT6105101406214011038291492856304E1F",
