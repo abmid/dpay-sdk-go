@@ -890,3 +890,116 @@ func TestClient_ChargeQRIS(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_ChargeCard(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type cardPayload struct {
+		Type    string                             `json:"type"`
+		Request durianpay.PaymentChargeCardPayload `json:"request"`
+	}
+
+	type args struct {
+		ctx     context.Context
+		payload durianpay.PaymentChargeCardPayload
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *ChargeCard
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.PaymentChargeCardPayload{
+					OrderID:      "ord_1EcWGI2xSs7216",
+					Amount:       "10000.00",
+					PaymentRefID: "pay_ref_123",
+					CustomerInfo: durianpay.PaymentCustomerInfo{
+						ID:        "cus_aGn5UD0m7F0994",
+						Email:     "jude_kasper@koss.in",
+						GivenName: "Jude Kasper",
+					},
+				},
+			},
+			prepare: func(m mocks, args args) {
+				payload := chargePayload{
+					Type:    "CARD",
+					Request: args.payload,
+				}
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", PATH_PAYMENT_CHARGE, nil, payload, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"charge_card_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &ChargeCard{
+				Type: "CARD",
+				Response: chargeResponseCard{
+					PaymentID:    "pay_TMlTVT3wvr3598",
+					OrderID:      "ord_Gf7LimyjMk7270",
+					PaymentRefID: "pay_ref_123",
+					Status:       "completed",
+					PaidAmount:   "10001.00",
+					CheckoutURL:  "https://link.to/card-checkout-url",
+				},
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", PATH_PAYMENT_CHARGE, nil, gomock.Any(), nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			if tt.wantRes != nil {
+				validPayload := cardPayload{}
+				argsPayload := cardPayload{
+					Type:    "CARD",
+					Request: parseArgs.payload,
+				}
+
+				if !featureWrap.DeepEqualPayload(path_payload_payment+"charge_card.json", &validPayload, &argsPayload) {
+					t.Errorf("Client.ChargeCard() validPayload = %v, argsPayload %v", validPayload, argsPayload)
+				}
+			}
+
+			gotRes, gotErr := c.ChargeCard(parseArgs.ctx, parseArgs.payload)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.ChargeCard() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.ChargeCard() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
