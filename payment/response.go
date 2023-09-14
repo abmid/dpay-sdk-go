@@ -152,3 +152,115 @@ type chargeResponseBNPL struct {
 	PaidAmount   string            `json:"paid_amount"`
 	Metadata     map[string]string `json:"metadata"`
 }
+
+// Payments is part of FetchPayments for attribute payments.
+type Payments struct {
+	ID                 string            `json:"id"`
+	OrderID            string            `json:"order_id"`
+	PaymentRefID       string            `json:"payment_ref_id"`
+	SettlementID       string            `json:"settlement_id"`
+	PaymentDsRefID     string            `json:"payment_ds_ref_id"`
+	Amount             string            `json:"amount"`
+	Status             string            `json:"status"`
+	IsLive             bool              `json:"is_live"`
+	ExpirationDate     time.Time         `json:"expiration_date"`
+	PaymentDetailsType string            `json:"payment_details_type"`
+	MethodID           string            `json:"method_id"`
+	CreatedAt          time.Time         `json:"created_at"`
+	UpdatedAt          time.Time         `json:"updated_at"`
+	Metadata           map[string]string `json:"metadata"`
+	RetryCount         uint16            `json:"retry_count"`
+	Discount           string            `json:"discount"`
+	PaidAmount         string            `json:"paid_amount"`
+	ProviderID         string            `json:"provider_id"`
+	TotalFee           string            `json:"total_fee"`
+	PromoID            string            `json:"promo_id"`
+	ShippingFee        string            `json:"shipping_fee"`
+	DsErrorMetadata    map[string]string `json:"ds_error_metadata"`
+	CustomerID         string            `json:"customer_id"`
+	GivenName          string            `json:"given_name"`
+	Email              string            `json:"email"`
+	OrderRefID         string            `json:"order_ref_id"`
+	Currency           string            `json:"currency"`
+	FailureReason      map[string]string `json:"failure_reason"`
+	SettlementStatus   string            `json:"settlement_status"`
+}
+
+// Payment represents for response Payment Fetch By ID API.
+type Payment struct {
+	ID                 string            `json:"id"`
+	OrderID            string            `json:"order_id"`
+	MerchantID         string            `json:"merchant_id"`
+	PaymentRefID       string            `json:"payment_ref_id"`
+	PaymentDsRefID     string            `json:"payment_ds_ref_id"`
+	SettlementID       string            `json:"settlement_id"`
+	Amount             string            `json:"amount"`
+	Status             string            `json:"status"`
+	IsLive             bool              `json:"is_live"`
+	ExpirationDate     time.Time         `json:"expiration_date"`
+	CreatedAt          time.Time         `json:"created_at"`
+	UpdatedAt          time.Time         `json:"updated_at"`
+	Metadata           map[string]string `json:"metadata"`
+	PaymentDetailsType string            `json:"payment_details_type"`
+	MethodID           string            `json:"method_id"`
+	Discount           string            `json:"discount"`
+	PromoID            string            `json:"promo_id"`
+	PaidAmount         string            `json:"paid_amount"`
+	ShippingFee        string            `json:"shipping_fee"`
+	FailureReason      map[string]string `json:"failure_reason"`
+}
+
+// FetchPayments represents for response Payment Fetch API.
+type FetchPayments struct {
+	Payments []Payments `json:"payments"`
+	Total    int        `json:"total"`
+}
+
+// CheckPaymentStatus represents for response Check Payments Status API.
+type CheckPaymentStatus struct {
+	Status      string `json:"status"`
+	IsCompleted bool   `json:"is_completed"`
+	Signature   string `json:"signature"`
+	ErrorCode   string `json:"error_code"`
+}
+
+// Capture represents for response Payment Capture API.
+type Capture struct {
+	PaymentID           string            `json:"payment_id"`
+	OrderID             string            `json:"order_id"`
+	PreauthorizedAmount string            `json:"preauthorized_amount"`
+	AccountID           string            `json:"account_id"`
+	PaidAmount          string            `json:"paid_amount"`
+	Status              string            `json:"status"`
+	CreatedAt           time.Time         `json:"created_at"`
+	UpdatedAt           time.Time         `json:"updated_at"`
+	Metadata            map[string]string `json:"metadata"`
+}
+
+// Cancel represents for response Cancel Payment API.
+type Cancel struct {
+	ID                 string            `json:"id"`
+	OrderID            string            `json:"order_id"`
+	PaymentRefID       string            `json:"payment_ref_id"`
+	SettlementID       string            `json:"settlement_id"`
+	PaymentDsRefID     string            `json:"payment_ds_ref_id"`
+	Amount             string            `json:"amount"`
+	Status             string            `json:"status"`
+	IsLive             bool              `json:"is_live"`
+	ExpirationDate     time.Time         `json:"expiration_date"`
+	PaymentDetailsType string            `json:"payment_details_type"`
+	MethodID           string            `json:"method_id"`
+	CreatedAt          time.Time         `json:"created_at"`
+	UpdatedAt          time.Time         `json:"updated_at"`
+	Metadata           map[string]string `json:"metadata"`
+	RetryCount         uint16            `json:"retry_count"`
+	Discount           string            `json:"discount"`
+	PaidAmount         string            `json:"paid_amount"`
+	ProviderID         string            `json:"provider_id"`
+	TotalFee           string            `json:"total_fee"`
+	PromoID            string            `json:"promo_id"`
+	ShippingFee        string            `json:"shipping_fee"`
+	DsErrorMetadata    map[string]string `json:"ds_error_metadata"`
+	FailureReason      map[string]string `json:"failure_reason"`
+	SettlementStatus   string            `json:"settlement_status"`
+}

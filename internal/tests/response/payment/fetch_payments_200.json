@@ -1,0 +1,38 @@
+{
+  "data": {
+      "payments": [
+          {
+              "id": "pay_80pgxEcUbO8054",
+              "order_id": "ord_NDmLvwTTh95152",
+              "payment_ref_id": "pay_ref_123",
+              "settlement_id": "",
+              "payment_ds_ref_id": "",
+              "amount": "10001.00",
+              "status": "processing",
+              "is_live": false,
+              "expiration_date": "0001-01-01T00:00:00Z",
+              "payment_details_type": "bnpl_details",
+              "method_id": "AKULAKU",
+              "created_at": "2023-09-04T10:38:12.122665Z",
+              "updated_at": "2023-09-04T10:38:12.122665Z",
+              "metadata": {},
+              "retry_count": 0,
+              "discount": "",
+              "paid_amount": "",
+              "provider_id": "",
+              "total_fee": "",
+              "promo_id": "",
+              "shipping_fee": "",
+              "ds_error_metadata": null,
+              "customer_id": "cus_L6WNLJrTKT6000",
+              "given_name": "Jane Doe",
+              "email": "jane_doe@nomail.com",
+              "order_ref_id": "order_ref_002",
+              "currency": "IDR",
+              "failure_reason": {},
+              "settlement_status": ""
+          }
+      ],
+      "total": 1
+  }
+}

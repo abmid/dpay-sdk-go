@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"reflect"
 	"testing"
+	"time"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/internal/tests"
@@ -999,6 +1000,106 @@ func TestClient_ChargeCard(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.ChargeCard() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_FetchPayments(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		opt durianpay.PaymentFetchOption
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *FetchPayments
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				opt: durianpay.PaymentFetchOption{
+					From: time.Now().Format(time.DateOnly),
+					To:   time.Now().Format(time.DateOnly),
+				},
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", PATH_PAYMENT_CHARGE, args.opt, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"fetch_payments_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &FetchPayments{
+				Payments: []Payments{
+					{
+						ID:                 "pay_80pgxEcUbO8054",
+						OrderID:            "ord_NDmLvwTTh95152",
+						PaymentRefID:       "pay_ref_123",
+						Amount:             "10001.00",
+						Status:             "processing",
+						IsLive:             false,
+						ExpirationDate:     tests.StringToTime("0001-01-01T00:00:00Z"),
+						PaymentDetailsType: "bnpl_details",
+						MethodID:           "AKULAKU",
+						CreatedAt:          tests.StringToTime("2023-09-04T10:38:12.122665Z"),
+						UpdatedAt:          tests.StringToTime("2023-09-04T10:38:12.122665Z"),
+						RetryCount:         0,
+						CustomerID:         "cus_L6WNLJrTKT6000",
+						GivenName:          "Jane Doe",
+						Email:              "jane_doe@nomail.com",
+						OrderRefID:         "order_ref_002",
+						Currency:           "IDR",
+						FailureReason:      make(map[string]string),
+						Metadata:           make(map[string]string),
+					},
+				},
+				Total: 1,
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", PATH_PAYMENT_CHARGE, args.opt, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.FetchPayments(tt.args.ctx, tt.args.opt)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.FetchPayments() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.FetchPayments() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
 			}
 		})
 	}

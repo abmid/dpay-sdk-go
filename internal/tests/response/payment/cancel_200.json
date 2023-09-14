@@ -1,0 +1,28 @@
+{
+  "data": {
+      "id": "pay_Ln1PZECuqf3748",
+      "order_id": "ord_VN5nVJpSW27112",
+      "payment_ref_id": "",
+      "settlement_id": "",
+      "payment_ds_ref_id": "",
+      "amount": "",
+      "status": "cancelled",
+      "is_live": false,
+      "expiration_date": "0001-01-01T00:00:00Z",
+      "payment_details_type": "",
+      "method_id": "",
+      "created_at": "2023-09-04T10:31:39.673491Z",
+      "updated_at": "2023-09-05T17:10:28.802621Z",
+      "metadata": null,
+      "retry_count": 0,
+      "discount": "",
+      "paid_amount": "",
+      "provider_id": "",
+      "total_fee": "",
+      "promo_id": "",
+      "shipping_fee": "",
+      "ds_error_metadata": null,
+      "failure_reason": {},
+      "settlement_status": ""
+  }
+}

@@ -172,3 +172,19 @@ func (c *Client) ChargeCard(ctx context.Context, payload durianpay.PaymentCharge
 
 	return &res.Data, nil
 }
+
+// FetchPayments returns a response from Payment Fetch API
+//
+//	[Doc Payment Fetch API]: https://durianpay.id/docs/api/payments/fetch/
+func (c *Client) FetchPayments(ctx context.Context, opt durianpay.PaymentFetchOption) (*FetchPayments, *durianpay.Error) {
+	res := struct {
+		Data FetchPayments `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, PATH_PAYMENT_CHARGE, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
