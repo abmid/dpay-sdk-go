@@ -99,10 +99,15 @@ type PaymentSandboxOption struct {
 Options
 */
 
-// PaymentFetchOption is parameter for Payment Fetch API
+// PaymentFetchOption is parameter for Payment Fetch API.
 type PaymentFetchOption struct {
 	From  string `url:"from"`
 	To    string `url:"to"`
-	Skip  uint16    `url:"skip"`
-	Limit uint16    `url:"limit"`
+	Skip  uint16 `url:"skip"`
+	Limit uint16 `url:"limit"`
+}
+
+// PaymentFetchByIDOption is parameter for Payment Fetch by ID API.
+type PaymentFetchByIDOption struct {
+	Expand string `url:"expand"` // customer or order
 }

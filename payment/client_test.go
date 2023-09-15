@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -1100,6 +1101,193 @@ func TestClient_FetchPayments(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.FetchPayments() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_FetchPaymentByID(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+		opt durianpay.PaymentFetchByIDOption
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *Payment
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success without params",
+			args: args{
+				ctx: context.Background(),
+				ID:  "pay_Ln1PZECuqf3748",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_FETCH_BY_ID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, args.opt, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"fetch_payment_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &Payment{
+				ID:                 "pay_Ln1PZECuqf3748",
+				OrderID:            "ord_VN5nVJpSW27112",
+				MerchantID:         "mer_pHXgBZ2Qx95625",
+				PaymentRefID:       "pay_ref_123",
+				Amount:             "10001.00",
+				Status:             "processing",
+				IsLive:             false,
+				ExpirationDate:     tests.StringToTime("2023-09-05T10:31:39.672939Z"),
+				CreatedAt:          tests.StringToTime("2023-09-04T10:31:39.673491Z"),
+				UpdatedAt:          tests.StringToTime("2023-09-04T10:31:39.673491Z"),
+				PaymentDetailsType: "RETAILSTORE",
+				MethodID:           "ALFAMART",
+				FailureReason:      make(map[string]string),
+			},
+		},
+		{
+			name: "Success with expand customer",
+			args: args{
+				ctx: context.Background(),
+				ID:  "pay_Ln1PZECuqf3748",
+				opt: durianpay.PaymentFetchByIDOption{
+					Expand: "customer",
+				},
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_FETCH_BY_ID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, args.opt, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"fetch_payment_customer_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &Payment{
+				ID:                 "pay_Ln1PZECuqf3748",
+				OrderID:            "ord_VN5nVJpSW27112",
+				MerchantID:         "mer_pHXgBZ2Qx95625",
+				PaymentRefID:       "pay_ref_123",
+				Amount:             "10001.00",
+				Status:             "cancelled",
+				IsLive:             false,
+				ExpirationDate:     tests.StringToTime("2023-09-05T10:31:39.672939Z"),
+				CreatedAt:          tests.StringToTime("2023-09-04T10:31:39.673491Z"),
+				UpdatedAt:          tests.StringToTime("2023-09-05T17:10:28.802621Z"),
+				PaymentDetailsType: "RETAILSTORE",
+				MethodID:           "ALFAMART",
+				FailureReason:      make(map[string]string),
+				Customer: PaymentCustomer{
+					ID:            "cus_L6WNLJrTKT6000",
+					CustomerRefID: "cust_001",
+					Email:         "jane_doe@nomail.com",
+					GivenName:     "Jane Doe",
+					CreatedAt:     tests.StringToTime("0001-01-01T00:00:00Z"),
+				},
+			},
+		},
+		{
+			name: "Success with expand order",
+			args: args{
+				ctx: context.Background(),
+				ID:  "pay_Ln1PZECuqf3748",
+				opt: durianpay.PaymentFetchByIDOption{
+					Expand: "order",
+				},
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_FETCH_BY_ID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, args.opt, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"fetch_payment_order_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &Payment{
+				ID:                 "pay_Ln1PZECuqf3748",
+				OrderID:            "ord_VN5nVJpSW27112",
+				MerchantID:         "mer_pHXgBZ2Qx95625",
+				PaymentRefID:       "pay_ref_123",
+				Amount:             "10001.00",
+				Status:             "cancelled",
+				IsLive:             false,
+				ExpirationDate:     tests.StringToTime("2023-09-05T10:31:39.672939Z"),
+				CreatedAt:          tests.StringToTime("2023-09-04T10:31:39.673491Z"),
+				UpdatedAt:          tests.StringToTime("2023-09-05T17:10:28.802621Z"),
+				PaymentDetailsType: "RETAILSTORE",
+				MethodID:           "ALFAMART",
+				FailureReason:      make(map[string]string),
+				Order: PaymentOrder{
+					ID:         "ord_VN5nVJpSW27112",
+					MerchantID: "mer_pHXgBZ2Qx95625",
+					CustomerID: "cus_L6WNLJrTKT6000",
+					OrderRefID: "order_ref_002",
+					Amount:     "10001.00",
+					Currency:   "IDR",
+					Status:     "completed",
+					IsLive:     false,
+					CreatedAt:  tests.StringToTime("2023-09-04T10:26:33.723962Z"),
+				},
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_FETCH_BY_ID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, args.opt, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.FetchPaymentByID(parseArgs.ctx, parseArgs.ID, parseArgs.opt)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.FetchPaymentByID() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.FetchPaymentByID() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
 			}
 		})
 	}

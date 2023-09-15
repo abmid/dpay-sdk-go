@@ -153,6 +153,38 @@ type chargeResponseBNPL struct {
 	Metadata     map[string]string `json:"metadata"`
 }
 
+// PaymentCustomer is part of Payment for attribute Customer
+type PaymentCustomer struct {
+	ID            string    `json:"id"`
+	CustomerRefID string    `json:"customer_ref_id"`
+	Email         string    `json:"email"`
+	Mobile        string    `json:"mobile"`
+	GivenName     string    `json:"given_name"`
+	MiddleName    string    `json:"middle_name"`
+	SurName       string    `json:"sur_name"`
+	AddressLine1  string    `json:"address_line_1"`
+	AddressLine2  string    `json:"address_line_2"`
+	City          string    `json:"city"`
+	Region        string    `json:"region"`
+	Country       string    `json:"country"`
+	PostalCode    string    `json:"postal_code"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
+// PaymentOrder is part of Payment for attribute Order
+type PaymentOrder struct {
+	ID           string    `json:"id"`
+	MerchantID   string    `json:"merchant_id"`
+	CustomerID   string    `json:"customer_id"`
+	OrderRefID   string    `json:"order_ref_id"`
+	OrderDsRefID string    `json:"order_ds_ref_id"`
+	Amount       string    `json:"amount"`
+	Currency     string    `json:"currency"`
+	Status       string    `json:"status"`
+	IsLive       bool      `json:"is_live"`
+	CreatedAt    time.Time `json:"created_at"`
+}
+
 // Payments is part of FetchPayments for attribute payments.
 type Payments struct {
 	ID                 string            `json:"id"`
@@ -200,6 +232,8 @@ type Payment struct {
 	ExpirationDate     time.Time         `json:"expiration_date"`
 	CreatedAt          time.Time         `json:"created_at"`
 	UpdatedAt          time.Time         `json:"updated_at"`
+	Customer           PaymentCustomer   `json:"customer"`
+	Order              PaymentOrder      `json:"order"`
 	Metadata           map[string]string `json:"metadata"`
 	PaymentDetailsType string            `json:"payment_details_type"`
 	MethodID           string            `json:"method_id"`

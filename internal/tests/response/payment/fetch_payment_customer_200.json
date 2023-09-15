@@ -1,0 +1,41 @@
+{
+  "data": {
+      "id": "pay_Ln1PZECuqf3748",
+      "order_id": "ord_VN5nVJpSW27112",
+      "merchant_id": "mer_pHXgBZ2Qx95625",
+      "payment_ref_id": "pay_ref_123",
+      "payment_ds_ref_id": "",
+      "settlement_id": "",
+      "amount": "10001.00",
+      "status": "cancelled",
+      "is_live": false,
+      "expiration_date": "2023-09-05T10:31:39.672939Z",
+      "created_at": "2023-09-04T10:31:39.673491Z",
+      "updated_at": "2023-09-05T17:10:28.802621Z",
+      "customer": {
+          "id": "cus_L6WNLJrTKT6000",
+          "customer_ref_id": "cust_001",
+          "email": "jane_doe@nomail.com",
+          "mobile": "",
+          "given_name": "Jane Doe",
+          "middle_name": "",
+          "sur_name": "",
+          "address_line_1": "",
+          "address_line_2": "",
+          "city": "",
+          "region": "",
+          "country": "",
+          "postal_code": "",
+          "created_at": "0001-01-01T00:00:00Z"
+      },
+      "metadata": null,
+      "payment_details_type": "RETAILSTORE",
+      "method_id": "ALFAMART",
+      "discount": "",
+      "promo_id": "",
+      "paid_amount": "",
+      "shipping_fee": "",
+      "failure_reason": {},
+      "refund": null
+  }
+}

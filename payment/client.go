@@ -9,6 +9,7 @@ package payment
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/common"
@@ -20,8 +21,9 @@ type Client struct {
 }
 
 const (
-	PATH_PAYMENT        = durianpay.DURIANPAY_URL + "/v1/payments"
-	PATH_PAYMENT_CHARGE = PATH_PAYMENT + "/charge"
+	PATH_PAYMENT             = durianpay.DURIANPAY_URL + "/v1/payments"
+	PATH_PAYMENT_CHARGE      = PATH_PAYMENT + "/charge"
+	PATH_PAYMENT_FETCH_BY_ID = PATH_PAYMENT + "/:id"
 )
 
 // ChargeVA returns a response from Payment Charge API for Virtual Account type.
@@ -182,6 +184,24 @@ func (c *Client) FetchPayments(ctx context.Context, opt durianpay.PaymentFetchOp
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodGet, PATH_PAYMENT_CHARGE, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// FetchPaymentByID returns a response from Payment Fetch by ID API.
+//
+//	[Doc Payment Fetch by ID API]: https://durianpay.id/docs/api/payments/fetch-one/
+func (c *Client) FetchPaymentByID(ctx context.Context, ID string, opt durianpay.PaymentFetchByIDOption) (*Payment, *durianpay.Error) {
+	url := strings.ReplaceAll(PATH_PAYMENT_FETCH_BY_ID, ":id", ID)
+
+	res := struct {
+		Data Payment `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
