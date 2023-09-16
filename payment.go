@@ -95,6 +95,11 @@ type PaymentSandboxOption struct {
 	DelayMS   int  `json:"delay_ms"`
 }
 
+// PaymentVerifyPayload is payload for Verify Payments API
+type PaymentVerifyPayload struct {
+	VerificationSignature string `json:"verification_signature"`
+}
+
 // PaymentCapturePayload is payload for Payment Capture API
 type PaymentCapturePayload struct {
 	Amount string `json:"amount"`
@@ -115,9 +120,4 @@ type PaymentFetchOption struct {
 // PaymentFetchByIDOption is parameter for Payment Fetch by ID API.
 type PaymentFetchByIDOption struct {
 	Expand string `url:"expand"` // customer or order
-}
-
-// PaymentVerifyOption is parameter for Verify Payments API.
-type PaymentVerifyOption struct {
-	VerificationSignature string `json:"verification_signature"`
 }

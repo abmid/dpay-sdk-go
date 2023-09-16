@@ -234,14 +234,14 @@ func (c *Client) CheckPaymentStatus(ctx context.Context, ID string) (*CheckPayme
 // Verify returns a response from Verify Payments Status API.
 //
 //	[Doc Verify Payments Status API]: https://durianpay.id/docs/api/payments/verify/
-func (c *Client) Verify(ctx context.Context, ID string, opt durianpay.PaymentVerifyOption) (bool, *durianpay.Error) {
+func (c *Client) Verify(ctx context.Context, ID string, payload durianpay.PaymentVerifyPayload) (bool, *durianpay.Error) {
 	url := strings.ReplaceAll(PATH_PAYMENT_VERIFY, ":id", ID)
 
 	res := struct {
 		Data bool `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, url, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, url, nil, payload, nil, &res)
 	if err != nil {
 		return false, err
 	}

@@ -1,0 +1,14 @@
+{
+  "data": {
+    "OVO": {
+      "actual_amount": 492500,
+      "fees": 7500,
+      "total_amount": 500000
+    },
+    "SHOPEEPAY": {
+      "actual_amount": 492500,
+      "fees": 7500,
+      "total_amount": 500000
+    }
+  }
+}

@@ -1378,9 +1378,9 @@ func TestClient_Verify(t *testing.T) {
 	defer featureWrap.Ctrl.Finish()
 
 	type args struct {
-		ctx context.Context
-		ID  string
-		opt durianpay.PaymentVerifyOption
+		ctx     context.Context
+		ID      string
+		payload durianpay.PaymentVerifyPayload
 	}
 
 	tests := []struct {
@@ -1394,7 +1394,7 @@ func TestClient_Verify(t *testing.T) {
 			name: "Success",
 			args: args{
 				ctx: context.Background(),
-				opt: durianpay.PaymentVerifyOption{
+				payload: durianpay.PaymentVerifyPayload{
 					VerificationSignature: "adf9a1a37af514c91225f6680e2df723fefebb7638519bcc7e7c9de02f2a3ab2",
 				},
 			},
@@ -1402,7 +1402,7 @@ func TestClient_Verify(t *testing.T) {
 				url := strings.ReplaceAll(PATH_PAYMENT_VERIFY, ":id", args.ID)
 
 				m.api.EXPECT().
-					Req(gomock.Any(), "POST", url, args.opt, nil, nil, gomock.Any()).
+					Req(gomock.Any(), "POST", url, nil, args.payload, nil, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
 						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"verify_200.json"), response)
 						if err != nil {
@@ -1423,7 +1423,7 @@ func TestClient_Verify(t *testing.T) {
 				url := strings.ReplaceAll(PATH_PAYMENT_VERIFY, ":id", args.ID)
 
 				m.api.EXPECT().
-					Req(gomock.Any(), "POST", url, args.opt, nil, nil, gomock.Any()).
+					Req(gomock.Any(), "POST", url, nil, args.payload, nil, gomock.Any()).
 					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
 			},
 			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
@@ -1441,7 +1441,7 @@ func TestClient_Verify(t *testing.T) {
 
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
-			gotRes, gotErr := c.Verify(parseArgs.ctx, parseArgs.ID, parseArgs.opt)
+			gotRes, gotErr := c.Verify(parseArgs.ctx, parseArgs.ID, parseArgs.payload)
 			if gotRes != tt.wantRes {
 				t.Errorf("Client.Verify() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
 			}
