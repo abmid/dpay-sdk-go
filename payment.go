@@ -95,6 +95,11 @@ type PaymentSandboxOption struct {
 	DelayMS   int  `json:"delay_ms"`
 }
 
+// PaymentCapturePayload is payload for Payment Capture API
+type PaymentCapturePayload struct {
+	Amount string `json:"amount"`
+}
+
 /*
 Options
 */

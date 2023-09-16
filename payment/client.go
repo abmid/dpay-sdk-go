@@ -26,6 +26,7 @@ const (
 	PATH_PAYMENT_FETCH_BY_ID  = PATH_PAYMENT + "/:id"
 	PATH_PAYMENT_CHECK_STATUS = PATH_PAYMENT + "/:id/status"
 	PATH_PAYMENT_VERIFY       = PATH_PAYMENT + "/:id/verify"
+	PATH_PAYMENT_CAPTURE      = PATH_PAYMENT + "/:id/capture"
 )
 
 // ChargeVA returns a response from Payment Charge API for Virtual Account type.
@@ -245,4 +246,22 @@ func (c *Client) Verify(ctx context.Context, ID string, opt durianpay.PaymentVer
 	}
 
 	return res.Data, nil
+}
+
+// Capture returns a response from Payment Capture API
+//
+//	[Doc Payment Capture API]: https://durianpay.id/docs/api/payments/capture/
+func (c *Client) Capture(ctx context.Context, ID string, payload durianpay.PaymentCapturePayload) (*Capture, *durianpay.Error) {
+	url := strings.ReplaceAll(PATH_PAYMENT_CAPTURE, ":id", ID)
+
+	res := struct {
+		Data Capture `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, url, nil, payload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
 }

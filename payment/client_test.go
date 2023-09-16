@@ -1451,3 +1451,91 @@ func TestClient_Verify(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_Capture(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx     context.Context
+		ID      string
+		payload durianpay.PaymentCapturePayload
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *Capture
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.PaymentCapturePayload{
+					Amount: "1000.00",
+				},
+				ID: "pay_wA2X2Mvm2d4965",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_CAPTURE, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", url, nil, args.payload, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"capture_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &Capture{
+				PaymentID:           "pay_123",
+				OrderID:             "ord_123",
+				PreauthorizedAmount: "1000.00",
+				PaidAmount:          "1000.00",
+				Status:              "processing",
+				CreatedAt:           tests.StringToTime("2022-12-15T10:51:47.829636Z"),
+				UpdatedAt:           tests.StringToTime("2022-12-15T16:26:25.076181Z"),
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_CAPTURE, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", url, nil, args.payload, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.Capture(tt.args.ctx, tt.args.ID, tt.args.payload)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.Capture() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.Capture() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
