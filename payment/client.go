@@ -241,7 +241,7 @@ func (c *Client) Verify(ctx context.Context, ID string, opt durianpay.PaymentVer
 		Data bool `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, url, opt, nil, nil, &res)
 	if err != nil {
 		return false, err
 	}

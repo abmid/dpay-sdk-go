@@ -1402,7 +1402,7 @@ func TestClient_Verify(t *testing.T) {
 				url := strings.ReplaceAll(PATH_PAYMENT_VERIFY, ":id", args.ID)
 
 				m.api.EXPECT().
-					Req(gomock.Any(), "GET", url, args.opt, nil, nil, gomock.Any()).
+					Req(gomock.Any(), "POST", url, args.opt, nil, nil, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
 						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"verify_200.json"), response)
 						if err != nil {
@@ -1423,7 +1423,7 @@ func TestClient_Verify(t *testing.T) {
 				url := strings.ReplaceAll(PATH_PAYMENT_VERIFY, ":id", args.ID)
 
 				m.api.EXPECT().
-					Req(gomock.Any(), "GET", url, args.opt, nil, nil, gomock.Any()).
+					Req(gomock.Any(), "POST", url, args.opt, nil, nil, gomock.Any()).
 					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
 			},
 			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
