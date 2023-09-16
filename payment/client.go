@@ -27,6 +27,7 @@ const (
 	PATH_PAYMENT_CHECK_STATUS = PATH_PAYMENT + "/:id/status"
 	PATH_PAYMENT_VERIFY       = PATH_PAYMENT + "/:id/verify"
 	PATH_PAYMENT_CAPTURE      = PATH_PAYMENT + "/:id/capture"
+	PATH_PAYMENT_CANCEL       = PATH_PAYMENT + "/:id/cancel"
 )
 
 // ChargeVA returns a response from Payment Charge API for Virtual Account type.
@@ -259,6 +260,24 @@ func (c *Client) Capture(ctx context.Context, ID string, payload durianpay.Payme
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodPost, url, nil, payload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// Cancel returns a response from Cancel Payment API
+//
+//	[Doc Cancel Payment API]: https://durianpay.id/docs/api/payments/cancel/
+func (c *Client) Cancel(ctx context.Context, ID string) (*Cancel, *durianpay.Error) {
+	url := strings.ReplaceAll(PATH_PAYMENT_CANCEL, ":id", ID)
+
+	res := struct {
+		Data Cancel `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPut, url, nil, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}

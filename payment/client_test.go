@@ -1539,3 +1539,88 @@ func TestClient_Capture(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_Cancel(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *Cancel
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				ID:  "pay_wA2X2Mvm2d4965",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_CANCEL, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "PUT", url, nil, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"cancel_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &Cancel{
+				ID:             "pay_Ln1PZECuqf3748",
+				OrderID:        "ord_VN5nVJpSW27112",
+				Status:         "cancelled",
+				IsLive:         false,
+				ExpirationDate: tests.StringToTime("0001-01-01T00:00:00Z"),
+				CreatedAt:      tests.StringToTime("2023-09-04T10:31:39.673491Z"),
+				UpdatedAt:      tests.StringToTime("2023-09-05T17:10:28.802621Z"),
+				RetryCount:     0,
+				FailureReason:  make(map[string]string),
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_CANCEL, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "PUT", url, nil, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.Cancel(parseArgs.ctx, parseArgs.ID)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.Cancel() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.Cancel() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
