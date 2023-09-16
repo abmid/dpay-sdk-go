@@ -25,6 +25,7 @@ const (
 	PATH_PAYMENT_CHARGE       = PATH_PAYMENT + "/charge"
 	PATH_PAYMENT_FETCH_BY_ID  = PATH_PAYMENT + "/:id"
 	PATH_PAYMENT_CHECK_STATUS = PATH_PAYMENT + "/:id/status"
+	PATH_PAYMENT_VERIFY       = PATH_PAYMENT + "/:id/verify"
 )
 
 // ChargeVA returns a response from Payment Charge API for Virtual Account type.
@@ -226,4 +227,22 @@ func (c *Client) CheckPaymentStatus(ctx context.Context, ID string) (*CheckPayme
 	}
 
 	return &res.Data, nil
+}
+
+// Verify returns a response from Verify Payments Status API.
+//
+//	[Doc Verify Payments Status API]: https://durianpay.id/docs/api/payments/verify/
+func (c *Client) Verify(ctx context.Context, ID string, opt durianpay.PaymentVerifyOption) (bool, *durianpay.Error) {
+	url := strings.ReplaceAll(PATH_PAYMENT_VERIFY, ":id", ID)
+
+	res := struct {
+		Data bool `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil, &res)
+	if err != nil {
+		return false, err
+	}
+
+	return res.Data, nil
 }

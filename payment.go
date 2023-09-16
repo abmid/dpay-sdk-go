@@ -111,3 +111,8 @@ type PaymentFetchOption struct {
 type PaymentFetchByIDOption struct {
 	Expand string `url:"expand"` // customer or order
 }
+
+// PaymentVerifyOption is parameter for Verify Payments API.
+type PaymentVerifyOption struct {
+	VerificationSignature string `json:"verification_signature"`
+}
