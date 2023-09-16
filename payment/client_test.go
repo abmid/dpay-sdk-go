@@ -1292,3 +1292,83 @@ func TestClient_FetchPaymentByID(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_CheckPaymentStatus(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *CheckPaymentStatus
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				ID:  "pay_wA2X2Mvm2d4965",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_CHECK_STATUS, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, nil, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"check_payment_status_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &CheckPaymentStatus{
+				Status:      "processing",
+				IsCompleted: false,
+				Signature:   "9206137de45a992ca3416e4571d14dce6493b104fac00849da41dfb04a913ef9",
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(PATH_PAYMENT_CHECK_STATUS, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", url, nil, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.CheckPaymentStatus(parseArgs.ctx, parseArgs.ID)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.CheckPaymentStatus() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.CheckPaymentStatus() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}

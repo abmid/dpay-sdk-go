@@ -21,9 +21,10 @@ type Client struct {
 }
 
 const (
-	PATH_PAYMENT             = durianpay.DURIANPAY_URL + "/v1/payments"
-	PATH_PAYMENT_CHARGE      = PATH_PAYMENT + "/charge"
-	PATH_PAYMENT_FETCH_BY_ID = PATH_PAYMENT + "/:id"
+	PATH_PAYMENT              = durianpay.DURIANPAY_URL + "/v1/payments"
+	PATH_PAYMENT_CHARGE       = PATH_PAYMENT + "/charge"
+	PATH_PAYMENT_FETCH_BY_ID  = PATH_PAYMENT + "/:id"
+	PATH_PAYMENT_CHECK_STATUS = PATH_PAYMENT + "/:id/status"
 )
 
 // ChargeVA returns a response from Payment Charge API for Virtual Account type.
@@ -202,6 +203,24 @@ func (c *Client) FetchPaymentByID(ctx context.Context, ID string, opt durianpay.
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodGet, url, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// CheckPaymentStatus returns a response from Check Payments Status API.
+//
+//	[Doc Check Payments Status API]: https://durianpay.id/docs/api/payments/status/
+func (c *Client) CheckPaymentStatus(ctx context.Context, ID string) (*CheckPaymentStatus, *durianpay.Error) {
+	url := strings.ReplaceAll(PATH_PAYMENT_CHECK_STATUS, ":id", ID)
+
+	res := struct {
+		Data CheckPaymentStatus `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
