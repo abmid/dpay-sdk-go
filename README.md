@@ -40,13 +40,13 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
   - [x] Fetch By ID
   - [x] Create Payment Link
 - PAYMENTS
-  - [ ] Charge Payment
-  - [ ] Fetch Payments
-  - [ ] Fetch Payment By ID
-  - [ ] Check Payment Status
-  - [ ] Verify Payment
-  - [ ] Cancel Payment
-  - [ ] MDR Fees Calculation
+  - [x] Charge Payment
+  - [x] Fetch Payments
+  - [x] Fetch Payment By ID
+  - [x] Check Payment Status
+  - [x] Verify Payment
+  - [x] Cancel Payment
+  - [x] MDR Fees Calculation
 - PROMOS
   - [x] Create Promo
   - [x] Fetch Promos
