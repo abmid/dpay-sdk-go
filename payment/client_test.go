@@ -1028,8 +1028,8 @@ func TestClient_FetchPayments(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				opt: durianpay.PaymentFetchOption{
-					From: time.Now().Format(time.DateOnly),
-					To:   time.Now().Format(time.DateOnly),
+					From: time.Now().Format("2006-01-02"),
+					To:   time.Now().Format("2006-01-02"),
 				},
 			},
 			prepare: func(m mocks, args args) {
