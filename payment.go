@@ -121,3 +121,9 @@ type PaymentFetchOption struct {
 type PaymentFetchByIDOption struct {
 	Expand string `url:"expand"` // customer or order
 }
+
+// PaymentMDRFeesOption is parameter for MDR Fees Calculation API.
+type PaymentMDRFeesOption struct {
+	Amount        string `url:"amount"`
+	PaymentMethod string `url:"payment_method"`
+}

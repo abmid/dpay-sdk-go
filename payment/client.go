@@ -21,13 +21,14 @@ type Client struct {
 }
 
 const (
-	PATH_PAYMENT              = durianpay.DURIANPAY_URL + "/v1/payments"
-	PATH_PAYMENT_CHARGE       = PATH_PAYMENT + "/charge"
-	PATH_PAYMENT_FETCH_BY_ID  = PATH_PAYMENT + "/:id"
-	PATH_PAYMENT_CHECK_STATUS = PATH_PAYMENT + "/:id/status"
-	PATH_PAYMENT_VERIFY       = PATH_PAYMENT + "/:id/verify"
-	PATH_PAYMENT_CAPTURE      = PATH_PAYMENT + "/:id/capture"
-	PATH_PAYMENT_CANCEL       = PATH_PAYMENT + "/:id/cancel"
+	PATH_PAYMENT                 = durianpay.DURIANPAY_URL + "/v1/payments"
+	PATH_PAYMENT_CHARGE          = PATH_PAYMENT + "/charge"
+	PATH_PAYMENT_FETCH_BY_ID     = PATH_PAYMENT + "/:id"
+	PATH_PAYMENT_CHECK_STATUS    = PATH_PAYMENT + "/:id/status"
+	PATH_PAYMENT_VERIFY          = PATH_PAYMENT + "/:id/verify"
+	PATH_PAYMENT_CAPTURE         = PATH_PAYMENT + "/:id/capture"
+	PATH_PAYMENT_CANCEL          = PATH_PAYMENT + "/:id/cancel"
+	PATH_PAYMENT_MDR_CALCULATION = "/v1/merchants/mdr_fees"
 )
 
 // ChargeVA returns a response from Payment Charge API for Virtual Account type.
@@ -278,6 +279,22 @@ func (c *Client) Cancel(ctx context.Context, ID string) (*Cancel, *durianpay.Err
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodPut, url, nil, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// MDRFeesCalculation returns a response from MDR Fees Calculation API
+//
+//	[Doc https://durianpay.id/docs/api/payments/mdr-calculations/]
+func (c *Client) MDRFeesCalculation(ctx context.Context, opt durianpay.PaymentMDRFeesOption) (*MDRFeesCalculation, *durianpay.Error) {
+	res := struct {
+		Data MDRFeesCalculation `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, PATH_PAYMENT_MDR_CALCULATION, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}

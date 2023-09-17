@@ -955,6 +955,7 @@ func TestClient_ChargeCard(t *testing.T) {
 					Status:       "completed",
 					PaidAmount:   "10001.00",
 					CheckoutURL:  "https://link.to/card-checkout-url",
+					Metadata:     make(map[string]string),
 				},
 			},
 		},
@@ -1620,6 +1621,91 @@ func TestClient_Cancel(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.Cancel() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_MDRFeesCalculation(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		opt durianpay.PaymentMDRFeesOption
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *MDRFeesCalculation
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				opt: durianpay.PaymentMDRFeesOption{
+					Amount:        "500000",
+					PaymentMethod: "all",
+				},
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", PATH_PAYMENT_MDR_CALCULATION, args.opt, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_payment+"mdr_fees_calculation_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &MDRFeesCalculation{
+				OVO: MDRFee{
+					ActualAmount: 492500,
+					Fees:         7500,
+					TotalAmount:  500000,
+				},
+				SHOPEEPAY: MDRFee{
+					ActualAmount: 492500,
+					Fees:         7500,
+					TotalAmount:  500000,
+				},
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", PATH_PAYMENT_MDR_CALCULATION, args.opt, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+			},
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.MDRFeesCalculation(tt.args.ctx, tt.args.opt)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.MDRFeesCalculation() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.MDRFeesCalculation() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
 			}
 		})
 	}

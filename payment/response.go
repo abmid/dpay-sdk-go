@@ -298,3 +298,35 @@ type Cancel struct {
 	FailureReason      map[string]string `json:"failure_reason"`
 	SettlementStatus   string            `json:"settlement_status"`
 }
+
+// MDRFee is part of MDRFeesCalculation
+type MDRFee struct {
+	ActualAmount float32 `json:"actual_amount"`
+	Fees         float32 `json:"fees"`
+	TotalAmount  float32 `json:"total_amount"`
+}
+
+// MDRFeesCalculation represents for response MDR Fees Calculation API
+type MDRFeesCalculation struct {
+	GOPAY     MDRFee `json:"GOPAY"`
+	DD_CIMB   MDRFee `json:"DD_CIMB"`
+	QRIS      MDRFee `json:"QRIS"`
+	SHOPEEPAY MDRFee `json:"SHOPEEPAY"`
+	OTHERS    MDRFee `json:"OTHERS"`
+	INDOMARET MDRFee `json:"INDOMARET"`
+	BRI       MDRFee `json:"BRI"`
+	ALFAMART  MDRFee `json:"ALFAMART"`
+	JENIUSPAY MDRFee `json:"JENIUSPAY"`
+	BCA       MDRFee `json:"BCA"`
+	DD_BRI    MDRFee `json:"DD_BRI"`
+	CARD      MDRFee `json:"CARD"`
+	BNI       MDRFee `json:"BNI"`
+	OVO       MDRFee `json:"OVO"`
+	DANA      MDRFee `json:"DANA"`
+	MANDIRI   MDRFee `json:"MANDIRI"`
+	PERMATA   MDRFee `json:"PERMATA"`
+	LINKAJA   MDRFee `json:"LINKAJA"`
+	DANAMON   MDRFee `json:"DANAMON"`
+	CIMB      MDRFee `json:"CIMB"`
+	SYARIAH   MDRFee `json:"SYARIAH"`
+}
