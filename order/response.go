@@ -100,7 +100,7 @@ type FetchOrder struct {
 	Fees                  string                  `json:"fees"`
 	ShippingFee           string                  `json:"shipping_fee"`
 	AdminFeeMethod        string                  `json:"admin_fee_method"`
-	Customer              durianpay.OrderCustomer `json:"customer"` // Will be filled if use query expand=customer
+	Customer              durianpay.Customer      `json:"customer"` // Will be filled if use query expand=customer
 	Payments              []Payment               `json:"payments"` // Will be filled if use query expand=payments
 }
 

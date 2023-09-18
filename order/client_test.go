@@ -53,12 +53,12 @@ func TestClient_Create(t *testing.T) {
 					PaymentOption: "full_payment",
 					Currency:      "IDR",
 					OrderRefID:    "order_ref_001",
-					Customer: durianpay.OrderCustomer{
+					Customer: durianpay.Customer{
 						CustomerRefID: "cust_001",
 						GivenName:     "Jane Doe",
 						Email:         "jane_doe@nomail.com",
 						Mobile:        "85722173217",
-						Address: durianpay.OrderCustomerAddress{
+						Address: durianpay.CustomerAddress{
 							ReceiverName:  "Jude Casper",
 							ReceiverPhone: "8987654321",
 							Label:         "Home Address",
@@ -469,7 +469,3 @@ func TestClient_CreatePaymentLink(t *testing.T) {
 		})
 	}
 }
-
-// gotRes =
-// &{ord_n7WUecCLkz5074 cus_0l6ZMxd9cW6365 order_ref_001  10001.00 full_payment  IDR started false 2023-08-25 16:48:31.956761 +0000 UTC 2023-08-25 16:48:31.956761 +0000 UTC { } [] 5f79c29d9ba7715490d31566e1a30417da96499f5088fc090ef777ebfab53ac1 2023-09-24 16:48:33.010938526 +0000 UTC 2023-09-24 16:48:31.953648 +0000 UTC yUyERa 0   included}, wantRes
-// &{ord_n7WUecCLkz5074 cus_0l6ZMxd9cW6365 order_ref_001  10001.00 full_payment  IDR started false 2023-08-25 16:48:31.956761 +0000 UTC 2023-08-25 16:48:31.956761 +0000 UTC { } [] 5f79c29d9ba7715490d31566e1a30417da96499f5088fc090ef777ebfab53ac1 2023-09-24 16:48:33.010938526 +0000 UTC 0001-01-01 00:00:00 +0000 UTC yUyERa 0   included}
