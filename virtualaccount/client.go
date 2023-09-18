@@ -21,10 +21,10 @@ type Client struct {
 }
 
 const (
-	PATH_VA               = durianpay.DURIANPAY_URL + "/v1/va"
-	PATH_FETCH_BY_ID      = PATH_VA + "/:id"
-	PATH_PATCH_BY_ID      = PATH_VA + "/:id"
-	PATH_PAYMENT_SIMULATE = PATH_VA + "/simulate"
+	pathVA              = durianpay.DurianpayURL + "/v1/va"
+	pathFetchByID       = pathVA + "/:id"
+	pathPatchByID       = pathVA + "/:id"
+	pathPaymentSimulate = pathVA + "/simulate"
 )
 
 // Create returns a response from Virtual Account Create API.
@@ -35,7 +35,7 @@ func (c *Client) Create(ctx context.Context, payload durianpay.VirtualAccountPay
 		Data Create `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_VA, nil, payload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathVA, nil, payload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *Client) FetchVirtualAccounts(ctx context.Context, opt durianpay.Virtual
 		Data FetchVirtualAccounts `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, PATH_VA, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, pathVA, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (c *Client) FetchVirtualAccounts(ctx context.Context, opt durianpay.Virtual
 //
 //	[Doc Virtual Accounts Fetch By ID API]: https://durianpay.id/docs/api/virtual-accounts/fetch-one/
 func (c *Client) FetchVirtualAccountByID(ctx context.Context, ID string) (*FetchVirtualAccount, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_FETCH_BY_ID, ":id", ID)
+	url := strings.ReplaceAll(pathFetchByID, ":id", ID)
 	res := struct {
 		Data FetchVirtualAccount `json:"data"`
 	}{}
@@ -80,7 +80,7 @@ func (c *Client) FetchVirtualAccountByID(ctx context.Context, ID string) (*Fetch
 //
 //	[Doc Virtual Accounts Patch By ID API]: https://durianpay.id/docs/api/virtual-accounts/patch-one/
 func (c *Client) PatchByID(ctx context.Context, ID string, payload durianpay.VirtualAccountPatchPayload) (*FetchVirtualAccount, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PATCH_BY_ID, ":id", ID)
+	url := strings.ReplaceAll(pathPatchByID, ":id", ID)
 	res := struct {
 		Data FetchVirtualAccount `json:"data"`
 	}{}
@@ -103,7 +103,7 @@ func (c *Client) PaymentSimulate(ctx context.Context, payload durianpay.VirtualA
 		} `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_SIMULATE, nil, payload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathPaymentSimulate, nil, payload, nil, &res)
 	if err != nil {
 		return "", err
 	}

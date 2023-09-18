@@ -21,8 +21,8 @@ type Client struct {
 }
 
 const (
-	PATH_REFUND      = durianpay.DURIANPAY_URL + "/v1/refunds"
-	PATH_FETCH_BY_ID = PATH_REFUND + "/:id"
+	pathRefund    = durianpay.DurianpayURL + "/v1/refunds"
+	pathFetchByID = pathRefund + "/:id"
 )
 
 // Create return a response from Create Refund API.
@@ -33,7 +33,7 @@ func (c *Client) Create(ctx context.Context, payload durianpay.RefundPayload) (*
 		Data Refund `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_REFUND, nil, payload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathRefund, nil, payload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (c *Client) FetchRefunds(ctx context.Context, opt durianpay.RefundFetchOpti
 		Data FetchRefunds `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, PATH_REFUND, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, pathRefund, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (c *Client) FetchRefunds(ctx context.Context, opt durianpay.RefundFetchOpti
 //
 //	[Doc Refund Fetch By ID API]: https://durianpay.id/docs/api/refunds/fetch-one/
 func (c *Client) FetchRefundByID(ctx context.Context, ID string) (*Refund, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_FETCH_BY_ID, ":id", ID)
+	url := strings.ReplaceAll(pathFetchByID, ":id", ID)
 
 	res := struct {
 		Data Refund `json:"data"`

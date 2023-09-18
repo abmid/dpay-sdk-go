@@ -7,7 +7,7 @@
 package durianpay
 
 const (
-	DURIANPAY_URL = "https://api.durianpay.id"
+	DurianpayURL = "https://api.durianpay.id"
 )
 
 type Customer struct {

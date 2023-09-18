@@ -20,9 +20,9 @@ import (
 )
 
 const (
-	path_response_ewalletaccount = "../internal/tests/response/ewalletaccount/"
-	path_response                = "../internal/tests/response/"
-	path_payload_ewalletaccount  = "../internal/tests/payload/ewalletaccount/"
+	pathResponse               = "../internal/tests/response/"
+	pathResponseEwalletAccount = pathResponse + "ewalletaccount/"
+	pathPayloadEwalletAccount  = "../internal/tests/payload/ewalletaccount/"
 )
 
 type mocks struct {
@@ -58,10 +58,10 @@ func TestClient_Link(t *testing.T) {
 				headers := map[string]string{
 					"Is-live": "true",
 				}
-				m.api.EXPECT().Req(gomock.Any(), "POST", PATH_EWALLET_ACCOUNT_BIND, nil, args.payload, headers, gomock.Any()).
+				m.api.EXPECT().Req(gomock.Any(), "POST", pathBind, nil, args.payload, headers, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, headers map[string]string, response any) *durianpay.Error {
 
-						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_ewalletaccount+"link_200.json"), response)
+						err := json.Unmarshal(featureWrap.ResJSONByte(pathResponseEwalletAccount+"link_200.json"), response)
 						if err != nil {
 							panic(err)
 						}
@@ -84,10 +84,10 @@ func TestClient_Link(t *testing.T) {
 			},
 			prepare: func(m mocks, args args) {
 				m.api.EXPECT().
-					Req(gomock.Any(), "POST", PATH_EWALLET_ACCOUNT_BIND, nil, args.payload, gomock.Any(), gomock.Any()).
-					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+					Req(gomock.Any(), "POST", pathBind, nil, args.payload, gomock.Any(), gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")))
 			},
-			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")),
 		},
 	}
 	for _, tt := range tests {
@@ -105,7 +105,7 @@ func TestClient_Link(t *testing.T) {
 			if tt.wantRes != nil {
 				payload := durianpay.EwalletAccountLinkPayload{}
 
-				if !featureWrap.DeepEqualPayload(path_payload_ewalletaccount+"link.json", &payload, &tt.args.payload) {
+				if !featureWrap.DeepEqualPayload(pathPayloadEwalletAccount+"link.json", &payload, &tt.args.payload) {
 					t.Errorf("Client.Link() gotPayload = %v, wantPayload %v", payload, tt.args.payload)
 				}
 			}
@@ -143,14 +143,14 @@ func TestClient_Unlink(t *testing.T) {
 				ID:  "ewa_123",
 			},
 			prepare: func(m mocks, args args) {
-				url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_UNBIND, ":id", args.ID)
+				url := strings.ReplaceAll(pathUnbind, ":id", args.ID)
 				headers := map[string]string{
 					"Is-live": "true",
 				}
 				m.api.EXPECT().Req(gomock.Any(), "PUT", url, nil, nil, headers, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, headers map[string]string, response any) *durianpay.Error {
 
-						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_ewalletaccount+"unlink_200.json"), response)
+						err := json.Unmarshal(featureWrap.ResJSONByte(pathResponseEwalletAccount+"unlink_200.json"), response)
 						if err != nil {
 							panic(err)
 						}
@@ -171,12 +171,12 @@ func TestClient_Unlink(t *testing.T) {
 				ctx: context.Background(),
 			},
 			prepare: func(m mocks, args args) {
-				url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_UNBIND, ":id", args.ID)
+				url := strings.ReplaceAll(pathUnbind, ":id", args.ID)
 				m.api.EXPECT().
 					Req(gomock.Any(), "PUT", url, nil, nil, gomock.Any(), gomock.Any()).
-					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")))
 			},
-			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")),
 		},
 	}
 	for _, tt := range tests {
@@ -224,14 +224,14 @@ func TestClient_Detail(t *testing.T) {
 				ID:  "ewa_123",
 			},
 			prepare: func(m mocks, args args) {
-				url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_DETAIL, ":id", args.ID)
+				url := strings.ReplaceAll(pathDetail, ":id", args.ID)
 				headers := map[string]string{
 					"Is-live": "true",
 				}
 				m.api.EXPECT().Req(gomock.Any(), "GET", url, nil, nil, headers, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, headers map[string]string, response any) *durianpay.Error {
 
-						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_ewalletaccount+"detail_200.json"), response)
+						err := json.Unmarshal(featureWrap.ResJSONByte(pathResponseEwalletAccount+"detail_200.json"), response)
 						if err != nil {
 							panic(err)
 						}
@@ -254,12 +254,12 @@ func TestClient_Detail(t *testing.T) {
 				ctx: context.Background(),
 			},
 			prepare: func(m mocks, args args) {
-				url := strings.ReplaceAll(PATH_EWALLET_ACCOUNT_DETAIL, ":id", args.ID)
+				url := strings.ReplaceAll(pathDetail, ":id", args.ID)
 				m.api.EXPECT().
 					Req(gomock.Any(), "GET", url, nil, nil, gomock.Any(), gomock.Any()).
-					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")))
 			},
-			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")),
 		},
 	}
 	for _, tt := range tests {

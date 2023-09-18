@@ -21,8 +21,8 @@ type Client struct {
 }
 
 const (
-	PATH_ORDER              = "/v1/orders"
-	PATCH_FETCH_ORDER_BY_ID = PATH_ORDER + "/:id"
+	pathOrder     = "/v1/orders"
+	pathFetchByID = pathOrder + "/:id"
 )
 
 // Create returns a response from Create Order API.
@@ -33,7 +33,7 @@ func (c *Client) Create(ctx context.Context, payload durianpay.OrderPayload) (*C
 		Data Create `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_ORDER, nil, payload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DurianpayURL+pathOrder, nil, payload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *Client) FetchOrders(ctx context.Context, opt durianpay.OrderFetchOption
 		Data FetchOrders `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_ORDER, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, durianpay.DurianpayURL+pathOrder, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (c *Client) FetchOrders(ctx context.Context, opt durianpay.OrderFetchOption
 //
 //	[Doc Order Fetch By ID API]: https://durianpay.id/docs/api/orders/fetch-one/
 func (c *Client) FetchOrderByID(ctx context.Context, ID string, opt durianpay.OrderFetchByIDOption) (*FetchOrder, *durianpay.Error) {
-	url := durianpay.DURIANPAY_URL + PATCH_FETCH_ORDER_BY_ID
+	url := durianpay.DurianpayURL + pathFetchByID
 	url = strings.ReplaceAll(url, ":id", ID)
 
 	res := struct {
@@ -85,7 +85,7 @@ func (c *Client) CreatePaymentLink(ctx context.Context, payload durianpay.OrderP
 		Data Create `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_ORDER, nil, payload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DurianpayURL+pathOrder, nil, payload, nil, &res)
 	if err != nil {
 		return nil, err
 	}

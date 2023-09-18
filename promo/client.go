@@ -21,10 +21,10 @@ type Client struct {
 }
 
 const (
-	PATH_PROMO              = durianpay.DURIANPAY_URL + "/v1/merchants/promos"
-	PATH_PROMO_FETCH_BY_UD  = PATH_PROMO + "/:id"
-	PATH_PROMO_DELETE_BY_ID = PATH_PROMO + "/:id"
-	PATH_PROMO_UPDATE_BY_ID = PATH_PROMO + "/:id"
+	pathPromo      = durianpay.DurianpayURL + "/v1/merchants/promos"
+	pathFetchByID  = pathPromo + "/:id"
+	pathDeleteByID = pathPromo + "/:id"
+	pathUpdateByID = pathPromo + "/:id"
 )
 
 // Create return a response from Create Promos API.
@@ -35,7 +35,7 @@ func (c *Client) Create(ctx context.Context, payload durianpay.PromoPayload) (*P
 		Data Promo `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PROMO, nil, payload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathPromo, nil, payload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *Client) FetchPromos(ctx context.Context) ([]Promo, *durianpay.Error) {
 		Data []Promo `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, PATH_PROMO, nil, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, pathPromo, nil, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (c *Client) FetchPromos(ctx context.Context) ([]Promo, *durianpay.Error) {
 //
 //	[Doc Promos Fetch By ID API]: https://durianpay.id/docs/api/promos/fetch-one/
 func (c *Client) FetchPromoByID(ctx context.Context, ID string) (*Promo, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PROMO_FETCH_BY_UD, ":id", ID)
+	url := strings.ReplaceAll(pathFetchByID, ":id", ID)
 	res := struct {
 		Data Promo `json:"data"`
 	}{}
@@ -80,7 +80,7 @@ func (c *Client) FetchPromoByID(ctx context.Context, ID string) (*Promo, *durian
 //
 //	[Doc Delete Promo API]: https://durianpay.id/docs/api/promos/delete/
 func (c *Client) Delete(ctx context.Context, ID string) (string, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PROMO_DELETE_BY_ID, ":id", ID)
+	url := strings.ReplaceAll(pathDeleteByID, ":id", ID)
 	res := struct {
 		Data string `json:"message"`
 	}{}
@@ -97,7 +97,7 @@ func (c *Client) Delete(ctx context.Context, ID string) (string, *durianpay.Erro
 //
 //	[Doc Update Promos API]: https://durianpay.id/docs/api/promos/update/
 func (c *Client) Update(ctx context.Context, ID string, payload durianpay.PromoPayload) (*Promo, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PROMO_FETCH_BY_UD, ":id", ID)
+	url := strings.ReplaceAll(pathFetchByID, ":id", ID)
 	res := struct {
 		Data Promo `json:"data"`
 	}{}

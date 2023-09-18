@@ -21,14 +21,14 @@ type Client struct {
 }
 
 const (
-	PATH_PAYMENT                 = durianpay.DURIANPAY_URL + "/v1/payments"
-	PATH_PAYMENT_CHARGE          = PATH_PAYMENT + "/charge"
-	PATH_PAYMENT_FETCH_BY_ID     = PATH_PAYMENT + "/:id"
-	PATH_PAYMENT_CHECK_STATUS    = PATH_PAYMENT + "/:id/status"
-	PATH_PAYMENT_VERIFY          = PATH_PAYMENT + "/:id/verify"
-	PATH_PAYMENT_CAPTURE         = PATH_PAYMENT + "/:id/capture"
-	PATH_PAYMENT_CANCEL          = PATH_PAYMENT + "/:id/cancel"
-	PATH_PAYMENT_MDR_CALCULATION = "/v1/merchants/mdr_fees"
+	pathPayment        = durianpay.DurianpayURL + "/v1/payments"
+	pathCharge         = pathPayment + "/charge"
+	pathFetchByID      = pathPayment + "/:id"
+	pathCheckStatus    = pathPayment + "/:id/status"
+	pathVerify         = pathPayment + "/:id/verify"
+	pathCapture        = pathPayment + "/:id/capture"
+	pathCancel         = pathPayment + "/:id/cancel"
+	pathMDRCalculation = "/v1/merchants/mdr_fees"
 )
 
 // ChargeVA returns a response from Payment Charge API for Virtual Account type.
@@ -45,7 +45,7 @@ func (c *Client) ChargeVA(ctx context.Context, payload durianpay.PaymentChargeVA
 		Data ChargeVA `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathCharge, nil, reqPayload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *Client) ChargeBNPL(ctx context.Context, payload durianpay.PaymentCharge
 		Data ChargeBNPL `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathCharge, nil, reqPayload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (c *Client) ChargeEwallet(ctx context.Context, payload durianpay.PaymentCha
 		Data ChargeEwallet `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathCharge, nil, reqPayload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func (c *Client) ChargeRetailStore(ctx context.Context, payload durianpay.Paymen
 		Data ChargeRetailStore `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathCharge, nil, reqPayload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (c *Client) ChargeOnlineBank(ctx context.Context, payload durianpay.Payment
 		Data ChargeOnlineBank `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathCharge, nil, reqPayload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +151,7 @@ func (c *Client) ChargeQRIS(ctx context.Context, payload durianpay.PaymentCharge
 		Data ChargeQRIS `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathCharge, nil, reqPayload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -172,7 +172,7 @@ func (c *Client) ChargeCard(ctx context.Context, payload durianpay.PaymentCharge
 		Data ChargeCard `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, PATH_PAYMENT_CHARGE, nil, reqPayload, nil, &res)
+	err := c.Api.Req(ctx, http.MethodPost, pathCharge, nil, reqPayload, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +188,7 @@ func (c *Client) FetchPayments(ctx context.Context, opt durianpay.PaymentFetchOp
 		Data FetchPayments `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, PATH_PAYMENT_CHARGE, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, pathCharge, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func (c *Client) FetchPayments(ctx context.Context, opt durianpay.PaymentFetchOp
 //
 //	[Doc Payment Fetch by ID API]: https://durianpay.id/docs/api/payments/fetch-one/
 func (c *Client) FetchPaymentByID(ctx context.Context, ID string, opt durianpay.PaymentFetchByIDOption) (*Payment, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PAYMENT_FETCH_BY_ID, ":id", ID)
+	url := strings.ReplaceAll(pathFetchByID, ":id", ID)
 
 	res := struct {
 		Data Payment `json:"data"`
@@ -218,7 +218,7 @@ func (c *Client) FetchPaymentByID(ctx context.Context, ID string, opt durianpay.
 //
 //	[Doc Check Payments Status API]: https://durianpay.id/docs/api/payments/status/
 func (c *Client) CheckPaymentStatus(ctx context.Context, ID string) (*CheckPaymentStatus, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PAYMENT_CHECK_STATUS, ":id", ID)
+	url := strings.ReplaceAll(pathCheckStatus, ":id", ID)
 
 	res := struct {
 		Data CheckPaymentStatus `json:"data"`
@@ -236,7 +236,7 @@ func (c *Client) CheckPaymentStatus(ctx context.Context, ID string) (*CheckPayme
 //
 //	[Doc Verify Payments Status API]: https://durianpay.id/docs/api/payments/verify/
 func (c *Client) Verify(ctx context.Context, ID string, payload durianpay.PaymentVerifyPayload) (bool, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PAYMENT_VERIFY, ":id", ID)
+	url := strings.ReplaceAll(pathVerify, ":id", ID)
 
 	res := struct {
 		Data bool `json:"data"`
@@ -254,7 +254,7 @@ func (c *Client) Verify(ctx context.Context, ID string, payload durianpay.Paymen
 //
 //	[Doc Payment Capture API]: https://durianpay.id/docs/api/payments/capture/
 func (c *Client) Capture(ctx context.Context, ID string, payload durianpay.PaymentCapturePayload) (*Capture, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PAYMENT_CAPTURE, ":id", ID)
+	url := strings.ReplaceAll(pathCapture, ":id", ID)
 
 	res := struct {
 		Data Capture `json:"data"`
@@ -272,7 +272,7 @@ func (c *Client) Capture(ctx context.Context, ID string, payload durianpay.Payme
 //
 //	[Doc Cancel Payment API]: https://durianpay.id/docs/api/payments/cancel/
 func (c *Client) Cancel(ctx context.Context, ID string) (*Cancel, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_PAYMENT_CANCEL, ":id", ID)
+	url := strings.ReplaceAll(pathCancel, ":id", ID)
 
 	res := struct {
 		Data Cancel `json:"data"`
@@ -294,7 +294,7 @@ func (c *Client) MDRFeesCalculation(ctx context.Context, opt durianpay.PaymentMD
 		Data MDRFeesCalculation `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, PATH_PAYMENT_MDR_CALCULATION, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, pathMDRCalculation, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}

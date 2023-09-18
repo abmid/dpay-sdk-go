@@ -21,16 +21,16 @@ type Client struct {
 }
 
 const (
-	PATH_DISBURSEMENT                   = "/v1/disbursements"
-	PATH_DISBURSEMENT_VALIDATE          = PATH_DISBURSEMENT + "/validate"
-	PATH_DISBURSEMENT_SUBMIT            = PATH_DISBURSEMENT + "/submit"
-	PATH_DISBURSEMENT_APPROVE           = PATH_DISBURSEMENT + "/:id/approve"
-	PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID = PATH_DISBURSEMENT + "/:id/items"
-	PATH_DISBURSEMENT_FETCH_BY_ID       = PATH_DISBURSEMENT + "/:id"
-	PATH_DISBURSEMENT_DELETE            = PATH_DISBURSEMENT + "/:id"
-	PATH_DISBURSEMENT_FETCH_BANKS       = PATH_DISBURSEMENT + "/banks"
-	PATH_DISBURSEMENT_TOPUP_AMOUNT      = PATH_DISBURSEMENT + "/topup"
-	PATH_DISBURSEMENT_FETCH_BALANCE     = PATH_DISBURSEMENT + "/topup/balance"
+	pathDisbursement   = "/v1/disbursements"
+	pathValidate       = pathDisbursement + "/validate"
+	pathSubmit         = pathDisbursement + "/submit"
+	pathApprove        = pathDisbursement + "/:id/approve"
+	pathFetchItemsByID = pathDisbursement + "/:id/items"
+	pathFetchByID      = pathDisbursement + "/:id"
+	pathDelete         = pathDisbursement + "/:id"
+	pathFetchBanks     = pathDisbursement + "/banks"
+	pathTopupAmount    = pathDisbursement + "/topup"
+	pathFetchBalance   = pathDisbursement + "/topup/balance"
 )
 
 // Validate returns a response from Validate Disbursement API.
@@ -41,7 +41,7 @@ func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementVal
 	res := &DisbursementValidate{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
-	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_VALIDATE, nil, payload, headers, res)
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DurianpayURL+pathValidate, nil, payload, headers, res)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *Client) Submit(ctx context.Context, payload durianpay.DisbursementPaylo
 	res := &Disbursement{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, payload.IdempotencyKey)
 
-	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_SUBMIT, opt, payload, headers, res)
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DurianpayURL+pathSubmit, opt, payload, headers, res)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementAppr
 	res := &Disbursement{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
-	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_APPROVE
+	url := durianpay.DurianpayURL + pathApprove
 	url = strings.ReplaceAll(url, ":id", payload.ID)
 
 	err := c.Api.Req(ctx, http.MethodPost, url, opt, payload, headers, res)
@@ -89,7 +89,7 @@ func (c *Client) Approve(ctx context.Context, payload durianpay.DisbursementAppr
 //
 //	[Doc Fetch Disbursement Items by ID]: https://durianpay.id/docs/api/disbursements/fetch-items/
 func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.DisbursementFetchItemsOption) (*DisbursementItem, *durianpay.Error) {
-	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_ITEMS_BY_ID
+	url := durianpay.DurianpayURL + pathFetchItemsByID
 	url = strings.ReplaceAll(url, ":id", ID)
 
 	tempRes := struct {
@@ -108,7 +108,7 @@ func (c *Client) FetchItemsByID(ctx context.Context, ID string, opt *durianpay.D
 //
 //	[Docs Fetch Disbursement]: https://durianpay.id/docs/api/disbursements/fetch-one/
 func (c *Client) FetchByID(ctx context.Context, ID string) (*DisbursementData, *durianpay.Error) {
-	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_FETCH_BY_ID
+	url := durianpay.DurianpayURL + pathFetchByID
 	url = strings.ReplaceAll(url, ":id", ID)
 
 	tempRes := struct {
@@ -127,7 +127,7 @@ func (c *Client) FetchByID(ctx context.Context, ID string) (*DisbursementData, *
 //
 //	[Docs Delete Disbursement]: https://durianpay.id/docs/api/disbursements/delete/
 func (c *Client) Delete(ctx context.Context, ID string) (string, *durianpay.Error) {
-	url := durianpay.DURIANPAY_URL + PATH_DISBURSEMENT_DELETE
+	url := durianpay.DurianpayURL + pathDelete
 	url = strings.ReplaceAll(url, ":id", ID)
 
 	tempRes := struct {
@@ -150,7 +150,7 @@ func (c *Client) FetchBanks(ctx context.Context) ([]DisbursementBank, *durianpay
 		Data []DisbursementBank `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_FETCH_BANKS, nil, nil, nil, &tempRes)
+	err := c.Api.Req(ctx, http.MethodGet, durianpay.DurianpayURL+pathFetchBanks, nil, nil, nil, &tempRes)
 	if err != nil {
 		return tempRes.Data, err
 	}
@@ -168,7 +168,7 @@ func (c *Client) TopupAmount(ctx context.Context, payload durianpay.Disbursement
 		Data DisbursementTopup `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodPost, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_TOPUP_AMOUNT, nil, payload, headers, &tempRes)
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DurianpayURL+pathTopupAmount, nil, payload, headers, &tempRes)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +186,7 @@ func (c *Client) FetchBalance(ctx context.Context) (*int, *durianpay.Error) {
 		} `json:"data"`
 	}{}
 
-	err := c.Api.Req(ctx, http.MethodGet, durianpay.DURIANPAY_URL+PATH_DISBURSEMENT_FETCH_BALANCE, nil, nil, nil, &tempRes)
+	err := c.Api.Req(ctx, http.MethodGet, durianpay.DurianpayURL+pathFetchBalance, nil, nil, nil, &tempRes)
 	if err != nil {
 		return nil, err
 	}

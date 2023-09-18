@@ -64,7 +64,7 @@ func TestApiImplement_Req(t *testing.T) {
 			args: args{
 				ctx:    context.Background(),
 				method: "POST",
-				url:    durianpay.DURIANPAY_URL,
+				url:    durianpay.DurianpayURL,
 				param: param{
 					SkipValidation: tests.ToPtr(true),
 					AnotherParam:   "test-param",
@@ -102,7 +102,7 @@ func TestApiImplement_Req(t *testing.T) {
 			args: args{
 				ctx:    context.Background(),
 				method: "POST",
-				url:    durianpay.DURIANPAY_URL,
+				url:    durianpay.DurianpayURL,
 			},
 			prepare: func(args args) {
 				httpmock.RegisterResponder(args.method, args.url,

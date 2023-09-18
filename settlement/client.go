@@ -21,9 +21,9 @@ type Client struct {
 }
 
 const (
-	PATH_SETTLEMENT             = "/v1/settlements"
-	PATH_SETTLEMENT_DETAIL      = PATH_SETTLEMENT + "/details"
-	PATH_SETTLEMENT_FETCH_BY_ID = PATH_SETTLEMENT + "/:id"
+	pathSettlement = "/v1/settlements"
+	pathDetail     = pathSettlement + "/details"
+	pathFetchByID  = pathSettlement + "/:id"
 )
 
 // FetchSettlements return a response from Settlements Fetch API.
@@ -32,7 +32,7 @@ const (
 func (c *Client) FetchSettlements(ctx context.Context, opt durianpay.SettlementOption) (*FetchSettlements, *durianpay.Error) {
 	res := FetchSettlements{}
 
-	err := c.Api.Req(ctx, http.MethodGet, PATH_SETTLEMENT, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, pathSettlement, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *Client) FetchSettlements(ctx context.Context, opt durianpay.SettlementO
 func (c *Client) FetchDetails(ctx context.Context, opt durianpay.SettlementOption) (*FetchDetails, *durianpay.Error) {
 	res := FetchDetails{}
 
-	err := c.Api.Req(ctx, http.MethodGet, PATH_SETTLEMENT_DETAIL, opt, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, pathDetail, opt, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *Client) StatusByPaymentID(ctx context.Context, paymentID string) (*Sett
 		PaymentID string `url:"payment_id"`
 	}{PaymentID: paymentID}
 
-	err := c.Api.Req(ctx, http.MethodGet, PATH_SETTLEMENT_DETAIL, params, nil, nil, &res)
+	err := c.Api.Req(ctx, http.MethodGet, pathDetail, params, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (c *Client) StatusByPaymentID(ctx context.Context, paymentID string) (*Sett
 //
 //	[Doc Settlements By ID API]: https://durianpay.id/docs/api/settlements/settlements-fetch-by-id/
 func (c *Client) FetchSettlementByID(ctx context.Context, ID string) (*Settlement, *durianpay.Error) {
-	url := strings.ReplaceAll(PATH_SETTLEMENT_FETCH_BY_ID, ":id", ID)
+	url := strings.ReplaceAll(pathFetchByID, ":id", ID)
 	res := struct {
 		Data Settlement `json:"data"`
 	}{}

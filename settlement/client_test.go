@@ -21,9 +21,9 @@ import (
 )
 
 const (
-	path_response_settlement = "../internal/tests/response/settlement/"
-	path_response            = "../internal/tests/response/"
-	path_payload_settlement  = "../internal/tests/payload/settlement/"
+	pathResponse           = "../internal/tests/response/"
+	pathResponseSettlement = pathResponse + "/settlement/"
+	pathPayloadSettlement  = "../internal/tests/payload/settlement/"
 )
 
 type mocks struct {
@@ -56,9 +56,9 @@ func TestClient_FetchSettlements(t *testing.T) {
 			},
 			prepare: func(m mocks, args args) {
 				m.api.EXPECT().
-					Req(gomock.Any(), "GET", PATH_SETTLEMENT, args.opt, nil, nil, gomock.Any()).
+					Req(gomock.Any(), "GET", pathSettlement, args.opt, nil, nil, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
-						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_settlement+"fetch_settlements_200.json"), response)
+						err := json.Unmarshal(featureWrap.ResJSONByte(pathResponseSettlement+"fetch_settlements_200.json"), response)
 						if err != nil {
 							panic(err)
 						}
@@ -89,10 +89,10 @@ func TestClient_FetchSettlements(t *testing.T) {
 			},
 			prepare: func(m mocks, args args) {
 				m.api.EXPECT().
-					Req(gomock.Any(), "GET", PATH_SETTLEMENT, args.opt, nil, nil, gomock.Any()).
-					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+					Req(gomock.Any(), "GET", pathSettlement, args.opt, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")))
 			},
-			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")),
 		},
 	}
 	for _, tt := range tests {
@@ -144,9 +144,9 @@ func TestClient_FetchDetails(t *testing.T) {
 			},
 			prepare: func(m mocks, args args) {
 				m.api.EXPECT().
-					Req(gomock.Any(), "GET", PATH_SETTLEMENT_DETAIL, args.opt, nil, nil, gomock.Any()).
+					Req(gomock.Any(), "GET", pathDetail, args.opt, nil, nil, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
-						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_settlement+"details_200.json"), response)
+						err := json.Unmarshal(featureWrap.ResJSONByte(pathResponseSettlement+"details_200.json"), response)
 						if err != nil {
 							panic(err)
 						}
@@ -184,10 +184,10 @@ func TestClient_FetchDetails(t *testing.T) {
 			},
 			prepare: func(m mocks, args args) {
 				m.api.EXPECT().
-					Req(gomock.Any(), "GET", PATH_SETTLEMENT_DETAIL, args.opt, nil, nil, gomock.Any()).
-					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+					Req(gomock.Any(), "GET", pathDetail, args.opt, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")))
 			},
-			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")),
 		},
 	}
 	for _, tt := range tests {
@@ -240,9 +240,9 @@ func TestClient_StatusByPaymentID(t *testing.T) {
 				}{PaymentID: args.paymentID}
 
 				m.api.EXPECT().
-					Req(gomock.Any(), "GET", PATH_SETTLEMENT_DETAIL, params, nil, nil, gomock.Any()).
+					Req(gomock.Any(), "GET", pathDetail, params, nil, nil, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
-						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_settlement+"status_200.json"), response)
+						err := json.Unmarshal(featureWrap.ResJSONByte(pathResponseSettlement+"status_200.json"), response)
 						if err != nil {
 							panic(err)
 						}
@@ -275,10 +275,10 @@ func TestClient_StatusByPaymentID(t *testing.T) {
 			},
 			prepare: func(m mocks, args args) {
 				m.api.EXPECT().
-					Req(gomock.Any(), "GET", PATH_SETTLEMENT_DETAIL, gomock.Any(), nil, nil, gomock.Any()).
-					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+					Req(gomock.Any(), "GET", pathDetail, gomock.Any(), nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")))
 			},
-			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")),
 		},
 	}
 	for _, tt := range tests {
@@ -326,12 +326,12 @@ func TestClient_FetchSettlementByID(t *testing.T) {
 				ID:  "set_WDizQUoyWy8680",
 			},
 			prepare: func(m mocks, args args) {
-				url := strings.ReplaceAll(PATH_SETTLEMENT_FETCH_BY_ID, ":id", args.ID)
+				url := strings.ReplaceAll(pathFetchByID, ":id", args.ID)
 
 				m.api.EXPECT().
 					Req(gomock.Any(), "GET", url, nil, nil, nil, gomock.Any()).
 					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
-						err := json.Unmarshal(featureWrap.ResJSONByte(path_response_settlement+"fetch_settlement_200.json"), response)
+						err := json.Unmarshal(featureWrap.ResJSONByte(pathResponseSettlement+"fetch_settlement_200.json"), response)
 						if err != nil {
 							panic(err)
 						}
@@ -356,13 +356,13 @@ func TestClient_FetchSettlementByID(t *testing.T) {
 				ID:  "set_WDizQUoyWy8680",
 			},
 			prepare: func(m mocks, args args) {
-				url := strings.ReplaceAll(PATH_SETTLEMENT_FETCH_BY_ID, ":id", args.ID)
+				url := strings.ReplaceAll(pathFetchByID, ":id", args.ID)
 
 				m.api.EXPECT().
 					Req(gomock.Any(), "GET", url, gomock.Any(), nil, nil, gomock.Any()).
-					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")))
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")))
 			},
-			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(path_response+"internal_server_error_500.json")),
+			wantErr: durianpay.FromAPI(500, featureWrap.ResJSONByte(pathResponse+"internal_server_error_500.json")),
 		},
 	}
 	for _, tt := range tests {
