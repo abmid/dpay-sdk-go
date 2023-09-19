@@ -105,6 +105,41 @@ func (f *Feature) DeepEqualPayload(fileJson string, payload any, argPayload any)
 	return false
 }
 
+// DeepEqualResponse is used to check responses that have interface values
+func (f *Feature) DeepEqualResponse(gotRes any, wantRes any) bool {
+	if reflect.DeepEqual(wantRes, gotRes) {
+		return true
+	}
+
+	var castWantRes, castGotRes any
+
+	bytesCastWantRes, err := json.Marshal(wantRes)
+	if err != nil {
+		panic(fmt.Sprintf("DeepEqualPayload: %v", err))
+	}
+
+	bytesCastGotRes, err := json.Marshal(gotRes)
+	if err != nil {
+		panic(fmt.Sprintf("DeepEqualPayload: %v", err))
+	}
+
+	err = json.Unmarshal(bytesCastWantRes, &castWantRes)
+	if err != nil {
+		panic(fmt.Sprintf("DeepEqualPayload: %v", err))
+	}
+
+	err = json.Unmarshal(bytesCastGotRes, &castGotRes)
+	if err != nil {
+		panic(fmt.Sprintf("DeepEqualPayload: %v", err))
+	}
+
+	if reflect.DeepEqual(castWantRes, castGotRes) {
+		return true
+	}
+
+	return false
+}
+
 // ToPtr return value pointer for anything data types.
 func ToPtr[V any](value V) *V {
 	return &value

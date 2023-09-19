@@ -1,0 +1,14 @@
+{
+  "bank_code": "BCA",
+  "invoices": [
+      {
+          "id": "inv_0dIWbudjjf84078",
+          "transaction_amount": "10000.34"
+      },
+      {
+          "id": "inv_h73BiiJVS42949",
+          "transaction_amount": "12002.00"
+      }
+  ],
+  "customer_id": "cus_8OZPaCrlfV6309"
+}

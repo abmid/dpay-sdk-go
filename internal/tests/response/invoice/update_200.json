@@ -1,0 +1,25 @@
+{
+  "message": "Invoice has been updated successfully",
+  "data": {
+      "id": "inv_2J17tdoUed3468",
+      "invoice_ref_id": "inv_ref_001",
+      "customer_id": "cus_xWI6twzZbr7065",
+      "title": "sample invoice",
+      "status": "outstanding",
+      "amount": "20001",
+      "remaining_amount": "5001",
+      "start_date": "2023-09-19T00:00:00Z",
+      "due_date": "2023-09-20T00:00:00Z",
+      "created_at": "2023-09-17T05:06:41.816313Z",
+      "updated_at": "2023-09-17T05:14:10.107641Z",
+      "enable_partial_transaction": true,
+      "partial_transaction_config": {
+          "min_acceptable_amount": 10000
+      },
+      "metadata": {
+          "invoice_type": "internal"
+      },
+      "is_blocked": false
+  },
+  "response_code": "0000"
+}

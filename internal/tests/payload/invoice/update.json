@@ -1,0 +1,14 @@
+{
+  "invoice_ref_id": "inv_ref_001",
+  "remaining_amount": "5000.67",
+  "title": "sample invoice",
+  "enable_partial_transaction": true,
+  "partial_transaction_config": {
+    "min_acceptable_amount": 10000
+  },
+  "start_date": "2023-03-28T00:00:00.000Z",
+  "due_date": "2023-03-29T00:00:00.000Z",
+  "metadata": {
+    "invoice_type": "internal"
+  }
+}

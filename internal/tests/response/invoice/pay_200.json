@@ -1,0 +1,10 @@
+{
+  "message": "Payment for invoice has been created successfully",
+  "data": {
+      "va_number": "4041600154000000",
+      "amount": "250002",
+      "bank_code": "BCA",
+      "invoice_transaction_id": "inv_txn_Fp7St3HycX8335"
+  },
+  "response_code": "0000"
+}

@@ -1,0 +1,30 @@
+{
+  "amount": "20000.67",
+  "remaining_amount": "5000.67",
+  "title": "sample",
+  "invoice_ref_id": "inv_ref_001",
+  "customer": {
+      "customer_ref_id": "cust_001",
+      "given_name": "Jane Doe",
+      "email": "jane_doe@nomail.com",
+      "mobile": "85722173217",
+      "address": {
+          "receiver_name": "Jude Casper",
+          "receiver_phone": "8987654321",
+          "label": "Home Address",
+          "address_line_1": "Jl. HR. Rasuna Said",
+          "address_line_2": "Apartment #786",
+          "city": "Jakarta Selatan",
+          "region": "Jakarta",
+          "country": "Indonesia",
+          "postal_code": "560008",
+          "landmark": "Kota Jakarta Selatan"
+      }
+  },
+  "enable_partial_transaction": true,
+  "partial_transaction_config": {
+      "min_acceptable_amount": 10000
+  },
+  "start_date": "2022-11-22T10:00:00.000Z",
+  "due_date": "2022-11-22T10:00:00.000Z"
+}

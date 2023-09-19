@@ -1,0 +1,22 @@
+{
+  "message": "Invoice has been created successfully",
+  "data": {
+      "id": "inv_2J17tdoUed3468",
+      "invoice_ref_id": "inv_ref_001",
+      "title": "sample",
+      "status": "outstanding",
+      "amount": "20001",
+      "remaining_amount": "5000.67",
+      "due_date": "2023-09-19T10:00:00Z",
+      "start_date": "2023-09-18T10:00:00Z",
+      "created_at": "2023-09-17T05:06:41.816313Z",
+      "customer_id": "cus_xWI6twzZbr7065",
+      "enable_partial_transaction": true,
+      "partial_transaction_config": {
+          "min_acceptable_amount": 10000
+      },
+      "checkout_url": "/Twkx37",
+      "checkout_url_expiry_at": "2023-12-16T12:06:41.900592201+07:00"
+  },
+  "response_code": "0000"
+}

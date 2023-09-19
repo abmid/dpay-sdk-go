@@ -17,11 +17,12 @@ const (
 
 // Error is commons response error DurianPay
 type Error struct {
-	StatusCode int      // Response from http status code
-	Error      string   `json:"error"`
-	ErrorCode  string   `json:"error_code"`
-	Errors     []Errors `json:"errors"`
-	Message    string   `json:"message"`
+	StatusCode   int      // Response from http status code
+	Error        string   `json:"error"`
+	ErrorCode    string   `json:"error_code"`
+	Errors       []Errors `json:"errors"`
+	Message      string   `json:"message"`
+	ResponseCode string   `json:"response_code"` // ResponseCode currenty only present for Invoice API
 }
 
 type Errors struct {

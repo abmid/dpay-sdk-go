@@ -1,0 +1,30 @@
+{
+  "data": {
+      "id": "inv_2J17tdoUed3468",
+      "invoice_ref_id": "inv_ref_001",
+      "customer_id": "cus_xWI6twzZbr7065",
+      "is_live": false,
+      "title": "sample",
+      "status": "outstanding",
+      "amount": "20001",
+      "remaining_amount": "5001",
+      "start_date": "2023-09-18T10:00:00Z",
+      "due_date": "2023-09-19T10:00:00Z",
+      "created_at": "2023-09-17T05:06:41.816313Z",
+      "is_partial_transaction_enabled": true,
+      "partial_transaction_config": {
+          "min_acceptable_amount": 10000
+      },
+      "invoice_url": null,
+      "metadata": null,
+      "is_blocked": false,
+      "transactions": [
+          {
+              "id": "inv_txn_sAMwRDEqcE0554",
+              "amount": "15000",
+              "status": "paid_manually"
+          }
+      ]
+  },
+  "response_code": "0000"
+}
