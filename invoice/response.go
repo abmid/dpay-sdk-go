@@ -78,8 +78,8 @@ type FetchInvoice struct {
 	TotalCount int        `json:"total_count"`
 }
 
-// GenerateURL represents a response from Generate Checkout URL API.
-type GenerateURL struct {
+// GenerateCheckoutURL represents a response from Generate Checkout URL API.
+type GenerateCheckoutURL struct {
 	URL    string    `json:"url"`
 	Expiry time.Time `json:"expiry"`
 }

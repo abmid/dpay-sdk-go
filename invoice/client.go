@@ -9,6 +9,7 @@ package invoice
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/common"
@@ -38,6 +39,24 @@ func (c *Client) Create(ctx context.Context, payload durianpay.InvoiceCreatePayl
 	}{}
 
 	err := c.Api.Req(ctx, http.MethodPost, urlInvoice, nil, payload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
+
+// GenerateCheckoutURL returns a response from Generate Checkout URL API.
+//
+//	[Doc Generate Checkout URL API]: https://durianpay.id/docs/api/invoices/generate-checkout-url/
+func (c *Client) GenerateCheckoutURL(ctx context.Context, customerID string) (*GenerateCheckoutURL, *durianpay.Error) {
+	url := strings.ReplaceAll(urlGenerateCheckoutURL, ":customer_id", customerID)
+
+	res := struct {
+		Data GenerateCheckoutURL `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, url, nil, nil, nil, &res)
 	if err != nil {
 		return nil, err
 	}

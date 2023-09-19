@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"reflect"
+	"strings"
 	"testing"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
@@ -152,6 +153,88 @@ func TestClient_Create(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.Create() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_GenerateCheckoutURL(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx        context.Context
+		customerID string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *GenerateCheckoutURL
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx:        context.Background(),
+				customerID: "cus_ViPeX4iBYp2233",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(urlGenerateCheckoutURL, ":customer_id", args.customerID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", url, nil, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(dirResponseInvoice+"generate_url_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &GenerateCheckoutURL{
+				URL:    "/Twkx37",
+				Expiry: tests.StringToTime("2023-12-16T12:06:41+07:00"),
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(urlGenerateCheckoutURL, ":customer_id", args.customerID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "POST", url, nil, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(dirResponseInvoice+"internal_server_error_500.json")))
+			},
+			wantErr: &durianpay.Error{
+				StatusCode:   500,
+				Error:        "error creating invoice",
+				ResponseCode: "0005",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.GenerateCheckoutURL(tt.args.ctx, tt.args.customerID)
+			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+				t.Errorf("Client.GenerateCheckoutURL() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.GenerateCheckoutURL() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
 			}
 		})
 	}
