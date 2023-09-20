@@ -147,3 +147,17 @@ func (c *Client) ManualPay(ctx context.Context, payload durianpay.InvoiceManualP
 
 	return &res.Data, nil
 }
+
+// Delete returns a response from Delete Invoice API
+//
+//	[Doc Delete Invoice API]: https://durianpay.id/docs/api/invoices/delete/
+func (c *Client) Delete(ctx context.Context, ID string) *durianpay.Error {
+	url := strings.ReplaceAll(urlDeleteByID, ":id", ID)
+
+	err := c.Api.Req(ctx, http.MethodDelete, url, nil, nil, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

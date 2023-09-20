@@ -79,9 +79,11 @@ func (c *ApiImplement) Req(ctx context.Context, method string, url string, param
 		return durianpay.FromAPI(httpRes.StatusCode, resBody)
 	}
 
-	jsonErr := json.Unmarshal(resBody, response)
-	if jsonErr != nil {
-		return durianpay.FromSDKError(jsonErr)
+	if response != nil {
+		jsonErr := json.Unmarshal(resBody, response)
+		if jsonErr != nil {
+			return durianpay.FromSDKError(jsonErr)
+		}
 	}
 
 	return nil

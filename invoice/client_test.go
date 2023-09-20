@@ -755,3 +755,78 @@ func TestClient_ManualPay(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_Delete(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		ID  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				ID:  "inv_h73BiiJVS42949",
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(urlDeleteByID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "DELETE", url, nil, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						if response != nil {
+							err := json.Unmarshal(featureWrap.ResJSONByte(dirResponseInvoice+"delete_200.json"), response)
+							if err != nil {
+								panic(err)
+							}
+						}
+
+						return nil
+					})
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(urlDeleteByID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "DELETE", url, nil, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(dirResponseInvoice+"internal_server_error_500.json")))
+			},
+			wantErr: &durianpay.Error{
+				StatusCode:   500,
+				Error:        "error creating invoice",
+				ResponseCode: "0005",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			if gotErr := c.Delete(tt.args.ctx, tt.args.ID); !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.Delete() = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
