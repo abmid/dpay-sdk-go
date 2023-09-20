@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/internal/tests"
@@ -337,6 +338,109 @@ func TestClient_FetchInvoiceByID(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
 				t.Errorf("Client.FetchInvoiceByID() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestClient_FetchInvoices(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx context.Context
+		opt durianpay.InvoiceFetchOption
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *FetchInvoices
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				opt: durianpay.InvoiceFetchOption{
+					From:   time.Now().Format("2006-01-02"),
+					To:     time.Now().Format("2006-01-02"),
+					Skip:   1,
+					Limit:  10,
+					Status: "paid",
+				},
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", urlInvoice, args.opt, nil, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(dirResponseInvoice+"fetch_invoices_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &FetchInvoices{
+				Invoices: []Invoices{
+					{
+						ID:                          "inv_2J17tdoUed3468",
+						InvoiceRefID:                "inv_ref_001",
+						CustomerID:                  "cus_xWI6twzZbr7065",
+						Status:                      "outstanding",
+						Title:                       "sample",
+						StartDate:                   tests.StringToTime("2023-09-18T10:00:00Z"),
+						DueDate:                     tests.StringToTime("2023-09-19T10:00:00Z"),
+						CreatedAt:                   tests.StringToTime("2023-09-17T05:06:41.816313Z"),
+						IsPartialTransactionEnabled: true,
+						PartialTransactionConfig: map[string]any{
+							"min_acceptable_amount": 10000,
+						},
+						Amount:          "20001",
+						RemainingAmount: "5001",
+						IsLive:          false,
+						IsBlocked:       false,
+					},
+				},
+				TotalCount: 1,
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				m.api.EXPECT().
+					Req(gomock.Any(), "GET", urlInvoice, args.opt, nil, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(dirResponseInvoice+"internal_server_error_500.json")))
+			},
+			wantErr: &durianpay.Error{
+				StatusCode:   500,
+				Error:        "error creating invoice",
+				ResponseCode: "0005",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			gotRes, gotErr := c.FetchInvoices(tt.args.ctx, tt.args.opt)
+			if !featureWrap.DeepEqualResponse(gotRes, tt.wantRes) {
+				t.Errorf("Client.FetchInvoices() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.FetchInvoices() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
 			}
 		})
 	}

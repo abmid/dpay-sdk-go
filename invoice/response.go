@@ -56,24 +56,25 @@ type FetchInvoiceByID struct {
 
 // Invoices is part of FetchInvoice for attribute Invoices
 type Invoices struct {
-	ID                       string         `json:"id"`
-	InvoiceRefID             string         `json:"invoice_ref_id"`
-	CustomerID               string         `json:"customer_id"`
-	IsLive                   bool           `json:"is_live"`
-	Title                    string         `json:"title"`
-	Status                   string         `json:"status"`
-	Amount                   string         `json:"amount"`
-	RemainingAmount          string         `json:"remaining_amount"`
-	StartDate                time.Time      `json:"start_date"`
-	DueDate                  time.Time      `json:"due_date"`
-	CreatedAt                time.Time      `json:"created_at"`
-	PartialTransactionConfig map[string]any `json:"partial_transaction_config"`
-	InvoiceURL               string         `json:"invoice_url"`
-	IsBlocked                bool           `json:"is_blocked"`
+	ID                          string         `json:"id"`
+	InvoiceRefID                string         `json:"invoice_ref_id"`
+	CustomerID                  string         `json:"customer_id"`
+	IsLive                      bool           `json:"is_live"`
+	Title                       string         `json:"title"`
+	Status                      string         `json:"status"`
+	Amount                      string         `json:"amount"`
+	RemainingAmount             string         `json:"remaining_amount"`
+	StartDate                   time.Time      `json:"start_date"`
+	DueDate                     time.Time      `json:"due_date"`
+	CreatedAt                   time.Time      `json:"created_at"`
+	IsPartialTransactionEnabled bool           `json:"is_partial_transaction_enabled"`
+	PartialTransactionConfig    map[string]any `json:"partial_transaction_config"`
+	InvoiceURL                  string         `json:"invoice_url"`
+	IsBlocked                   bool           `json:"is_blocked"`
 }
 
 // FetchInvoice represents a response from List Invoices API.
-type FetchInvoice struct {
+type FetchInvoices struct {
 	Invoices   []Invoices `json:"invoices"`
 	TotalCount int        `json:"total_count"`
 }

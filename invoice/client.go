@@ -81,3 +81,19 @@ func (c *Client) FetchInvoiceByID(ctx context.Context, ID string) (*FetchInvoice
 
 	return &res.Data, nil
 }
+
+// FetchInvoices returns a response from List Invoices API
+//
+//	[Doc List Invoices API]: https://durianpay.id/docs/api/invoices/fetch/
+func (c *Client) FetchInvoices(ctx context.Context, opt durianpay.InvoiceFetchOption) (*FetchInvoices, *durianpay.Error) {
+	res := struct {
+		Data FetchInvoices `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, urlInvoice, opt, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
