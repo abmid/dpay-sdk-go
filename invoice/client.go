@@ -97,3 +97,21 @@ func (c *Client) FetchInvoices(ctx context.Context, opt durianpay.InvoiceFetchOp
 
 	return &res.Data, nil
 }
+
+// Update returns a response from Update Invoice API
+//
+//	[Doc Update Invoice API]: https://durianpay.id/docs/api/invoices/update/
+func (c *Client) Update(ctx context.Context, ID string, payload durianpay.InvoiceUpdatePayload) (*Update, *durianpay.Error) {
+	url := strings.ReplaceAll(urlUpdateByID, ":id", ID)
+
+	res := struct {
+		Data Update `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPut, url, nil, payload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}

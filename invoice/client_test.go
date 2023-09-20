@@ -445,3 +445,124 @@ func TestClient_FetchInvoices(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_Update(t *testing.T) {
+	featureWrap := tests.FeatureWrap(t)
+	defer featureWrap.Ctrl.Finish()
+
+	type args struct {
+		ctx     context.Context
+		ID      string
+		payload durianpay.InvoiceUpdatePayload
+	}
+	tests := []struct {
+		name    string
+		args    args
+		prepare func(m mocks, args args)
+		wantRes *Update
+		wantErr *durianpay.Error
+	}{
+		{
+			name: "Success",
+			args: args{
+				ctx: context.Background(),
+				payload: durianpay.InvoiceUpdatePayload{
+					InvoiceRefID:             "inv_ref_001",
+					RemainingAmount:          "5000.67",
+					Title:                    "sample invoice",
+					EnablePartialTransaction: true,
+					PartialTransactionConfig: map[string]any{
+						"min_acceptable_amount": 10000,
+					},
+					StartDate: tests.StringToTime("2023-03-28T00:00:00.000Z"),
+					DueDate:   tests.StringToTime("2023-03-29T00:00:00.000Z"),
+					Metadata: map[string]any{
+						"invoice_type": "internal",
+					},
+				},
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(urlUpdateByID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "PUT", url, nil, args.payload, nil, gomock.Any()).
+					DoAndReturn(func(ctx context.Context, method string, url string, param any, body any, header map[string]string, response any) *durianpay.Error {
+						err := json.Unmarshal(featureWrap.ResJSONByte(dirResponseInvoice+"update_200.json"), response)
+						if err != nil {
+							panic(err)
+						}
+
+						return nil
+					})
+			},
+			wantRes: &Update{
+				ID:                       "inv_2J17tdoUed3468",
+				InvoiceRefID:             "inv_ref_001",
+				CustomerID:               "cus_xWI6twzZbr7065",
+				Title:                    "sample invoice",
+				Status:                   "outstanding",
+				Amount:                   "20001",
+				RemainingAmount:          "5001",
+				StartDate:                tests.StringToTime("2023-09-19T00:00:00Z"),
+				DueDate:                  tests.StringToTime("2023-09-20T00:00:00Z"),
+				CreatedAt:                tests.StringToTime("2023-09-17T05:06:41.816313Z"),
+				UpdatedAt:                tests.StringToTime("2023-09-17T05:14:10.107641Z"),
+				EnablePartialTransaction: true,
+				PartialTransactionConfig: map[string]any{
+					"min_acceptable_amount": 10000,
+				},
+				Metadata: map[string]any{
+					"invoice_type": "internal",
+				},
+				IsBlocked: false,
+			},
+		},
+		{
+			name: "Internal Server Error",
+			args: args{
+				ctx: context.Background(),
+			},
+			prepare: func(m mocks, args args) {
+				url := strings.ReplaceAll(urlUpdateByID, ":id", args.ID)
+
+				m.api.EXPECT().
+					Req(gomock.Any(), "PUT", url, nil, args.payload, nil, gomock.Any()).
+					Return(durianpay.FromAPI(500, featureWrap.ResJSONByte(dirResponseInvoice+"internal_server_error_500.json")))
+			},
+			wantErr: &durianpay.Error{
+				StatusCode:   500,
+				Error:        "error creating invoice",
+				ResponseCode: "0005",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiMock := mock_common.NewMockApi(featureWrap.Ctrl)
+			parseArgs := tt.args
+
+			c := &Client{
+				ServerKey: featureWrap.ServerKey,
+				Api:       apiMock,
+			}
+
+			tt.prepare(mocks{api: apiMock}, parseArgs)
+
+			if tt.wantRes != nil {
+				payload := durianpay.InvoiceUpdatePayload{}
+
+				if !featureWrap.DeepEqualPayload(dirPayloadInvoice+"update.json", &payload, &tt.args.payload) {
+					t.Errorf("Client.update() gotPayload = %v, wantPayload %v", tt.args.payload, payload)
+				}
+			}
+
+			gotRes, gotErr := c.Update(tt.args.ctx, tt.args.ID, tt.args.payload)
+			if !featureWrap.DeepEqualResponse(gotRes, tt.wantRes) {
+				t.Errorf("Client.Update() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
+			}
+			if !reflect.DeepEqual(gotErr, tt.wantErr) {
+				t.Errorf("Client.Update() gotErr = %v, wantErr %v", gotErr, tt.wantErr)
+			}
+		})
+	}
+}
