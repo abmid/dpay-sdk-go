@@ -84,14 +84,14 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
   - [x] Patch VA By ID
   - [x] Simulate VA Payment
 - INVOINCES
-  - [ ] Create Invoince
-  - [ ] Generate Checkout URL
-  - [ ] Fetch Invoice By ID
-  - [ ] Fetch Invoices / List Invoices
-  - [ ] Update Invoice
-  - [ ] Pay Invoice
-  - [ ] Manual Payment Invoice
-  - [ ] Delete Invoice
+  - [x] Create Invoince
+  - [x] Generate Checkout URL
+  - [x] Fetch Invoice By ID
+  - [x] Fetch Invoices / List Invoices
+  - [x] Update Invoice
+  - [x] Pay Invoice
+  - [x] Manual Payment Invoice
+  - [x] Delete Invoice
 
 ## Contributing
 
