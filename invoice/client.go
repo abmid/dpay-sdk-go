@@ -63,3 +63,21 @@ func (c *Client) GenerateCheckoutURL(ctx context.Context, customerID string) (*G
 
 	return &res.Data, nil
 }
+
+// FetchInvoiceByID returns a response from Invoice Fetch by ID API.
+//
+//	[Doc Invoice Fetch by ID API]: https://durianpay.id/docs/api/invoices/fetch-one/
+func (c *Client) FetchInvoiceByID(ctx context.Context, ID string) (*FetchInvoiceByID, *durianpay.Error) {
+	url := strings.ReplaceAll(urlFetchByID, ":id", ID)
+
+	res := struct {
+		Data FetchInvoiceByID `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodGet, url, nil, nil, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
