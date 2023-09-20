@@ -43,7 +43,7 @@ type InvoiceUpdatePayload struct {
 type InvoicePayPayload struct {
 	BankCode   string    `json:"bank_code"`
 	Invoices   []Invoice `json:"invoices"`
-	CustomerID string    `json:"customer"`
+	CustomerID string    `json:"customer_id"`
 }
 
 // Invoice is part of InvoicePay for attribute Invoices.

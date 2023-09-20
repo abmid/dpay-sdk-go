@@ -115,3 +115,19 @@ func (c *Client) Update(ctx context.Context, ID string, payload durianpay.Invoic
 
 	return &res.Data, nil
 }
+
+// Pay returns a response from Pay Invoice API
+//
+//	[Doc Pay Invoice API]: https://durianpay.id/docs/api/invoices/pay/
+func (c *Client) Pay(ctx context.Context, payload durianpay.InvoicePayPayload) (*Pay, *durianpay.Error) {
+	res := struct {
+		Data Pay `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, urlPay, nil, payload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
