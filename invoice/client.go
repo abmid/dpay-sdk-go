@@ -131,3 +131,19 @@ func (c *Client) Pay(ctx context.Context, payload durianpay.InvoicePayPayload) (
 
 	return &res.Data, nil
 }
+
+// ManualPay returns a response from Manual Payment for Invoice API
+//
+//	[Doc Manual Payment for Invoice API]: https://durianpay.id/docs/api/invoices/manual-payment/
+func (c *Client) ManualPay(ctx context.Context, payload durianpay.InvoiceManualPayPayload) (*ManualPay, *durianpay.Error) {
+	res := struct {
+		Data ManualPay `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, urlManualPayment, nil, payload, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res.Data, nil
+}
