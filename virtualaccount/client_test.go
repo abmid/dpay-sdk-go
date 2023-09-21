@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	durianpay "github.com/abmid/dpay-sdk-go"
 	"github.com/abmid/dpay-sdk-go/internal/tests"
@@ -163,7 +164,12 @@ func TestClient_FetchVirtualAccounts(t *testing.T) {
 			name: "Success",
 			args: args{
 				ctx: context.Background(),
-				opt: durianpay.VirtualAccountFetchOption{},
+				opt: durianpay.VirtualAccountFetchOption{
+					From:  time.Now().Format("2006-01-02"),
+					To:    time.Now().Format("2006-01-02"),
+					Skip:  10,
+					Limit: 10,
+				},
 			},
 			prepare: func(m mocks, args args) {
 				m.api.EXPECT().Req(args.ctx, "GET", pathVA, args.opt, nil, nil, gomock.Any()).

@@ -56,8 +56,8 @@ type VirtualAccountPaymentSimulatePayload struct {
 
 // VirtualAccountFetchOption is parameter for Virtual Account Fetch API
 type VirtualAccountFetchOption struct {
-	From  uint32 `url:"from"`
-	To    uint32 `url:"to"`
+	From  string `url:"from"`
+	To    string `url:"to"`
 	Skip  uint16 `url:"skip"`
 	Limit uint16 `url:"limit"`
 }
