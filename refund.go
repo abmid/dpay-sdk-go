@@ -27,6 +27,6 @@ Options
 type RefundFetchOption struct {
 	From  string `url:"from"`
 	To    string `url:"to"`
-	Skip  string `url:"skip"`
-	Limit string `url:"limit"`
+	Skip  uint16 `url:"skip"`
+	Limit uint16 `url:"limit"`
 }
