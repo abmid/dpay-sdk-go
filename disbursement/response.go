@@ -18,12 +18,6 @@ type DisbursementValidate struct {
 
 // Disbursement is response from disbursement API
 type Disbursement struct {
-	Message string           `json:"message"`
-	Data    DisbursementData `json:"data"`
-}
-
-// DisbursementData is data object part of Disbursement
-type DisbursementData struct {
 	ID                 string    `json:"id"`
 	IdempotencyKey     string    `json:"idempotency_key"`
 	Name               string    `json:"name"`

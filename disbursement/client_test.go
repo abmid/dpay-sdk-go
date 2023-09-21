@@ -184,15 +184,12 @@ func TestClient_Submit(t *testing.T) {
 					})
 			},
 			wantRes: &Disbursement{
-				Message: "request already processed",
-				Data: DisbursementData{
-					ID:                 "dis_LjxhDKq8Am3427",
-					IdempotencyKey:     "0d5cb9a6-2488-4c86-1000-1502",
-					Name:               "test disb",
-					TotalAmount:        "20000",
-					TotalDisbursements: 2,
-					Description:        "description",
-				},
+				ID:                 "dis_LjxhDKq8Am3427",
+				IdempotencyKey:     "0d5cb9a6-2488-4c86-1000-1502",
+				Name:               "test disb",
+				TotalAmount:        "20000",
+				TotalDisbursements: 2,
+				Description:        "description",
 			},
 			wantErr: nil,
 		},
@@ -333,16 +330,13 @@ func TestClient_Approve(t *testing.T) {
 					})
 			},
 			wantRes: &Disbursement{
-				Message: "request already submitted",
-				Data: DisbursementData{
-					ID:                 "dis_XXXX",
-					Name:               "sample disbursement",
-					Type:               "batch",
-					Status:             "approved",
-					TotalAmount:        "10000.00",
-					TotalDisbursements: 1,
-					Description:        "this is a sample disbursement",
-				},
+				ID:                 "dis_XXXX",
+				Name:               "sample disbursement",
+				Type:               "batch",
+				Status:             "approved",
+				TotalAmount:        "10000.00",
+				TotalDisbursements: 1,
+				Description:        "this is a sample disbursement",
 			},
 			wantErr: nil,
 		},
@@ -533,7 +527,7 @@ func TestClient_FetchByID(t *testing.T) {
 		name    string
 		args    args
 		prepare func(mock mocks, args args)
-		wantRes *DisbursementData
+		wantRes *Disbursement
 		wantErr *durianpay.Error
 	}{
 		{
@@ -557,7 +551,7 @@ func TestClient_FetchByID(t *testing.T) {
 						return nil
 					})
 			},
-			wantRes: &DisbursementData{
+			wantRes: &Disbursement{
 				ID:                 "dis_XXXXXXX",
 				Name:               "sample disbursement",
 				Type:               "batch",
