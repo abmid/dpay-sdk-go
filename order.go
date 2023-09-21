@@ -14,14 +14,14 @@ import "time"
 
 // OrderPayload is payload for requests Create Orders API
 type OrderPayload struct {
-	Amount        string        `json:"amount"`
-	PaymentOption string        `json:"payment_option"`
-	Currency      string        `json:"currency"`
-	OrderRefID    string        `json:"order_ref_id"`
-	Customer      Customer      `json:"customer"`
-	Items         []OrderItem   `json:"items"`
-	Metadata      OrderMetadata `json:"metadata"`
-	ExpiryDate    time.Time     `json:"expiry_date"`
+	Amount        string         `json:"amount"`
+	PaymentOption string         `json:"payment_option"`
+	Currency      string         `json:"currency"`
+	OrderRefID    string         `json:"order_ref_id"`
+	Customer      Customer       `json:"customer"`
+	Items         []OrderItem    `json:"items"`
+	Metadata      map[string]any `json:"metadata"`
+	ExpiryDate    time.Time      `json:"expiry_date"`
 }
 
 // OrderItem is part of CreatePayload for attribute Items
@@ -30,12 +30,6 @@ type OrderItem struct {
 	Qty   uint16 `json:"qty"`
 	Price string `json:"price"`
 	Logo  string `json:"logo"`
-}
-
-// OrderMetadata is part of CreatePayload for attribute Metadata
-type OrderMetadata struct {
-	MyMetaKey       string `json:"my-meta-key"`
-	SettlementGroup string `json:"SettlementGroup"`
 }
 
 // OrderPaymentLinkPayload is payload for requests Create Payment Link API

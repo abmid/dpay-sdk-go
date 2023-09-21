@@ -79,9 +79,9 @@ func TestClient_Create(t *testing.T) {
 							Logo:  "https://merchant.com/tv_image.jpg",
 						},
 					},
-					Metadata: durianpay.OrderMetadata{
-						MyMetaKey:       "my-meta-value",
-						SettlementGroup: "BranchName",
+					Metadata: map[string]any{
+						"my-meta-key":     "my-meta-value",
+						"SettlementGroup": "BranchName",
 					},
 					ExpiryDate: tests.StringToTime("2022-03-29T10:00:00.000Z"),
 				},
@@ -109,9 +109,9 @@ func TestClient_Create(t *testing.T) {
 				CreatedAt:     tests.StringToTime("2021-04-01T14:39:37.860426Z"),
 				UpdatedAt:     tests.StringToTime("2021-04-01T14:39:37.860426Z"),
 				ExpiryDate:    tests.StringToTime("2022-03-29T10:00:00Z"),
-				MetaData: durianpay.OrderMetadata{
-					MyMetaKey:       "my-meta-value",
-					SettlementGroup: "BranchName",
+				Metadata: map[string]any{
+					"my-meta-key":     "my-meta-value",
+					"SettlementGroup": "BranchName",
 				},
 				Items: []durianpay.OrderItem{
 					{
@@ -161,7 +161,7 @@ func TestClient_Create(t *testing.T) {
 			}
 
 			gotRes, gotErr := c.Create(parseArgs.ctx, parseArgs.payload)
-			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+			if !featureWrap.DeepEqualResponse(gotRes, tt.wantRes) {
 				t.Errorf("Client.Create() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
@@ -323,8 +323,10 @@ func TestClient_FetchOrderByID(t *testing.T) {
 						CreatedAt:          tests.StringToTime("2023-07-27T04:12:30.887927Z"),
 						UpdatedAt:          tests.StringToTime("2023-07-27T04:12:30.887927Z"),
 						RetryCount:         0,
+						FailureReason:      make(map[string]any),
 					},
 				},
+				Metadata: make(map[string]any),
 			},
 		},
 		{
@@ -357,7 +359,7 @@ func TestClient_FetchOrderByID(t *testing.T) {
 			tt.prepare(mocks{api: apiMock}, parseArgs)
 
 			gotRes, gotErr := c.FetchOrderByID(tt.args.ctx, tt.args.ID, tt.args.opt)
-			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+			if !featureWrap.DeepEqualResponse(gotRes, tt.wantRes) {
 				t.Errorf("Client.FetchOrderByID() got = %v, want %v", gotRes, tt.wantRes)
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
@@ -424,6 +426,7 @@ func TestClient_CreatePaymentLink(t *testing.T) {
 				PaymentLinkUrl: "yUyERa",
 				AdminFeeMethod: "included",
 				PaymentOption:  "full_payment",
+				Metadata:       map[string]any{},
 			},
 		},
 		{
@@ -460,7 +463,7 @@ func TestClient_CreatePaymentLink(t *testing.T) {
 			}
 
 			gotRes, gotErr := c.CreatePaymentLink(tt.args.ctx, tt.args.payload)
-			if !reflect.DeepEqual(gotRes, tt.wantRes) {
+			if !featureWrap.DeepEqualResponse(gotRes, tt.wantRes) {
 				t.Errorf("Client.CreatePaymentLink() gotRes = %v, wantRes %v", gotRes, tt.wantRes)
 			}
 			if !reflect.DeepEqual(gotErr, tt.wantErr) {
