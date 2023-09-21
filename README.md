@@ -1,6 +1,7 @@
 # DurianPay SDK for Go #
 
 ![Test Status](https://github.com/abmid/dpay-sdk-go/actions/workflows/test.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ## Table of Contents
 
