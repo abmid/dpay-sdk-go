@@ -71,11 +71,9 @@ func TestClient_DisbursementValidate(t *testing.T) {
 					})
 			},
 			wantRes: &DisbursementValidate{
-				Data: DisbursementValidateData{
-					AccountNumber: "123737383830",
-					BankCode:      "bca",
-					Status:        "processing",
-				},
+				AccountNumber: "123737383830",
+				BankCode:      "bca",
+				Status:        "processing",
 			},
 		},
 		{

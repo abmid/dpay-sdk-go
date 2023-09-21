@@ -38,15 +38,18 @@ const (
 //
 //	[Doc Validate Disbursement API]: https://durianpay.id/docs/api/disbursements/validate/
 func (c *Client) Validate(ctx context.Context, payload durianpay.DisbursementValidatePayload) (*DisbursementValidate, *durianpay.Error) {
-	res := &DisbursementValidate{}
 	headers := common.HeaderIdempotencyKey(payload.XIdempotencyKey, "")
 
-	err := c.Api.Req(ctx, http.MethodPost, durianpay.DurianpayURL+pathValidate, nil, payload, headers, res)
+	res := struct {
+		Data DisbursementValidate `json:"data"`
+	}{}
+
+	err := c.Api.Req(ctx, http.MethodPost, durianpay.DurianpayURL+pathValidate, nil, payload, headers, &res)
 	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	return &res.Data, nil
 }
 
 // Submit returns a response from Submit Disbursement API.

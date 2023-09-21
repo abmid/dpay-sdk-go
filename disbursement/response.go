@@ -10,12 +10,6 @@ import "time"
 
 // DisbursementValidate is struct for response validate disbursement API
 type DisbursementValidate struct {
-	Message string                   `json:"message"`
-	Data    DisbursementValidateData `json:"data"`
-}
-
-// DisbursementValidateData is data object part of DisbursementValidate
-type DisbursementValidateData struct {
 	AccountNumber string `json:"account_number"`
 	BankCode      string `json:"bank_code"`
 	AccountHolder string `json:"account_holder"`
