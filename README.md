@@ -6,14 +6,18 @@
 
 - [Overview](#overview)
 - [Installation](#installation)
-- [Quickstart](#quickstart)
+- [Documentation](#documentation)
 - [API Supports](#api-supports)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Overview
 
-🚧 *The SDK is currently undergoing heavy development with frequent breaking changes* 🚧
+🚧 *The SDK is currently undergoing heavy development with frequent changes, because of this the current major version is zero (v0.x.x)* 🚧
+
+Durianpay is a payments platform and aggregator which helps business to connect with different payment service providers (PSPs) and gateways.
+
+Durianpay provides SDKs in several programming languages but not Go. Because of this, this SDK was created.
 
 For more information, visit the [DurianPay API Official documentation](https://durianpay.id/docs/api/).
 
@@ -26,11 +30,41 @@ Make sure you are using go version `1.18` or later
 go get github.com/abmid/dpay-sdk-go
 ```
 
-## Quickstart
+## Documentation
 
-TODO
+```go
+package main
 
-For more examples, please check directory [example](https://github.com/abmid/dpay-sdk-go/example).
+import (
+	"context"
+
+	durianpay "github.com/abmid/dpay-sdk-go"
+	"github.com/abmid/dpay-sdk-go/client"
+)
+
+func main() {
+	// Init client to access all difference resources
+	c := client.NewClient(client.Options{
+		ServerKey: "XXX-XXX",
+	})
+
+	//----------------------------------------------
+	// Example Validate Disbursement
+	//----------------------------------------------
+	payload := durianpay.DisbursementValidatePayload{
+		XIdempotencyKey: "1",
+		AccountNumber:   "12345678",
+		BankCode:        "bca",
+	}
+
+	res, err := c.Disbursement.Validate(context.Background(), payload)
+	if err != nil {
+		// Handle error
+	}
+}
+```
+
+For more examples, please check directory [example](https://github.com/abmid/dpay-sdk-go/tree/master/example).
 
 ## API Supports
 
@@ -95,8 +129,8 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
 
 ## Contributing
 
-We are open to, and grateful for, any contribution. If you want to contribute please do PR and follow the code guide.
+We are open  and grateful for any contribution. If you want to contribute please do PR and follow the code guide.
 
 ## License
 
-Copyright (c) 2023-present [Abdul Hamid](https://github.com/abmid) and [Contributors](https://github.com/abmid/dpay-sdk-go/graphs/contributors).
+Copyright (c) 2023-present [Abdul Hamid](https://github.com/abmid) and [Contributors](https://github.com/abmid/dpay-sdk-go/graphs/contributors). This SDK is free and open-source software licensed under the [MIT License](https://github.com/abmid/dpay-sdk-go/tree/master/LICENSE).
