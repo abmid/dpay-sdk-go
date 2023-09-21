@@ -50,8 +50,8 @@ func TestClient_FetchSettlements(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				opt: durianpay.SettlementOption{
-					From: time.Now().Unix(),
-					To:   time.Now().Unix(),
+					From: time.Now().Format("2006-01-02"),
+					To:   time.Now().Format("2006-01-02"),
 				},
 			},
 			prepare: func(m mocks, args args) {
@@ -138,8 +138,8 @@ func TestClient_FetchDetails(t *testing.T) {
 			args: args{
 				ctx: context.Background(),
 				opt: durianpay.SettlementOption{
-					From: time.Now().Unix(),
-					To:   time.Now().Unix(),
+					From: time.Now().Format("2006-01-02"),
+					To:   time.Now().Format("2006-01-02"),
 				},
 			},
 			prepare: func(m mocks, args args) {

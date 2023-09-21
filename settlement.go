@@ -16,8 +16,8 @@ Options
 
 // SettlementOption is parameter for Fetch and Details API.
 type SettlementOption struct {
-	From  int64  `url:"from"`
-	To    int64  `url:"to"`
+	From  string `url:"from"`
+	To    string `url:"to"`
 	Skip  uint16 `url:"skip"`
 	Limit uint16 `url:"limit"`
 }
