@@ -15,7 +15,7 @@ import (
 	"github.com/abmid/dpay-sdk-go/internal/tests"
 )
 
-func ExampleValidate() {
+func DisbursementValidate() {
 	c := client.NewClient(client.Options{
 		ServerKey: "XXX-XXX",
 	})
@@ -35,7 +35,7 @@ func ExampleValidate() {
 	fmt.Println(res)
 }
 
-func ExampleSubmit() {
+func DisbursementSubmit() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxxx",
 	})
@@ -78,7 +78,7 @@ func ExampleSubmit() {
 	fmt.Println(res)
 }
 
-func ExampleApprove() {
+func DisbursementApprove() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxx",
 	})
@@ -107,7 +107,7 @@ func ExampleApprove() {
 	fmt.Println(res)
 }
 
-func ExampleFetchItemsByID() {
+func DisbursementFetchItemsByID() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxx",
 	})
@@ -129,7 +129,7 @@ func ExampleFetchItemsByID() {
 	fmt.Println(res)
 }
 
-func ExampleFetchByID() {
+func DisbursementFetchByID() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxx",
 	})
@@ -143,7 +143,7 @@ func ExampleFetchByID() {
 	fmt.Println(res)
 }
 
-func ExampleDelete() {
+func DisbursementDelete() {
 	c := client.NewClient(client.Options{
 		ServerKey: "xxx-xxx",
 	})

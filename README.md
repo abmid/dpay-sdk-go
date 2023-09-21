@@ -56,7 +56,7 @@ For more examples, please check directory [example](https://github.com/abmid/dpa
 - DISBURSEMENTS
   - [x] Submit Disbursement
   - [x] Approve Disbursment
-  - [x] Validate Disbursement
+  - [x] Validate Disbursement (Tested)
   - [x] Fetch Bank List
   - [x] Topup Amount
   - [x] Fetch Topup Detail By ID
