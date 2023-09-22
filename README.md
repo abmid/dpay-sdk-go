@@ -1,6 +1,8 @@
 # DurianPay SDK for Go #
 
+[![GoDoc](https://godoc.org/github.com/abmid/dpay-sdk-go?status.svg)](https://godoc.org/github.com/abmid/dpay-sdk-go)
 ![Test Status](https://github.com/abmid/dpay-sdk-go/actions/workflows/test.yml/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/abmid/dpay-sdk-go)](https://goreportcard.com/report/github.com/abmid/dpay-sdk-go)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ## Table of Contents
@@ -53,7 +55,7 @@ func main() {
 	// Example Validate Disbursement
 	//----------------------------------------------
 	payload := durianpay.DisbursementValidatePayload{
-		XIdempotencyKey: "1",
+		XIdempotencyKey: "c128fc41-46e7-42fd-93ef-cb147a8f96c8",
 		AccountNumber:   "12345678",
 		BankCode:        "bca",
 	}
@@ -65,7 +67,35 @@ func main() {
 }
 ```
 
-For more examples, please check directory [example](https://github.com/abmid/dpay-sdk-go/tree/master/example).
+Below is an example of implementing Idempotent Request (X-Idempotency-Key and idempotency_key) in this SDK, for the differences between `X-Idempotency-Key` and `idempotency_key` you can read in the [Idempotent Request Implementation Guide](https://durianpay.id/docs/integration/disbursements/idempotent/)
+
+```go
+  payload := durianpay.DisbursementPayload{
+    XIdempotencyKey: "c128fc41-46e7-42fd-93ef-cb147a8f96c8",
+    IdempotencyKey:  "1",
+    Name:            "Test Name",
+    Description:     "Test Desc",
+    Items: []durianpay.DisbursementItemPayload{
+      {
+        AccountOwnerName: "Goodman",
+        BankCode:         "bca",
+        Amount:           "10000",
+        AccountNumber:    "222444",
+        EmailRecipient:   "goodman@domain.com",
+        PhoneNumber:      "081234567890",
+        Notes:            "Salary",
+      },
+    },
+  }
+
+  // Without params
+  res, err := c.Disbursement.Submit(context.TODO(), payload, nil)
+  if err != nil {
+    // Handle error
+  }
+```
+
+For more examples, please check directory [example](https://github.com/abmid/dpay-sdk-go/tree/master/example) and [Godoc](https://godoc.org/github.com/abmid/dpay-sdk-go)
 
 ## API Supports
 
